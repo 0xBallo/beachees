@@ -4,6 +4,7 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
+    "start": "nodemon server/test.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,7 +18,11 @@
   },
   "homepage": "https://github.com/mattiaballo/beachees#readme",
   "dependencies": {
+    "express": "^4.16.3",
     "nedb": "^1.8.0",
     "serialport": "^6.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
   }
 }
