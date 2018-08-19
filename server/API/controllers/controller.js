@@ -1,11 +1,12 @@
 'use strict';
 const url = require('url');
+const Datastore = require('nedb');
 
 exports.info = (req, res) => {
    res.send('Hello, welcome to root of APIv1');
 }
 
-exports.get_temp = function (req, res) {
+exports.get_temp = function (db, req, res) {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const startDate = parameters.start;
@@ -14,7 +15,9 @@ exports.get_temp = function (req, res) {
 
    if (startDate == undefined || endDate == undefined) {
       //TODO: retrieve all data from DHT
-      myResponse = 'Retrieve all data available';
+      db.find({}, function (err, dht) {
+          myResponse = dht;
+      });
    } else {
       //TODO: retrieve data from DHT table in db between start and end date
       myResponse = 'Start Date is ' + startDate + ' and End Date is ' + endDate;

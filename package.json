@@ -19,6 +19,7 @@
   "homepage": "https://github.com/mattiaballo/beachees#readme",
   "dependencies": {
     "express": "^4.16.3",
+    "moment": "^2.22.2",
     "nedb": "^1.8.0",
     "serialport": "^6.2.2"
   },
