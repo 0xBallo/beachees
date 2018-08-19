@@ -6,23 +6,24 @@ exports.info = (req, res) => {
    res.send('Hello, welcome to root of APIv1');
 }
 
-exports.get_temp = function (db, req, res) {
+exports.get_temp = (db, req, res) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const startDate = parameters.start;
    const endDate = parameters.end;
-   let myResponse = '';
 
    if (startDate == undefined || endDate == undefined) {
-      //TODO: retrieve all data from DHT
-      db.find({}, function (err, dht) {
-          myResponse = dht;
-          res.json({
-            message: myResponse
+      db.dht.find({}, function (err, data) {
+         res.json({
+            data: data
          });
       });
    } else {
       //TODO: retrieve data from DHT table in db between start and end date
-      myResponse = 'Start Date is ' + startDate + ' and End Date is ' + endDate;
+      db.dht.find({}, function (err, data) {
+         res.json({
+            data: data
+         });
+      });
    }
 };
