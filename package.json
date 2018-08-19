@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/mattiaballo/beachees#readme",
   "dependencies": {
+    "nedb": "^1.8.0",
     "serialport": "^6.2.2"
   }
 }
