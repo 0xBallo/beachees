@@ -29,9 +29,8 @@ exports.get_temp = (db, req, res) => {
    } else {
       // INFO: retrieve data between date
       db.dht.find({
-         date: {
-            $lt: end,
-            $gt: start
+         $where: function () {
+            return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
          }
       }, function (err, data) {
          res.json({
