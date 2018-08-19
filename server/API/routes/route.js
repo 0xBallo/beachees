@@ -10,6 +10,6 @@ module.exports = function (router, db) {
    });
 
    router.get('/dht', (request, response) => {
-      controller.get_temp(request, response, db);
+      controller.get_temp(db, request, response);
    });
 };

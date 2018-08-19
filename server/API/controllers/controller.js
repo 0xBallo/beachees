@@ -17,13 +17,12 @@ exports.get_temp = function (db, req, res) {
       //TODO: retrieve all data from DHT
       db.find({}, function (err, dht) {
           myResponse = dht;
+          res.json({
+            message: myResponse
+         });
       });
    } else {
       //TODO: retrieve data from DHT table in db between start and end date
       myResponse = 'Start Date is ' + startDate + ' and End Date is ' + endDate;
    }
-
-   res.json({
-      message: myResponse
-   });
 };
