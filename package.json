@@ -1,0 +1,22 @@
+{
+  "name": "beachees",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattiaballo/beachees.git"
+  },
+  "author": "Mattia Ballo - Paride Martinelli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattiaballo/beachees/issues"
+  },
+  "homepage": "https://github.com/mattiaballo/beachees#readme",
+  "dependencies": {
+    "serialport": "^6.2.2"
+  }
+}
