@@ -10,6 +10,13 @@
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 //#define DHTTYPE DHT21   // DHT 21 (AM2301)
 
+// define type of data
+#define TYPE_DHT 0
+#define TYPE_GYRO 1
+#define TYPE_UVA 2
+#define TYPE_WATER_T 3
+#define TYPE_TURBIDITY 4
+
 // Connect pin 1 (on the left) of the sensor to +5V
 // NOTE: If using a board with 3.3V logic like an Arduino Due connect pin 1
 // to 3.3V instead of 5V!
@@ -30,8 +37,8 @@ void setup() {
 }
 
 void loop() {
-  // Wait a few seconds between measurements.
-  delay(2000);
+  // Wait a minute before measurements.
+  delay(60000);
 
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
@@ -39,7 +46,7 @@ void loop() {
   // Read temperature as Celsius (the default)
   float t = dht.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
-  float f = dht.readTemperature(true);
+  // float f = dht.readTemperature(true);
 
   // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t) || isnan(f)) {
@@ -48,10 +55,18 @@ void loop() {
   }
 
   // Compute heat index in Fahrenheit (the default)
-  float hif = dht.computeHeatIndex(f, h);
+  //float hif = dht.computeHeatIndex(f, h);
   // Compute heat index in Celsius (isFahreheit = false)
-  float hic = dht.computeHeatIndex(t, h, false);
+  //float hic = dht.computeHeatIndex(t, h, false);
+
+  // DHT22 sensor reading
+  Serial.print(TYPE_DHT);
+  Serial.print("_");
   Serial.print(h);
   Serial.print("_");
   Serial.print(t);
+
+  Serial.println();
+
+  // 
 }

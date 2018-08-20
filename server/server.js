@@ -1,22 +1,38 @@
-var SerialPort = require("serialport");
-var serialport = new SerialPort("/dev/cu.wchusbserial14140");
+const Express = require('express');
+const SerialPort = require("serialport");
+const Datastore = require('nedb');
+const app = Express();
+const router = Express.Router();
+const Route = require('./API/routes/route');
 
-var Datastore = require('nedb');
-db = {};
-db.lidoBase = new Datastore('lidoBase.db');
-db.lidoBase.loadDatabase();
+const port = process.env.PORT || 3001;
+const serialport = new SerialPort("/dev/cu.wchusbserial14140");
 
-var dht;
+// DATABASE
+let lidoBase = {};
+lidoBase.dht = new Datastore('lidoBase.db');
+lidoBase.dht.loadDatabase();
+
+// Expose API on localhost:3001
+app.get('/', (request, response) => response.send('Beachees Main Server'));
+
+// all routes prefixed with /api
+app.use('/api', router);
+
+Route(router, lidoBase);
+
+// set the server to listen on port 3001
+app.listen(port, () => console.log('Listening on port', port));
 
 serialport.on('readable', function () {
-  var data = serialport.read();
-  var dataArray = data.toString().split("_");
-  //console.log('Umidità: ', dataArray[0]);
-  dht = {humidity: dataArray[0],
-            temperature: dataArray[1]};
-  //console.log('Temperatura: ', dataArray[1]);
-  db.lidoBase.insert(dht, function (err, newDoc){});
-  //var result;
-  //db.prova.find({}, function (err, dht) { result = dht.temperature});
-  //console.log('result: ', result);
+   let data = serialport.read();
+   let dataArray = data.toString().split("_");
+
+   let dht = {
+      humidity: dataArray[0],
+      temperature: dataArray[1],
+      date: new Date()
+   };
+
+   lidoBase.dht.insert(dht, function (err, newDoc) {});
 });
