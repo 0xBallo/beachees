@@ -2,9 +2,6 @@
 const url = require('url');
 const Moment = require('moment');
 
-const DHT = 0;
-const UVA = 1;
-
 /**
  * Info about API
  * 
@@ -14,6 +11,8 @@ const UVA = 1;
 exports.info = (req, res) => {
    res.send('Hello, welcome to root of APIv1');
 }
+
+//========================= BEACH ====================================
 
 /**
  * Get user data DHT from collection
@@ -25,7 +24,7 @@ exports.info = (req, res) => {
 exports.get_temp_hum = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
-   const user = urlParts.user;
+   const user = parameters.user;
    const startDate = parameters.start;
    const endDate = parameters.end;
 
@@ -34,9 +33,15 @@ exports.get_temp_hum = (req, res, db) => {
    } else {
       if (startDate == undefined || endDate == undefined) {
          // INFO: retrieve all data
+         console.log(user);
          db.beach.find({
             user: user,
-            type: DHT
+            temperature: {
+               $exists: true
+            },
+            humidity: {
+               $exists: true
+            }
          }, function (err, data) {
             res.json({
                data: data
@@ -46,7 +51,12 @@ exports.get_temp_hum = (req, res, db) => {
          // INFO: retrieve data between date
          db.beach.find({
             user: user,
-            type: DHT,
+            temperature: {
+               $exists: true
+            },
+            humidity: {
+               $exists: true
+            },
             $where: function () {
                return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
             }
@@ -77,7 +87,6 @@ exports.add_temp_hum = (req, res, db) => {
    } else {
       let dht = {
          user: data.u,
-         type: DHT,
          humidity: data.h,
          temperature: data.t,
          date: new Date()
@@ -85,7 +94,7 @@ exports.add_temp_hum = (req, res, db) => {
       db.beach.insert(dht, function (err, newDoc) {
          res.json({
             message: newDoc,
-            error: err.toString()
+            error: err
          });
       });
    }
@@ -113,7 +122,9 @@ exports.get_uva = (req, res, db) => {
          // INFO: retrieve all data
          db.beach.find({
             user: user,
-            type: UVA
+            uva: {
+               $exists: true
+            }
          }, function (err, data) {
             res.json({
                data: data
@@ -123,7 +134,9 @@ exports.get_uva = (req, res, db) => {
          // INFO: retrieve data between date
          db.beach.find({
             user: user,
-            type: UVA,
+            uva: {
+               $exists: true
+            },
             $where: function () {
                return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
             }
@@ -154,16 +167,222 @@ exports.add_uva = (req, res, db) => {
    } else {
       let dht = {
          user: data.u,
-         type: UVA,
          uva: data.l,
          date: new Date()
       };
       db.beach.insert(dht, function (err, newDoc) {
          res.json({
             message: newDoc,
-            error: err.toString()
+            error: err
          });
       });
    }
 
+}
+
+//==================================== SEA ====================
+
+/**
+ * Get Water Temperature for sea
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} db 
+ */
+exports.get_water_temp = (req, res, db) => {
+   const urlParts = url.parse(req.url, true);
+   const parameters = urlParts.query;
+   const startDate = parameters.start;
+   const endDate = parameters.end;
+   if (startDate == undefined || endDate == undefined) {
+      // INFO: retrieve all data
+      db.sea.find({
+         watertemp: {
+            $exists: true
+         }
+      }, function (err, data) {
+         res.json({
+            data: data
+         });
+      });
+   } else {
+      // INFO: retrieve data between date
+      db.sea.find({
+         watertemp: {
+            $exists: true
+         },
+         $where: function () {
+            return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
+         }
+      }, function (err, data) {
+         res.json({
+            data: data
+         });
+      });
+   }
+}
+
+
+/**
+ * Add water temperature to collection
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} db 
+ */
+exports.add_water_temp = (req, res, db) => {
+   let data = req.body;
+
+   if (data.t == undefined) {
+      res.json({
+         message: data,
+         error: "Incomplete data!"
+      });
+   } else {
+      let obj = {
+         temperature: data.t,
+         date: new Date()
+      };
+      db.sea.insert(obj, function (err, newDoc) {
+         res.json({
+            message: newDoc,
+            error: err
+         });
+      });
+   }
+}
+
+/**
+ * Get water turbidity from collection
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} db 
+ */
+exports.get_water_turb = (req, res, db) => {
+   const urlParts = url.parse(req.url, true);
+   const parameters = urlParts.query;
+   const startDate = parameters.start;
+   const endDate = parameters.end;
+   if (startDate == undefined || endDate == undefined) {
+      // INFO: retrieve all data
+      db.sea.find({
+         turbidity: {
+            $exists: true
+         }
+      }, function (err, data) {
+         res.json({
+            data: data
+         });
+      });
+   } else {
+      // INFO: retrieve data between date
+      db.sea.find({
+         turbidity: {
+            $exists: true
+         },
+         $where: function () {
+            return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
+         }
+      }, function (err, data) {
+         res.json({
+            data: data
+         });
+      });
+   }
+}
+
+/**
+ * Add water turbidity to collection
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} db 
+ */
+exports.add_water_turb = (req, res, db) => {
+let data = req.body;
+
+if (data.t == undefined) {
+   res.json({
+      message: data,
+      error: "Incomplete data!"
+   });
+} else {
+   let obj = {
+      turbidity: data.t,
+      date: new Date()
+   };
+   db.sea.insert(obj, function (err, newDoc) {
+      res.json({
+         message: newDoc,
+         error: err
+      });
+   });
+}
+}
+
+/**
+ * Get waves movement from gyroscope and accelerometer from collection
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} db 
+ */
+exports.get_waves_acc = (req, res, db) => {
+   const urlParts = url.parse(req.url, true);
+   const parameters = urlParts.query;
+   const startDate = parameters.start;
+   const endDate = parameters.end;
+   if (startDate == undefined || endDate == undefined) {
+      // INFO: retrieve all data
+      db.sea.find({
+         waves: {
+            $exists: true
+         }
+      }, function (err, data) {
+         res.json({
+            data: data
+         });
+      });
+   } else {
+      // INFO: retrieve data between date
+      db.sea.find({
+         waves: {
+            $exists: true
+         },
+         $where: function () {
+            return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
+         }
+      }, function (err, data) {
+         res.json({
+            data: data
+         });
+      });
+   }
+}
+
+/**
+ * TODO: Add waves movement and data to collection
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} db 
+ */
+exports.add_waves_acc = (req, res, db)=>{
+   let data = req.body;
+
+   if (data.a == undefined || data.g == undefined) {
+      res.json({
+         message: data,
+         error: "Incomplete data!"
+      });
+   } else {
+      let obj = {
+         //TODO impostare waves
+         waves: 'calmo|mosso|molto mosso',
+         acc: data.a,
+         gyro: data.g,
+         date: new Date()
+      };
+      db.sea.insert(obj, function (err, newDoc) {
+         res.json({
+            message: newDoc,
+            error: err
+         });
+      });
+   }
 }
