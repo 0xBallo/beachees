@@ -100,10 +100,12 @@ void loop()
   //INFO: DHT22 Data OUTPUT
   Serial.print(TYPE_DHT);
   Serial.print("_");
-  Serial.print("ParideMartinelli357");
+  Serial.print("PM12");
   Serial.print("_");
   Serial.print(h);
   Serial.print("_");
   Serial.print(t);
+
+  delay(100);
 
 }
