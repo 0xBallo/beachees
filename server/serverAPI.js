@@ -12,6 +12,7 @@ let lidoBase = {};
 lidoBase.beach = new Datastore('lidoBase-beach.db');
 lidoBase.sea = new Datastore('lidoBase-sea.db');
 
+lidoBase.sea.loadDatabase();
 lidoBase.beach.loadDatabase();
 
 // Expose API on localhost:3001
