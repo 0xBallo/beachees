@@ -4,8 +4,8 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-    "start": "nodemon server/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server/serverAPI.js",
+    "arduino": "node server/serverArduino.js"
   },
   "repository": {
     "type": "git",

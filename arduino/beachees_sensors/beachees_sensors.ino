@@ -1,7 +1,9 @@
 #include "DHT.h"
 
-// define digital pin
+// define digital input pins
 #define DHTPIN 2
+
+// define digital output pins
 #define TEMPLED 13
 #define HUMLED 12
 #define UVLED 11
@@ -23,8 +25,11 @@
 // Initialize DHT sensor
 DHT dht(DHTPIN, DHTTYPE);
 
-void setup() {
+void setup()
+{
   Serial.begin(9600);
+
+  // Setup Output port
   pinMode(TEMPLED, OUTPUT);
   pinMode(HUMLED, OUTPUT);
   pinMode(UVLED, OUTPUT);
@@ -37,54 +42,68 @@ void setup() {
   dht.begin();
 }
 
-void loop() {
-  unsigned char i;
+void loop()
+{
   delay(5000);
+
+  // counter for alarm
+  unsigned char i;
+  int freq = 0;
 
   // Reading temperature and humidity. Temperature as Celsius (the default)
   float h = dht.readHumidity();
   float t = dht.readTemperature();
 
-
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t)) {
+  if (isnan(h) || isnan(t))
+  {
     Serial.println("Failed to read from DHT sensor!");
     return;
   }
 
-  // Check if temperature is greater than 31°C
-  if(t > 31.0){
+  // Check if wear temperature is greater than 31°C
+  if (t > 31.0)
+  {
     digitalWrite(TEMPLED, HIGH);
-    //digitalWrite(ALARM, HIGH);
-    for(i=0;i<240;i++){
-      digitalWrite(ALARM,HIGH);
-      delay(2);//wait for 1ms
-      digitalWrite(ALARM,LOW);
-      delay(2);//wait for 1ms
-    }
-  }else{
+    freq++;
+  }
+  else
+  {
     digitalWrite(TEMPLED, LOW);
   }
 
-  //Check if humidity is greater than 74%
-  if(h > 74.0){
-      digitalWrite(HUMLED, HIGH);
-  }else{
+  //Check if humidity is greater than 80%
+  if (h > 80.0)
+  {
+    digitalWrite(HUMLED, HIGH);
+    freq++;
+  }
+  else
+  {
     digitalWrite(HUMLED, LOW);
   }
 
+  // Alarm Ring if Critical levels are reached
+  for (i = 0; i < 240; i++)
+  {
+    digitalWrite(ALARM, HIGH);
+    delay(freq);
+    digitalWrite(ALARM, LOW);
+    delay(freq);
+  }
 
-  //Check UV
-  //Check water temperature
-  //Check water turbidity
-  //Check water rough
+  //TODO: Check UV
+  //TODO: Check water temperature
+  //TODO: Check water turbidity
+  //TODO: Check water rough
 
-  //Debug
+  //INFO: DHT22 Data OUTPUT
   Serial.print(TYPE_DHT);
+  Serial.print("_");
+  Serial.print("ParideMartinelli357");
   Serial.print("_");
   Serial.print(h);
   Serial.print("_");
   Serial.print(t);
 
-  Serial.println();
 }

@@ -1,0 +1,12 @@
+
+DATA da raccogliere:
+  ☐ Arduino:
+    ☐ Temperatura
+    ☐ Umidità
+    ☐ UVA
+    ☐ Temperatura acqua
+    ☐ Torbidità acqua
+  ☐ Beacon
+    ☐ Posizione utente
+
+

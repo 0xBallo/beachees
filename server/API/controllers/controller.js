@@ -13,7 +13,7 @@ exports.info = (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-exports.get_temp = (db, req, res) => {
+exports.get_temp = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const startDate = parameters.start;
@@ -21,14 +21,14 @@ exports.get_temp = (db, req, res) => {
 
    if (startDate == undefined || endDate == undefined) {
       // INFO: retrieve all data
-      db.dht.find({}, function (err, data) {
+      db.beach.find({}, function (err, data) {
          res.json({
             data: data
          });
       });
    } else {
       // INFO: retrieve data between date
-      db.dht.find({
+      db.beach.find({
          $where: function () {
             return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
          }
@@ -39,3 +39,21 @@ exports.get_temp = (db, req, res) => {
       });
    }
 };
+
+// INFO: add temperature to database
+exports.add_temp = (req, res, db) => {
+   let data = req.body;
+
+   //DEBUG:
+   console.log(data);
+
+   let dht = {
+      user: data.u,
+      humidity: data.h,
+      temperature: data.t,
+      date: new Date()
+   };
+   db.beach.insert(dht, function (err, newDoc) {});
+
+   res.end();
+}
