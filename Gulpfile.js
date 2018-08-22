@@ -4,8 +4,8 @@ const gulp = require('gulp'),
 gulp.task('webserver', function () {
    connect.server({
       livereload: true,
-      root: 'app/gentelella-master/production/',
-      port: 8080
+      root: ['app/gentelella-master/'],
+      port: 8000
    });
 });
 
