@@ -1,4 +1,5 @@
 const Express = require('express');
+const Cors = require('cors');
 const Datastore = require('nedb');
 const Parser = require("body-parser");
 const app = Express();
@@ -14,6 +15,9 @@ lidoBase.sea = new Datastore('lidoBase-sea.db');
 
 lidoBase.sea.loadDatabase();
 lidoBase.beach.loadDatabase();
+
+// ALLOW CORS request
+app.use(Cors());
 
 // Expose API on localhost:3001
 app.get('/', (request, response) => response.send('Beachees Main Server'));
