@@ -1,8 +1,8 @@
 
 DATA da raccogliere:
   ☐ Arduino:
-    ☐ Temperatura
-    ☐ Umidità
+    ✔ Temperatura @done(18-08-22 14:47)
+    ✔ Umidità @done(18-08-22 14:47)
     ☐ UVA
     ☐ Temperatura acqua
     ☐ Torbidità acqua
