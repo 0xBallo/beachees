@@ -17,6 +17,8 @@ self.addEventListener('install', function (e) {
    );
 });
 
+//========================= OFFLINE MODE ===========================================
+
 // INFO update cache whenever any app shell files change
 self.addEventListener('activate', function (e) {
    console.log('[ServiceWorker] Activate');
@@ -68,3 +70,5 @@ self.addEventListener('fetch', function (e) {
       );
    }
 });
+
+//========================= PUSH NOTIFICATION ======================================
