@@ -5,7 +5,8 @@
   "main": "server/index.js",
   "scripts": {
     "start": "nodemon server/serverAPI.js",
-    "arduino": "node server/serverArduino.js"
+    "arduino": "node server/serverArduino.js",
+    "webapp": "node_modules/.bin/gulp"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,8 @@
     "serialport": "^6.2.2"
   },
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.5.0",
     "nodemon": "^1.18.3"
   }
 }
