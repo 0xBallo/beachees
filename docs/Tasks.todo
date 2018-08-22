@@ -1,14 +1,17 @@
 
 Task:
-  ☐ GUI Web @paride
-  ☐ Recupero Dati da sensori e salvataggio @mattia:
+  ☐ Recupero Dati da sensori e salvataggio @mattia
     ✔ DHT @done(18-08-21 11:21)
     ☐ UVA
     ☐ WATER T
     ☐ TURBIDITY
     ☐ GYRO
   ✔ Led fisici per feedback immediato @done(18-08-21 11:22)
-  ☐ Notifiche push
-  ☐ Connessione bluetooth con beacon
+  ☐ APP:
+    ☐ GUI @paride
+    ☐ Notifiche push @mattia
+    ☐ Connessione bluetooth con beacon
+    ☐ Manifest e Service Worker
+    ☐ Accesso camera per QR code
   ☐ Test in spiaggia
   ☐ Articolo
