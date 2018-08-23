@@ -23,7 +23,6 @@ function post_request(data, path) {
 
       var req = Http.request(options, function (res) {
             console.log('Status: ' + res.statusCode);
-            //console.log('Headers: ' + JSON.stringify(res.headers));
             res.setEncoding('utf8');
             res.on('data', function (body) {
                   console.log('Body: ' + body);

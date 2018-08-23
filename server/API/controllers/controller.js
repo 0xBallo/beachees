@@ -25,31 +25,20 @@ exports.get_temp_hum = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const user = parameters.user;
-   const startDate = parameters.start;
-   const endDate = parameters.end;
+   const date = parameters.date;
 
    if (user == undefined) {
       res.send("Username not specified!!");
    } else {
-      if (startDate == undefined || endDate == undefined) {
-         // INFO: retrieve all data
-         console.log(user);
-         db.beach.find({
-            user: user,
-            temperature: {
-               $exists: true
-            },
-            humidity: {
-               $exists: true
-            }
-         }, function (err, data) {
-            res.json({
-               data: data
-            });
-         });
+      let queryDate;
+      if (date == undefined) {
+         // INFO: retrieve data of today
+         queryDate = Moment().format('YYYY-MM-DD');
       } else {
-         // INFO: retrieve data between date
-         db.beach.find({
+         // INFO: retrieve data from a day
+         queryDate = Moment(date).format('YYYY-MM-DD');
+      }
+      db.beach.find({
             user: user,
             temperature: {
                $exists: true
@@ -57,15 +46,45 @@ exports.get_temp_hum = (req, res, db) => {
             humidity: {
                $exists: true
             },
-            $where: function () {
-               return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
+            date: queryDate,
+            $where: {
+               function () {
+                  let hour = parseInt(this.hour);
+                  return hour >= 8 && hour <= 19;
+               }
             }
-         }, function (err, data) {
+         })
+         .sort({
+            hour: 1
+         })
+         .then(function (data) {
+            let temp = 0,
+               result = [];
+            let sum_h = 0.0,
+               sum_t = 0.0,
+               count = 0;
+            data.forEach(el => {
+               if (temp !== parseInt(el.hour)) {
+                  if (count !== 0) {
+                     result.push({
+                        temperature: sum_t / parseFloat(count),
+                        humidity: sum_h / parseFloat(count),
+                        hour: temp
+                     });
+                  }
+                  temp = parseInt(el.hour);
+                  count = 0;
+                  sum_t = 0.0;
+                  sum_h = 0.0;
+               }
+               sum_t += el.temperature;
+               sum_h += el.humidity;
+               count++;
+            });
             res.json({
                data: data
             });
          });
-      }
    }
 };
 
@@ -89,7 +108,9 @@ exports.add_temp_hum = (req, res, db) => {
          user: data.u,
          humidity: data.h,
          temperature: data.t,
-         date: new Date()
+         date: Moment().format('YYYY-MM-DD'),
+         hour: Moment().format('HH'),
+         ISO: Moment().format()
       };
       db.beach.insert(dht, function (err, newDoc) {
          res.json({
@@ -296,25 +317,25 @@ exports.get_water_turb = (req, res, db) => {
  * @param {*} db 
  */
 exports.add_water_turb = (req, res, db) => {
-let data = req.body;
+   let data = req.body;
 
-if (data.t == undefined) {
-   res.json({
-      message: data,
-      error: "Incomplete data!"
-   });
-} else {
-   let obj = {
-      turbidity: data.t,
-      date: new Date()
-   };
-   db.sea.insert(obj, function (err, newDoc) {
+   if (data.t == undefined) {
       res.json({
-         message: newDoc,
-         error: err
+         message: data,
+         error: "Incomplete data!"
       });
-   });
-}
+   } else {
+      let obj = {
+         turbidity: data.t,
+         date: new Date()
+      };
+      db.sea.insert(obj, function (err, newDoc) {
+         res.json({
+            message: newDoc,
+            error: err
+         });
+      });
+   }
 }
 
 /**
@@ -362,7 +383,7 @@ exports.get_waves_acc = (req, res, db) => {
  * @param {*} res 
  * @param {*} db 
  */
-exports.add_waves_acc = (req, res, db)=>{
+exports.add_waves_acc = (req, res, db) => {
    let data = req.body;
 
    if (data.a == undefined || data.g == undefined) {
