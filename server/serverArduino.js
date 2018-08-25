@@ -1,7 +1,7 @@
 const Http = require('http');
 const SerialPort = require('serialport');
-const serialport = new SerialPort("/dev/cu.wchusbserial14530");
-//const serialport = new SerialPort("/dev/ttyUSB0");
+// const serialport = new SerialPort("/dev/cu.wchusbserial14530");
+const serialport = new SerialPort("/dev/ttyUSB0");
 
 // Connection parameters
 const HOST_URI = 'localhost';
@@ -23,7 +23,6 @@ function post_request(data, path) {
 
       var req = Http.request(options, function (res) {
             console.log('Status: ' + res.statusCode);
-            //console.log('Headers: ' + JSON.stringify(res.headers));
             res.setEncoding('utf8');
             res.on('data', function (body) {
                   console.log('Body: ' + body);

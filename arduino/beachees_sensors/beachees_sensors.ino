@@ -44,7 +44,7 @@ void setup()
 
 void loop()
 {
-  delay(5000);
+  delay(60000);
 
   // counter for alarm
   unsigned char i;

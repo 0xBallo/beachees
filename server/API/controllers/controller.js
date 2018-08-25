@@ -9,7 +9,7 @@ const Moment = require('moment');
  * @param {*} res 
  */
 exports.info = (req, res) => {
-   res.send('Hello, welcome to root of APIv1');
+    res.send('Hello, welcome to root of APIv1');
 }
 
 //========================= BEACH ====================================
@@ -22,51 +22,74 @@ exports.info = (req, res) => {
  * @param {*} res 
  */
 exports.get_temp_hum = (req, res, db) => {
-   const urlParts = url.parse(req.url, true);
-   const parameters = urlParts.query;
-   const user = parameters.user;
-   const startDate = parameters.start;
-   const endDate = parameters.end;
+    const urlParts = url.parse(req.url, true);
+    const parameters = urlParts.query;
+    const user = parameters.user;
+    const date = parameters.date;
 
-   if (user == undefined) {
-      res.send("Username not specified!!");
-   } else {
-      if (startDate == undefined || endDate == undefined) {
-         // INFO: retrieve all data
-         console.log(user);
-         db.beach.find({
-            user: user,
-            temperature: {
-               $exists: true
-            },
-            humidity: {
-               $exists: true
-            }
-         }, function (err, data) {
-            res.json({
-               data: data
+    if (user == undefined) {
+        res.send("Username not specified!!");
+    } else {
+        let queryDate;
+        if (date == undefined) {
+            // INFO: retrieve data of today
+            queryDate = Moment().format('YYYY-MM-DD');
+        } else {
+            // INFO: retrieve data from a day
+            queryDate = Moment(date).format('YYYY-MM-DD');
+        }
+        db.beach.find({
+                user: user,
+                temperature: {
+                    $exists: true
+                },
+                humidity: {
+                    $exists: true
+                },
+                date: queryDate,
+                $where: function () {
+                    let hour = parseInt(this.hour);
+                    return hour >= 8 && hour <= 19;
+                }
+            })
+            .sort({
+                hour: 1
+            })
+            .exec(function (err, data) {
+                let temp = 0,
+                    result = [];
+                let sum_h = 0.0,
+                    sum_t = 0.0,
+                    count = 0;
+                //console.log(data, err);
+                if (err) {
+                    res.send(err);
+                } else {
+                    data.forEach(el => {
+                        if (temp !== parseInt(el.hour)) {
+                            if (count !== 0) {
+                                result.push({
+                                    temperature: sum_t / parseFloat(count),
+                                    humidity: sum_h / parseFloat(count),
+                                    hour: temp
+                                });
+                            }
+                            temp = parseInt(el.hour);
+                            count = 0;
+                            sum_t = 0.0;
+                            sum_h = 0.0;
+                        }
+                        sum_t += parseFloat(el.temperature);
+                        sum_h += parseFloat(el.humidity);
+                        count++;
+                    });
+                    res.json({
+                        data: result
+                    });
+                }
             });
-         });
-      } else {
-         // INFO: retrieve data between date
-         db.beach.find({
-            user: user,
-            temperature: {
-               $exists: true
-            },
-            humidity: {
-               $exists: true
-            },
-            $where: function () {
-               return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
-            }
-         }, function (err, data) {
-            res.json({
-               data: data
-            });
-         });
-      }
-   }
+
+    }
 };
 
 /**
@@ -77,27 +100,29 @@ exports.get_temp_hum = (req, res, db) => {
  * @param {*} db 
  */
 exports.add_temp_hum = (req, res, db) => {
-   let data = req.body;
+    let data = req.body;
 
-   if (data.u == undefined || data.h == undefined || data.t == undefined) {
-      res.json({
-         message: data,
-         error: "Incomplete data!"
-      });
-   } else {
-      let dht = {
-         user: data.u,
-         humidity: data.h,
-         temperature: data.t,
-         date: new Date()
-      };
-      db.beach.insert(dht, function (err, newDoc) {
-         res.json({
-            message: newDoc,
-            error: err
-         });
-      });
-   }
+    if (data.u == undefined || data.h == undefined || data.t == undefined) {
+        res.json({
+            message: data,
+            error: "Incomplete data!"
+        });
+    } else {
+        let dht = {
+            user: data.u,
+            humidity: data.h,
+            temperature: data.t,
+            date: Moment().format('YYYY-MM-DD'),
+            hour: Moment().format('HH'),
+            ISO: Moment().format()
+        };
+        db.beach.insert(dht, function (err, newDoc) {
+            res.json({
+                message: newDoc,
+                error: err
+            });
+        });
+    }
 
 }
 
@@ -109,44 +134,61 @@ exports.add_temp_hum = (req, res, db) => {
  * @param {*} db 
  */
 exports.get_uva = (req, res, db) => {
-   const urlParts = url.parse(req.url, true);
-   const parameters = urlParts.query;
-   const user = urlParts.user;
-   const startDate = parameters.start;
-   const endDate = parameters.end;
+    const urlParts = url.parse(req.url, true);
+    const parameters = urlParts.query;
+    const user = urlParts.user;
+    const date = parameters.date;
 
-   if (user == undefined) {
-      res.send("Username not specified!!");
-   } else {
-      if (startDate == undefined || endDate == undefined) {
-         // INFO: retrieve all data
-         db.beach.find({
-            user: user,
-            uva: {
-               $exists: true
-            }
-         }, function (err, data) {
-            res.json({
-               data: data
+    if (user == undefined) {
+        res.send("Username not specified!!");
+    } else {
+        let queryDate;
+        if (date == undefined) {
+            // INFO: retrieve data of today
+            queryDate = Moment().format('YYYY-MM-DD');
+        } else {
+            // INFO: retrieve data from a day
+            queryDate = Moment(date).format('YYYY-MM-DD');
+        }
+        db.beach.find({
+                user: user,
+                uva: {
+                    $exists: true
+                },
+                date: queryDate,
+                $where: function () {
+                    let hour = parseInt(this.hour);
+                    return hour >= 8 && hour <= 19;
+                }
+            })
+            .sort({
+                hour: 1
+            })
+            .exec(function (err, data) {
+                let temp = 0,
+                    result = [];
+                let sum_t = 0.0,
+                    count = 0;
+                data.forEach(el => {
+                    if (temp !== parseInt(el.hour)) {
+                        if (count !== 0) {
+                            result.push({
+                                uva: sum_t / parseFloat(count),
+                                hour: temp
+                            });
+                        }
+                        temp = parseInt(el.hour);
+                        count = 0;
+                        sum_t = 0.0;
+                    }
+                    sum_t += parseFloat(el.uva);
+                    count++;
+                });
+                res.json({
+                    data: result
+                });
             });
-         });
-      } else {
-         // INFO: retrieve data between date
-         db.beach.find({
-            user: user,
-            uva: {
-               $exists: true
-            },
-            $where: function () {
-               return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
-            }
-         }, function (err, data) {
-            res.json({
-               data: data
-            });
-         });
-      }
-   }
+    }
 }
 
 /**
@@ -157,26 +199,28 @@ exports.get_uva = (req, res, db) => {
  * @param {*} db 
  */
 exports.add_uva = (req, res, db) => {
-   let data = req.body;
+    let data = req.body;
 
-   if (data.u == undefined || data.l == undefined) {
-      res.json({
-         message: data,
-         error: "Incomplete data!"
-      });
-   } else {
-      let dht = {
-         user: data.u,
-         uva: data.l,
-         date: new Date()
-      };
-      db.beach.insert(dht, function (err, newDoc) {
-         res.json({
-            message: newDoc,
-            error: err
-         });
-      });
-   }
+    if (data.u == undefined || data.l == undefined) {
+        res.json({
+            message: data,
+            error: "Incomplete data!"
+        });
+    } else {
+        let dht = {
+            user: data.u,
+            uva: data.l,
+            date: Moment().format('YYYY-MM-DD'),
+            hour: Moment().format('HH'),
+            ISO: Moment().format()
+        };
+        db.beach.insert(dht, function (err, newDoc) {
+            res.json({
+                message: newDoc,
+                error: err
+            });
+        });
+    }
 
 }
 
@@ -189,36 +233,56 @@ exports.add_uva = (req, res, db) => {
  * @param {*} db 
  */
 exports.get_water_temp = (req, res, db) => {
-   const urlParts = url.parse(req.url, true);
-   const parameters = urlParts.query;
-   const startDate = parameters.start;
-   const endDate = parameters.end;
-   if (startDate == undefined || endDate == undefined) {
-      // INFO: retrieve all data
-      db.sea.find({
-         watertemp: {
-            $exists: true
-         }
-      }, function (err, data) {
-         res.json({
-            data: data
-         });
-      });
-   } else {
-      // INFO: retrieve data between date
-      db.sea.find({
-         watertemp: {
-            $exists: true
-         },
-         $where: function () {
-            return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
-         }
-      }, function (err, data) {
-         res.json({
-            data: data
-         });
-      });
-   }
+    const urlParts = url.parse(req.url, true);
+    const parameters = urlParts.query;
+    const date = parameters.date;
+
+    let queryDate;
+    if (date == undefined) {
+        // INFO: retrieve data of today
+        queryDate = Moment().format('YYYY-MM-DD');
+    } else {
+        // INFO: retrieve data from a day
+        queryDate = Moment(date).format('YYYY-MM-DD');
+    }
+    db.sea.find({
+            user: user,
+            temperature: {
+                $exists: true
+            },
+            date: queryDate,
+            $where: function () {
+                let hour = parseInt(this.hour);
+                return hour >= 8 && hour <= 19;
+            }
+        })
+        .sort({
+            hour: 1
+        })
+        .exec(function (err, data) {
+            let temp = 0,
+                result = [];
+            let sum_t = 0.0,
+                count = 0;
+            data.forEach(el => {
+                if (temp !== parseInt(el.hour)) {
+                    if (count !== 0) {
+                        result.push({
+                            temperature: sum_t / parseFloat(count),
+                            hour: temp
+                        });
+                    }
+                    temp = parseInt(el.hour);
+                    count = 0;
+                    sum_t = 0.0;
+                }
+                sum_t += parseFloat(el.temperature);
+                count++;
+            });
+            res.json({
+                data: result
+            });
+        });
 }
 
 
@@ -229,25 +293,27 @@ exports.get_water_temp = (req, res, db) => {
  * @param {*} db 
  */
 exports.add_water_temp = (req, res, db) => {
-   let data = req.body;
+    let data = req.body;
 
-   if (data.t == undefined) {
-      res.json({
-         message: data,
-         error: "Incomplete data!"
-      });
-   } else {
-      let obj = {
-         temperature: data.t,
-         date: new Date()
-      };
-      db.sea.insert(obj, function (err, newDoc) {
-         res.json({
-            message: newDoc,
-            error: err
-         });
-      });
-   }
+    if (data.t == undefined) {
+        res.json({
+            message: data,
+            error: "Incomplete data!"
+        });
+    } else {
+        let obj = {
+            temperature: data.t,
+            date: Moment().format('YYYY-MM-DD'),
+            hour: Moment().format('HH'),
+            ISO: Moment().format()
+        };
+        db.sea.insert(obj, function (err, newDoc) {
+            res.json({
+                message: newDoc,
+                error: err
+            });
+        });
+    }
 }
 
 /**
@@ -257,37 +323,58 @@ exports.add_water_temp = (req, res, db) => {
  * @param {*} db 
  */
 exports.get_water_turb = (req, res, db) => {
-   const urlParts = url.parse(req.url, true);
-   const parameters = urlParts.query;
-   const startDate = parameters.start;
-   const endDate = parameters.end;
-   if (startDate == undefined || endDate == undefined) {
-      // INFO: retrieve all data
-      db.sea.find({
-         turbidity: {
-            $exists: true
-         }
-      }, function (err, data) {
-         res.json({
-            data: data
-         });
-      });
-   } else {
-      // INFO: retrieve data between date
-      db.sea.find({
-         turbidity: {
-            $exists: true
-         },
-         $where: function () {
-            return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
-         }
-      }, function (err, data) {
-         res.json({
-            data: data
-         });
-      });
-   }
+    const urlParts = url.parse(req.url, true);
+    const parameters = urlParts.query;
+    const date = parameters.date;
+
+    let queryDate;
+    if (date == undefined) {
+        // INFO: retrieve data of today
+        queryDate = Moment().format('YYYY-MM-DD');
+    } else {
+        // INFO: retrieve data from a day
+        queryDate = Moment(date).format('YYYY-MM-DD');
+    }
+    db.sea.find({
+            user: user,
+            turbidity: {
+                $exists: true
+            },
+            date: queryDate,
+            $where: function () {
+                let hour = parseInt(this.hour);
+                return hour >= 8 && hour <= 19;
+            }
+        })
+        .sort({
+            hour: 1
+        })
+        .exec(function (err, data) {
+            let temp = 0,
+                result = [];
+            let sum_t = 0.0,
+                count = 0;
+            data.forEach(el => {
+                if (temp !== parseInt(el.hour)) {
+                    if (count !== 0) {
+                        result.push({
+                            turbidity: sum_t / parseFloat(count),
+                            hour: temp
+                        });
+                    }
+                    temp = parseInt(el.hour);
+                    count = 0;
+                    sum_t = 0.0;
+                }
+                sum_t += parseFloat(el.turbidity);
+                count++;
+            });
+            res.json({
+                data: result
+            });
+        });
 }
+
 
 /**
  * Add water turbidity to collection
@@ -296,25 +383,27 @@ exports.get_water_turb = (req, res, db) => {
  * @param {*} db 
  */
 exports.add_water_turb = (req, res, db) => {
-let data = req.body;
+    let data = req.body;
 
-if (data.t == undefined) {
-   res.json({
-      message: data,
-      error: "Incomplete data!"
-   });
-} else {
-   let obj = {
-      turbidity: data.t,
-      date: new Date()
-   };
-   db.sea.insert(obj, function (err, newDoc) {
-      res.json({
-         message: newDoc,
-         error: err
-      });
-   });
-}
+    if (data.t == undefined) {
+        res.json({
+            message: data,
+            error: "Incomplete data!"
+        });
+    } else {
+        let obj = {
+            turbidity: data.t,
+            date: Moment().format('YYYY-MM-DD'),
+            hour: Moment().format('HH'),
+            ISO: Moment().format()
+        };
+        db.sea.insert(obj, function (err, newDoc) {
+            res.json({
+                message: newDoc,
+                error: err
+            });
+        });
+    }
 }
 
 /**
@@ -324,37 +413,62 @@ if (data.t == undefined) {
  * @param {*} db 
  */
 exports.get_waves_acc = (req, res, db) => {
-   const urlParts = url.parse(req.url, true);
-   const parameters = urlParts.query;
-   const startDate = parameters.start;
-   const endDate = parameters.end;
-   if (startDate == undefined || endDate == undefined) {
-      // INFO: retrieve all data
-      db.sea.find({
-         waves: {
-            $exists: true
-         }
-      }, function (err, data) {
-         res.json({
-            data: data
-         });
-      });
-   } else {
-      // INFO: retrieve data between date
-      db.sea.find({
-         waves: {
-            $exists: true
-         },
-         $where: function () {
-            return Moment(this.date).isBetween(Moment(startDate), Moment(endDate));
-         }
-      }, function (err, data) {
-         res.json({
-            data: data
-         });
-      });
-   }
+    const urlParts = url.parse(req.url, true);
+    const parameters = urlParts.query;
+    const date = parameters.date;
+
+    let queryDate;
+    if (date == undefined) {
+        // INFO: retrieve data of today
+        queryDate = Moment().format('YYYY-MM-DD');
+    } else {
+        // INFO: retrieve data from a day
+        queryDate = Moment(date).format('YYYY-MM-DD');
+    }
+    db.sea.find({
+            user: user,
+            waves: {
+                $exists: true
+            },
+            date: queryDate,
+            $where: function () {
+                let hour = parseInt(this.hour);
+                return hour >= 8 && hour <= 19;
+            }
+        })
+        .sort({
+            hour: 1
+        })
+        .exec(function (err, data) {
+            let temp = 0,
+                result = [];
+            let sum_h = 0.0,
+                sum_t = 0.0,
+                count = 0;
+            data.forEach(el => {
+                if (temp !== parseInt(el.hour)) {
+                    if (count !== 0) {
+                        result.push({
+                            acc: sum_t / parseFloat(count),
+                            gyro: sum_h / parseFloat(count),
+                            hour: temp
+                        });
+                    }
+                    temp = parseInt(el.hour);
+                    count = 0;
+                    sum_t = 0.0;
+                    sum_h = 0.0;
+                }
+                sum_t += parseFloat(el.acc);
+                sum_h += parseFloat(el.gyro);
+                count++;
+            });
+            res.json({
+                data: result
+            });
+        });
 }
+
 
 /**
  * TODO: Add waves movement and data to collection
@@ -362,27 +476,29 @@ exports.get_waves_acc = (req, res, db) => {
  * @param {*} res 
  * @param {*} db 
  */
-exports.add_waves_acc = (req, res, db)=>{
-   let data = req.body;
+exports.add_waves_acc = (req, res, db) => {
+    let data = req.body;
 
-   if (data.a == undefined || data.g == undefined) {
-      res.json({
-         message: data,
-         error: "Incomplete data!"
-      });
-   } else {
-      let obj = {
-         //TODO impostare waves
-         waves: 'calmo|mosso|molto mosso',
-         acc: data.a,
-         gyro: data.g,
-         date: new Date()
-      };
-      db.sea.insert(obj, function (err, newDoc) {
-         res.json({
-            message: newDoc,
-            error: err
-         });
-      });
-   }
+    if (data.a == undefined || data.g == undefined) {
+        res.json({
+            message: data,
+            error: "Incomplete data!"
+        });
+    } else {
+        let obj = {
+            //TODO impostare waves
+            waves: 'calmo|mosso|molto mosso',
+            acc: data.a,
+            gyro: data.g,
+            date: Moment().format('YYYY-MM-DD'),
+            hour: Moment().format('HH'),
+            ISO: Moment().format()
+        };
+        db.sea.insert(obj, function (err, newDoc) {
+            res.json({
+                message: newDoc,
+                error: err
+            });
+        });
+    }
 }
