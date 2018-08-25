@@ -136,7 +136,7 @@ exports.add_temp_hum = (req, res, db) => {
 exports.get_uva = (req, res, db) => {
     const urlParts = url.parse(req.url, true);
     const parameters = urlParts.query;
-    const user = urlParts.user;
+    const user = parameters.user;
     const date = parameters.date;
 
     if (user == undefined) {
@@ -247,7 +247,7 @@ exports.get_water_temp = (req, res, db) => {
     }
     db.sea.find({
             user: user,
-            temperature: {
+            watertemp: {
                 $exists: true
             },
             date: queryDate,
@@ -268,7 +268,7 @@ exports.get_water_temp = (req, res, db) => {
                 if (temp !== parseInt(el.hour)) {
                     if (count !== 0) {
                         result.push({
-                            temperature: sum_t / parseFloat(count),
+                            watertemp: sum_t / parseFloat(count),
                             hour: temp
                         });
                     }
@@ -276,7 +276,7 @@ exports.get_water_temp = (req, res, db) => {
                     count = 0;
                     sum_t = 0.0;
                 }
-                sum_t += parseFloat(el.temperature);
+                sum_t += parseFloat(el.watertemp);
                 count++;
             });
             res.json({
@@ -302,7 +302,7 @@ exports.add_water_temp = (req, res, db) => {
         });
     } else {
         let obj = {
-            temperature: data.t,
+            watertemp: data.t,
             date: Moment().format('YYYY-MM-DD'),
             hour: Moment().format('HH'),
             ISO: Moment().format()
@@ -500,5 +500,176 @@ exports.add_waves_acc = (req, res, db) => {
                 error: err
             });
         });
+    }
+}
+
+/**
+ * Get last data from DHT
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} db 
+ */
+exports.get_dht_now = (req, res, db) => {
+    const urlParts = url.parse(req.url, true);
+    const parameters = urlParts.query;
+    const user = parameters.user;
+
+    if (user == undefined) {
+        res.send("Username not specified!!");
+    } else {
+        db.beach.find({
+                user: user,
+                temperature: {
+                    $exists: true
+                },
+                humidity: {
+                    $exists: true
+                }
+            })
+            .sort({
+                ISO: -1
+            })
+            .limit(1)
+            .exec(function (err, data) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.json({
+                        data: data
+                    });
+                }
+            });
+
+    }
+
+    /**
+     * Get last data from UVA sensor
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @param {*} db 
+     */
+    exports.get_uva_now = (req, res, db) => {
+        const urlParts = url.parse(req.url, true);
+        const parameters = urlParts.query;
+        const user = parameters.user;
+
+        if (user == undefined) {
+            res.send("Username not specified!!");
+        } else {
+            db.beach.find({
+                    user: user,
+                    uva: {
+                        $exists: true
+                    }
+                })
+                .sort({
+                    ISO: -1
+                })
+                .limit(1)
+                .exec(function (err, data) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        res.json({
+                            data: data
+                        });
+                    }
+                });
+        }
+    }
+
+    /**
+     * Get last data from Sea Temperature sensor
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @param {*} db 
+     */
+    exports.get_water_temp_now = (req, res, db) => {
+        const urlParts = url.parse(req.url, true);
+        const parameters = urlParts.query;
+        db.beach.find({
+                watertemp: {
+                    $exists: true
+                }
+            })
+            .sort({
+                ISO: -1
+            })
+            .limit(1)
+            .exec(function (err, data) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.json({
+                        data: data
+                    });
+                }
+            });
+    }
+
+    /**
+     * Get last data from Sea Temperature sensor
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @param {*} db 
+     */
+    exports.get_water_turb_now = (req, res, db) => {
+        const urlParts = url.parse(req.url, true);
+        const parameters = urlParts.query;
+        db.beach.find({
+                turbidity: {
+                    $exists: true
+                }
+            })
+            .sort({
+                ISO: -1
+            })
+            .limit(1)
+            .exec(function (err, data) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.json({
+                        data: data
+                    });
+                }
+            });
+    }
+
+    /**
+     * Get last data from Sea Temperature sensor
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @param {*} db 
+     */
+    exports.get_waves_now = (req, res, db) => {
+        const urlParts = url.parse(req.url, true);
+        const parameters = urlParts.query;
+        db.beach.find({
+                acc: {
+                    $exists: true
+                },
+                gyro:{
+                    $exists: true
+                }
+            })
+            .sort({
+                ISO: -1
+            })
+            .limit(1)
+            .exec(function (err, data) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.json({
+                        data: data
+                    });
+                }
+            });
     }
 }
