@@ -2476,16 +2476,15 @@ function init_charts() {
 			},
 			crossDomain: true,
 			success: function (data, status, request) {
-				console.log(data.data[90].temperature);
+				console.log(data.data);
 				var date =  [];
 				var temperature = [];
 				var humidity = [];
-				for (var i = 0; i < 60; i ++){
-					date.push(data.data[i].date);
+				for (var i = 0; i < data.data.length; i ++){
+					date.push(data.data[i].hour);
 					temperature.push(data.data[i].temperature);
 					humidity.push(data.data[i].humidity);
 				}
-				console.log(date[1]);
 
 				var ctx = document.getElementById("lineChart");
 				var lineChart = new Chart(ctx, {
@@ -2541,16 +2540,14 @@ function init_charts() {
 						},
 						crossDomain: true,
 						success: function (data, status, request) {
-							console.log(data.data[90].temperature);
 							var date =  [];
 							var temperature = [];
 							var humidity = [];
-							for (var i = 0; i < 60; i ++){
-								date.push(data.data[i].date);
+							for (var i = 0; i < data.data.length; i ++){
+								date.push(data.data[i].hour);
 								temperature.push(data.data[i].temperature);
 								humidity.push(data.data[i].humidity);
 							}
-							console.log(date[1]);
 			
 							var ctx = document.getElementById("lineChart");
 							var lineChart = new Chart(ctx, {
