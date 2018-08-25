@@ -7,15 +7,18 @@ Task:
     ☐ TURBIDITY
     ☐ GYRO
   ✔ Led fisici per feedback immediato @done(18-08-21 11:22)
-  ☐ APP:
+
+  APP:
     ☐ GUI @paride
     ☐ Notifiche push @mattia
     ☐ Connessione bluetooth con beacon
-    ☐ Manifest e Service Worker
+    ☐ Manifest e Service Worker @mattia 
     ☐ Accesso camera per QR code
+  ☐ Inserimento dati della temperatura e dell'umidità nella tabella:
+    ☐ ciclare prima per recuperare i due array (umidità e temperatura)
+    ☐ Ciclare i due array per avere i dati
   ☐ Test in spiaggia
   ☐ Articolo
 
-☐ Inserimento dati della temperatura e dell'umidità nella tabella:
-  ☐ ciclare prima per recuperare i due array (umidità e temperatura)
-  ☐ Ciclare i due array per avere i dati
+  API:
+    ☐ Registrazione dispositivo e user per notifiche push
