@@ -1,7 +1,7 @@
 const Http = require('http');
 const SerialPort = require('serialport');
-const serialport = new SerialPort("/dev/cu.wchusbserial14530");
-//const serialport = new SerialPort("/dev/ttyUSB0");
+// const serialport = new SerialPort("/dev/cu.wchusbserial14530");
+const serialport = new SerialPort("/dev/ttyUSB0");
 
 // Connection parameters
 const HOST_URI = 'localhost';
