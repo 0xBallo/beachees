@@ -66,8 +66,6 @@ exports.get_temp_hum = (req, res, db) => {
                     res.send(err);
                 } else {
                     data.forEach(el => {
-                        console.log(temp, result, sum_h, sum_t, count);
-                        
                         if (temp !== parseInt(el.hour)) {
                             if (count !== 0) {
                                 result.push({
@@ -183,7 +181,7 @@ exports.get_uva = (req, res, db) => {
                         count = 0;
                         sum_t = 0.0;
                     }
-                    sum_t += el.uva;
+                    sum_t += parseFloat(el.uva);
                     count++;
                 });
                 res.json({
@@ -278,7 +276,7 @@ exports.get_water_temp = (req, res, db) => {
                     count = 0;
                     sum_t = 0.0;
                 }
-                sum_t += el.temperature;
+                sum_t += parseFloat(el.temperature);
                 count++;
             });
             res.json({
@@ -368,7 +366,7 @@ exports.get_water_turb = (req, res, db) => {
                     count = 0;
                     sum_t = 0.0;
                 }
-                sum_t += el.turbidity;
+                sum_t += parseFloat(el.turbidity);
                 count++;
             });
             res.json({
@@ -461,8 +459,8 @@ exports.get_waves_acc = (req, res, db) => {
                     sum_t = 0.0;
                     sum_h = 0.0;
                 }
-                sum_t += el.acc;
-                sum_h += el.gyro;
+                sum_t += parseFloat(el.acc);
+                sum_h += parseFloat(el.gyro);
                 count++;
             });
             res.json({
