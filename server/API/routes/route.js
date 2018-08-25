@@ -1,6 +1,8 @@
 'use strict';
 
-const controller = require('../controllers/controller');
+const beachCtrl = require('../controllers/beach');
+const usersCtrl = require('../controllers/user');
+const seaCtrl = require('../controllers/sea');
 
 module.exports = function (router, db) {
   // using router.get() to prefix our path
@@ -11,77 +13,77 @@ module.exports = function (router, db) {
 
   // Get User Temperatures
   router.get('/dht', (request, response) => {
-    controller.get_temp_hum(request, response, db);
+    beachCtrl.get_temp_hum(request, response, db);
   });
 
   // Add User Temperature to db
   router.post('/dht', (request, response) => {
-    controller.add_temp_hum(request, response, db);
+    beachCtrl.add_temp_hum(request, response, db);
   });
 
   // Get last data from dht
   router.get('/dht/now', (request, response) => {
-    controller.get_dht_now(request, response, db);
+    beachCtrl.get_dht_now(request, response, db);
   })
 
   // Get User UVA levels
   router.get('/uva', (request, response) => {
-    controller.get_uva(request, response, sb);
+    beachCtrl.get_uva(request, response, db);
   });
 
   // Add User UVA levels
   router.post('/uva', (request, response) => {
-    controller.add_uva(request, response, sb);
+    beachCtrl.add_uva(request, response, db);
   });
 
   // Get last data from UVA
   router.get('/uva/now', (request, response) => {
-    controller.get_uva_now(request, response, db);
+    beachCtrl.get_uva_now(request, response, db);
   });
 
   // Get sea Temps levels
   router.get('/sea/temp', (request, response) => {
-    controller.get_water_temp(request, response, sb);
+    seaCtrl.get_water_temp(request, response, db);
   });
 
   // Add sea Temp levels
   router.post('/sea/temp', (request, response) => {
-    controller.add_water_temp(request, response, sb);
+    seaCtrl.add_water_temp(request, response, db);
   });
 
   // Get last sea Temps
   router.get('/sea/temp/now', (request, response) => {
-    controller.get_water_temp_now(request, response, sb);
+    seaCtrl.get_water_temp_now(request, response, db);
   });
 
   // Get sea Turbidity levels
   router.get('/sea/turbidity', (request, response) => {
-    controller.get_water_turb(request, response, sb);
+    seaCtrl.get_water_turb(request, response, db);
   });
 
   // Add sea turbidity levels
   router.post('/sea/turbidity', (request, response) => {
-    controller.add_water_turb(request, response, sb);
+    seaCtrl.add_water_turb(request, response, db);
   });
 
   // Get last sea Turbidity levels
   router.get('/sea/turbidity/now', (request, response) => {
-    controller.get_water_turb_now(request, response, sb);
+    seaCtrl.get_water_turb_now(request, response, db);
   });
 
   // Get sea waves levels
   router.get('/sea/waves', (request, response) => {
-    controller.get_waves_acc(request, response, sb);
+    seaCtrl.get_waves_acc(request, response, db);
   });
 
   // Add sea waves levels
   router.post('/sea/waves', (request, response) => {
-    controller.add_waves_acc(request, response, sb);
+    seaCtrl.add_waves_acc(request, response, db);
   });
 
   // Get last sea waves levels
   router.get('/sea/waves/now', (request, response) => {
-    controller.get_waves_now(request, response, sb);
+    seaCtrl.get_waves_now(request, response, db);
   });
 
 };

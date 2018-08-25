@@ -12,9 +12,11 @@ const port = process.env.PORT || 3001;
 let lidoBase = {};
 lidoBase.beach = new Datastore('lidoBase-beach.db');
 lidoBase.sea = new Datastore('lidoBase-sea.db');
+lidoBase.users = new Datastore('lidoBase-users.db');
 
 lidoBase.sea.loadDatabase();
 lidoBase.beach.loadDatabase();
+lidoBase.users.loadDatabase();
 
 // ALLOW CORS request
 app.use(Cors());
