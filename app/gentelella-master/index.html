@@ -26,6 +26,21 @@
             background-color: #777;
         }
 
+        .tablinkDataPres {
+            background-color: whitesmoke;
+            color: white;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            width: 25%;
+            margin-left: 20px;
+        }
+
+        .tablinkDataPres:hover {
+            background-color: #777;
+        }
+
         /* Style the tab content */
         .tabcontent {
             color: white;
@@ -42,6 +57,12 @@
         .nav1{
           display: block;
           position: fixed;
+        }
+
+        .tabcontentPres{
+            color: white;
+            display: none;
+            text-align: center;
         }
         
     </style>
@@ -177,8 +198,56 @@
 
         <!-- page content -->
         <div>
+        <!--SEZIONE HOME-->
+        <div id="home" class="tabcontent">
+            <div role="tabpanel" class="tab-pane fade active in" id="tab_contentHome" aria-labelledby="home-tab">
+              </div>
+        </div>
+        <!--SEZIONE DATA PRESENTATION-->
+        <div id="dataPresentation" class="tabcontent">
+            <div role="tabpanel" class="tab-pane fade active in" id="tab_contentDataPres" aria-labelledby="dataPres-tab">
+
+                <button class="tablinkDataPres" onclick="openPage('User', this, 'white')"id="defaultOpen1">USER</button>
+                <button class="tablinkDataPres" onclick="openPage('Sea', this, 'white')">SEA</button>
+
+                <div id="User" class="tabcontentDataPres">
+                    <div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+        
+                            <div class="x_panel">
+                              <div class="x_title">
+                                <h2>Line graph<small>Sessions</small></h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                  <li><a class="collapse-link"><i class="fa fa-chevron-up" ></i></a>
+                                  </li>
+                                  <li>
+                                  <a><i class="fa fa-calendar"><input id="darioIlCalendario" class="datepicker-here" data-position="buttom right" data-language='en'/></i></i></a>
+                                  </li>
+                                  <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                  </li>
+                                  
+                                </ul>
+                                <div class="clearfix"></div>
+                              </div>
+                              <div class="x_content">
+                                <canvas id="lineChart"></canvas>
+                              </div>
+                            </div>
+        
+                          </div>
+        
+                          </div>
+                  </div>
+                  
+                  <div id="Sea" class="tabcontentDataPres">
+                    <h3>News</h3>
+                    <p>Some news this fine day!</p> 
+                  </div>
+
+            </div>
+        </div>
         <!--SEZIONE UTENTE-->
-        <div id="beach" class="tabcontent">
+       <!-- <div id="beach" class="tabcontent">
             <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="beach-tab">
               <div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
@@ -191,7 +260,6 @@
                           </li>
                           <li>
                           <a><i class="fa fa-calendar"><input id="darioIlCalendario" class="datepicker-here" data-position="buttom right" data-language='en'/></i></i></a>
-                          <!--<input type='text' class="datepicker-here" data-position="top left" data-language='en'/>-->
                           </li>
                           <li><a class="close-link"><i class="fa fa-close"></i></a>
                           </li>
@@ -212,20 +280,20 @@
                   
                      
             </div>
-        </div>
+        </div>-->
         <!--SEZIONE MARE-->
-        <div id="sea" class="tabcontent">
-            <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="sea-tab"></div>
-        </div>
+        <!--div id="sea" class="tabcontent">
+            <div role="tabpanel" class="tab-pane fade" id="tab_contentSea" aria-labelledby="sea-tab"></div>
+        </div>-->
         <!--SEZIONE NOTIFICHE-->
         <div id="notify" class="tabcontent">
-            <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="notify-tab"></div>
+            <div role="tabpanel" class="tab-pane fade" id="tab_contentNotify" aria-labelledby="notify-tab"></div>
         </div>
         <!-- /page content -->
       
         <div class="footer">
-        <button class="tablink" onclick="openTab('beach', this, 'white')" id="defaultOpen"><i class="user-profile" aria-expanded="false"><img src="production/images/beachIcon.png" alt=""></i></button>
-        <button class="tablink" onclick="openTab('sea', this, 'white')"><i class="user-profile" aria-expanded="false"><img src="production/images/seaIcon.png" alt=""></i></button>
+        <button class="tablink" onclick="openTab('home', this, 'white')" id="defaultOpen"><i class="user-profile" aria-expanded="false"><img src="production/images/homeIcon.png" alt=""></i></button>
+        <button class="tablink" onclick="openTab('dataPresentation', this, 'white')"><i class="user-profile" aria-expanded="false"><img src="production/images/dataPresentationIcon.png" alt=""></i></button>
         <button class="tablink" onclick="openTab('notify', this, 'white')"><i class="user-profile" aria-expanded="false"><img src="production/images/notifyIcon.png" alt=""></i></button>
       </div>
       </div>
@@ -286,8 +354,30 @@
             elmnt.style.backgroundColor = color;
         
         }
-        // Get the element with id="defaultOpen" and click on it
         document.getElementById("defaultOpen").click();
     </script>
+    <script>
+    // Get the element with id="defaultOpen" and click on it
+    
+
+function openPage(pageName,elmnt,color) {
+var i, tabcontent, tablinks;
+tabcontent = document.getElementsByClassName("tabcontentDataPres");
+for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+}
+tablinks = document.getElementsByClassName("tablinkDataPres");
+for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].style.backgroundColor = "";
+}
+document.getElementById(pageName).style.display = "block";
+elmnt.style.backgroundColor = color;
+
+}
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen1").click();
+    </script>
+
+
   </body>
 </html>
