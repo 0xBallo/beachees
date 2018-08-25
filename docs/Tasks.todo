@@ -15,3 +15,7 @@ Task:
     ☐ Accesso camera per QR code
   ☐ Test in spiaggia
   ☐ Articolo
+
+☐ Inserimento dati della temperatura e dell'umidità nella tabella:
+  ☐ ciclare prima per recuperare i due array (umidità e temperatura)
+  ☐ Ciclare i due array per avere i dati

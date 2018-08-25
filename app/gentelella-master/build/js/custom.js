@@ -2464,7 +2464,7 @@ function init_charts() {
 
 	}
 
-
+// ---------------------------------------------------------------------------------------------------------------------
 	// Line chart
 
 	if ($('#lineChart').length) {
@@ -2476,15 +2476,24 @@ function init_charts() {
 			},
 			crossDomain: true,
 			success: function (data, status, request) {
-				console.log(data);
-				
+				console.log(data.data[90].temperature);
+				var date =  [];
+				var temperature = [];
+				var humidity = [];
+				for (var i = 0; i < 60; i ++){
+					date.push(data.data[i].date);
+					temperature.push(data.data[i].temperature);
+					humidity.push(data.data[i].humidity);
+				}
+				console.log(date[1]);
+
 				var ctx = document.getElementById("lineChart");
 				var lineChart = new Chart(ctx, {
 					type: 'line',
 					data: {
-						labels: ["January", "February", "March", "April", "May", "June", "July"],
+						labels: date,
 						datasets: [{
-							label: "My First dataset",
+							label: "Temperatura",
 							backgroundColor: "rgba(38, 185, 154, 0.31)",
 							borderColor: "rgba(38, 185, 154, 0.7)",
 							pointBorderColor: "rgba(38, 185, 154, 0.7)",
@@ -2492,9 +2501,9 @@ function init_charts() {
 							pointHoverBackgroundColor: "#fff",
 							pointHoverBorderColor: "rgba(220,220,220,1)",
 							pointBorderWidth: 1,
-							data: [31, 74, 6, 39, 20, 85, 7]
+							data: temperature
 						}, {
-							label: "My Second dataset",
+							label: "Umidità",
 							backgroundColor: "rgba(3, 88, 106, 0.3)",
 							borderColor: "rgba(3, 88, 106, 0.70)",
 							pointBorderColor: "rgba(3, 88, 106, 0.70)",
@@ -2502,7 +2511,7 @@ function init_charts() {
 							pointHoverBackgroundColor: "#fff",
 							pointHoverBorderColor: "rgba(151,187,205,1)",
 							pointBorderWidth: 1,
-							data: [82, 23, 66, 9, 99, 4, 2]
+							data: humidity
 						}]
 					},
 				});
@@ -2512,6 +2521,73 @@ function init_charts() {
 
 	}
 
+	//Datepicker
+
+	$('#darioIlCalendario').datepicker({
+		language: 'en',
+		onHide: function(dp, animationCompleted){
+			if (!animationCompleted) {
+				console.log("animazione non terminata")
+			} else {
+				console.log("animazione terminata")
+				if ($('#lineChart').length) {
+					console.log("date");
+					console.log($('#darioIlCalendario').data('datepicker').selectedDates[0]);
+					$.get({
+						url: "http://localhost:3001/api/dht",
+						data: {
+							user: "PM12",
+							date: $('#darioIlCalendario').data('datepicker').selectedDates[0]
+						},
+						crossDomain: true,
+						success: function (data, status, request) {
+							console.log(data.data[90].temperature);
+							var date =  [];
+							var temperature = [];
+							var humidity = [];
+							for (var i = 0; i < 60; i ++){
+								date.push(data.data[i].date);
+								temperature.push(data.data[i].temperature);
+								humidity.push(data.data[i].humidity);
+							}
+							console.log(date[1]);
+			
+							var ctx = document.getElementById("lineChart");
+							var lineChart = new Chart(ctx, {
+								type: 'line',
+								data: {
+									labels: date,
+									datasets: [{
+										label: "Temperatura",
+										backgroundColor: "rgba(38, 185, 154, 0.31)",
+										borderColor: "rgba(38, 185, 154, 0.7)",
+										pointBorderColor: "rgba(38, 185, 154, 0.7)",
+										pointBackgroundColor: "rgba(38, 185, 154, 0.7)",
+										pointHoverBackgroundColor: "#fff",
+										pointHoverBorderColor: "rgba(220,220,220,1)",
+										pointBorderWidth: 1,
+										data: temperature
+									}, {
+										label: "Umidità",
+										backgroundColor: "rgba(3, 88, 106, 0.3)",
+										borderColor: "rgba(3, 88, 106, 0.70)",
+										pointBorderColor: "rgba(3, 88, 106, 0.70)",
+										pointBackgroundColor: "rgba(3, 88, 106, 0.70)",
+										pointHoverBackgroundColor: "#fff",
+										pointHoverBorderColor: "rgba(151,187,205,1)",
+										pointBorderWidth: 1,
+										data: humidity
+									}]
+								},
+							});
+						}
+					});
+			}
+		}
+	}
+	});
+
+// ---------------------------------------------------------------------------------------------------------------------
 	// Bar chart
 
 	if ($('#mybarChart').length) {
