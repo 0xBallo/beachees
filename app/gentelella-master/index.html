@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+
     <style>
       
 
@@ -57,6 +58,8 @@
 
     <!-- Custom Theme Style -->
     <link href="build/css/custom.min.css" rel="stylesheet">
+
+    
   </head>
 
   <body class="nav-md" style="background-color:white">
@@ -177,26 +180,22 @@
         <!--SEZIONE UTENTE-->
         <div id="beach" class="tabcontent">
             <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="beach-tab">
-
+              <div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
 
                     <div class="x_panel">
                       <div class="x_title">
                         <h2>Line graph<small>Sessions</small></h2>
                         <ul class="nav navbar-right panel_toolbox">
-                          <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                          <li><a class="collapse-link"><i class="fa fa-chevron-up" ></i></a>
                           </li>
-                          <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                            <ul class="dropdown-menu" role="menu">
-                              <li><a href="#">Settings 1</a>
-                              </li>
-                              <li><a href="#">Settings 2</a>
-                              </li>
-                            </ul>
+                          <li>
+                          <a><i class="fa fa-calendar"><input id="darioIlCalendario" class="datepicker-here" data-position="buttom right" data-language='en'/></i></i></a>
+                          <!--<input type='text' class="datepicker-here" data-position="top left" data-language='en'/>-->
                           </li>
                           <li><a class="close-link"><i class="fa fa-close"></i></a>
                           </li>
+                          
                         </ul>
                         <div class="clearfix"></div>
                       </div>
@@ -206,6 +205,11 @@
                     </div>
 
                   </div>
+
+                  </div>
+
+                  
+                  
                      
             </div>
         </div>
@@ -230,6 +234,9 @@
 
     <!-- jQuery -->
     <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <link href="vendors/air-datepicker/dist/css/datepicker.min.css" rel="stylesheet" type="text/css">
+        <script src="vendors/air-datepicker/dist/js/datepicker.min.js"></script>
+        <script src="vendors/air-datepicker/dist/js/i18n/datepicker.en.js"></script>
     <!-- Bootstrap -->
     <script src="vendors/bootstrap/dist/js/bootstrap.js"></script>
     <!-- FastClick -->
@@ -255,9 +262,13 @@
     <!-- bootstrap-daterangepicker -->
     <script src="vendors/moment/min/moment.min.js"></script>
     <script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+
+
     
     <!-- Custom Theme Scripts -->
     <script src="build/js/custom.js"></script>
+    
 
     <!--TAB SCRIPT-->
     <script>
