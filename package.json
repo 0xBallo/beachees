@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-    "start": "nodemon server/serverAPI.js",
+    "start": "env PUBLIC_VAPID_KEY='BNkCYDAYelxetRFIQrxVeMPaEZIebQxQf7MbEXT2ioP9bUnpGU-0wKq0Cq4J8leEXyVZMhrHu57GxafDeiSXTF4' env PRIVATE_VAPID_KEY='xRL_xQhECjPCeXKsteZhyYpiqicjnUGYNfW_NfY3wiU' nodemon server/serverAPI.js",
     "arduino": "node server/serverArduino.js",
     "webapp": "node_modules/.bin/gulp"
   },
@@ -25,7 +25,8 @@
     "express": "^4.16.3",
     "moment": "^2.22.2",
     "nedb": "^1.8.0",
-    "serialport": "^6.2.2"
+    "serialport": "^6.2.2",
+    "web-push": "^3.3.2"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

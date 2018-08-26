@@ -86,4 +86,14 @@ module.exports = function (router, db) {
     seaCtrl.get_waves_now(request, response, db);
   });
 
+  // User subscription for push notification
+  router.post('/subscribe', (request, response) => {
+    usersCtrl.add_user_device(request, response, db);
+  });
+
+  // Send push to User
+  router.post('/push', (request, response) => {
+    usersCtrl.send_push(request, response, db);
+  });
+
 };

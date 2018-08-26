@@ -1,8 +1,9 @@
-var cacheName = 'beacheesPWA-1-0';
-var dataCacheName = 'beacheesData-1-0';
+const cacheName = 'beacheesPWA-1-0';
+const dataCacheName = 'beacheesData-1-0';
 
-//TODO list file to cache
-var filesToCache = ['/',
+
+//TODO update list file to cache
+const filesToCache = ['/',
    '/index.html',
 ];
 
@@ -77,9 +78,9 @@ self.addEventListener('push', function (event) {
    console.log('[Service Worker] Push Received.');
    console.log(`[Service Worker] Push had this data: "${event.data.text()}"`);
 
-   const title = 'Push Codelab';
+   const title = 'Beachees Monitoring Systems';
    const options = {
-      body: 'Yay it works.',
+      body: event.data.message,
       icon: 'images/icon.png',
       badge: 'images/badge.png'
    };
