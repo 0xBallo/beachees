@@ -96,16 +96,69 @@
       //   })
 
       //TODO: Test bluetooth scanning 2
-      navigator.bluetooth.requestDevice({
-            acceptAllDevices: true,
-            optionalServices: ['battery_service']
-         })
-         .then(device => {
-            console.log(device);
-         })
-         .catch(error => {
-            console.log(error);
-         });
+      // navigator.bluetooth.requestDevice({
+      //       acceptAllDevices: true,
+      //       optionalServices: ['battery_service']
+      //    })
+      //    .then(device => {
+      //       console.log(device);
+      //    })
+      //    .catch(error => {
+      //       console.log(error);
+      //    });
+
+      //TODO test bluetooth 3
+      function testBLE() {
+         // let filters = [];
+
+         // let filterService = document.querySelector('#service').value;
+         // if (filterService.startsWith('0x')) {
+         //    filterService = parseInt(filterService);
+         // }
+         // if (filterService) {
+         //    filters.push({
+         //       services: [filterService]
+         //    });
+         // }
+
+         // let filterName = document.querySelector('#name').value;
+         // if (filterName) {
+         //    filters.push({
+         //       name: filterName
+         //    });
+         // }
+
+         // let filterNamePrefix = document.querySelector('#namePrefix').value;
+         // if (filterNamePrefix) {
+         //    filters.push({
+         //       namePrefix: filterNamePrefix
+         //    });
+         // }
+
+         let options = {
+            acceptAllDevices: true
+         };
+         // if (document.querySelector('#allDevices').checked) {
+         //    options.acceptAllDevices = true;
+         // } else {
+         //    options.filters = filters;
+         // }
+
+         console.log('Requesting Bluetooth Device...');
+         console.log('with ' + JSON.stringify(options));
+         navigator.bluetooth.requestDevice(options)
+            .then(device => {
+               console.log('> Name:             ' + device.name);
+               console.log('> Id:               ' + device.id);
+               console.log('> Connected:        ' + device.gatt.connected);
+            })
+            .catch(error => {
+               console.log('Argh! ' + error);
+            });
+      }
+
+      document.getElementById('bleBtn').addEventListener('click', testBLE);
+
    }
 
 })();
