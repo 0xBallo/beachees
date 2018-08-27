@@ -12,8 +12,7 @@ gulp.task('webserver', function () {
 gulp.task('beacon-test', function () {
       connect.server({
          livereload: true,
-         root: ['app/beacon-test/'],
-         port: 8001
+         root: ['app/beacon-test/']
       });
 })
 
