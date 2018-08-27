@@ -27,12 +27,12 @@ async function run() {
    console.log('Registered push service');
 
    console.log('Sending subscription request');
-   // TODO: set user based on registrazione trough QR code
+   // TODO: set user based on signin trough QR code
    const payload = {
       subscription: subscription,
       user: 'PM12'
    };
-   await fetch('/subscribe', {
+   await fetch('http://localhost:3001/api/subscribe', {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {

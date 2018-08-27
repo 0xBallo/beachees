@@ -35,7 +35,7 @@ exports.add_user_device = (req, res, db) => {
  * @param {*} db 
  */
 exports.send_push = (req, res, db) => {
-   const data = req.body;
+   const data = req.body;   
 
    if (data.user === undefined || data.message === undefined) {
       res.status(401).send('Incomplete data in request!');

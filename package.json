@@ -6,7 +6,8 @@
   "scripts": {
     "start": "env PUBLIC_VAPID_KEY='BNkCYDAYelxetRFIQrxVeMPaEZIebQxQf7MbEXT2ioP9bUnpGU-0wKq0Cq4J8leEXyVZMhrHu57GxafDeiSXTF4' env PRIVATE_VAPID_KEY='xRL_xQhECjPCeXKsteZhyYpiqicjnUGYNfW_NfY3wiU' nodemon server/serverAPI.js",
     "arduino": "node server/serverArduino.js",
-    "webapp": "node_modules/.bin/gulp"
+    "webapp": "node_modules/.bin/gulp",
+    "test": "node_modules/.bin/gulp beacon-test"
   },
   "repository": {
     "type": "git",
