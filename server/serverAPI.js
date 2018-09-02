@@ -28,7 +28,7 @@ Webpush.setVapidDetails('mailto:mattia.ballo@studio.unibo.it', publicVapidKey, p
 app.use(Cors());
 
 // Expose API on localhost:3001
-app.get('/', (request, response) => response.send('Beachees Main Server'));
+app.get('/', (request, response) => response.send('Beachees Main API Server'));
 
 app.use(Parser.json());
 

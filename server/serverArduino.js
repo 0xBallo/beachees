@@ -9,6 +9,10 @@ const HOST_PORT = '3001';
 
 // Data types
 const DHT = 0;
+const UVA = 1;
+const WATER_T = 2;
+const TURBIDITY = 3;
+const ACC_GYRO = 4;
 
 function post_request(data, path) {
       let options = {
@@ -30,7 +34,7 @@ function post_request(data, path) {
       });
       req.on('error', function (e) {
             console.log('problem with request: ' + e.message);
-      }); 
+      });
 
       // write data to request body
       req.write(JSON.stringify(data));
@@ -52,6 +56,37 @@ serialport.on('readable', function () {
                         };
 
                         post_request(dht, '/dht');
+                        break;
+
+                  case WATER_T:
+                        let data = {
+                              t: dataArray[1]
+                        };
+
+                        post_request(data, '/sea/temp');
+                        break;
+                  case TURBIDITY:
+                        let data = {
+                              t: dataArray[1]
+                        };
+
+                        post_request(data, '/sea/turbidity');
+                        break;
+                  case ACC_GYRO:
+                        let data = {
+                              a: dataArray[1],
+                              g: dataArray[2]
+                        };
+
+                        post_request(data, '/sea/waves');
+                        break;
+                  case UVA:
+                        let uva = {
+                              u: dataArray[1],
+                              l: dataArray[2]
+                        };
+
+                        post_request(uva, '/uva');
                         break;
 
                   default:
