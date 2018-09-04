@@ -3,9 +3,10 @@ DATA da raccogliere:
   ☐ Arduino:
     ✔ Temperatura @done(18-08-22 14:47)
     ✔ Umidità @done(18-08-22 14:47)
-    ☐ UVA
-    ☐ Temperatura acqua
-    ☐ Torbidità acqua
+    ✔ UVA @done(18-09-04 14:47)
+    ✔ Temperatura acqua @done(18-09-04 14:47)
+    ✔ Torbidità acqua @done(18-09-04 14:47)
+    ☐ Accelerometro e gyroscopio
   ☐ Beacon
     ☐ Posizione utente
 
