@@ -2,23 +2,30 @@
 Task:
   ☐ Recupero Dati da sensori e salvataggio @mattia
     ✔ DHT @done(18-08-21 11:21)
-    ☐ UVA
-    ☐ WATER T
-    ☐ TURBIDITY
+    ✔ UVA @done(18-09-04 14:49)
+    ✔ WATER T @done(18-09-04 14:49)
+    ✔ TURBIDITY @done(18-09-04 14:49)
     ☐ GYRO
   ✔ Led fisici per feedback immediato @done(18-08-21 11:22)
 
   APP:
     ☐ GUI @paride
-    ☐ Notifiche push @mattia
     ☐ Connessione bluetooth con beacon
-    ☐ Manifest e Service Worker @mattia 
+    ✘ Manifest e Service Worker @mattia @cancelled(18-09-04 14:49)
     ☐ Accesso camera per QR code
-  ☐ Inserimento dati della temperatura e dell'umidità nella tabella:
-    ☐ ciclare prima per recuperare i due array (umidità e temperatura)
-    ☐ Ciclare i due array per avere i dati
+  ✔ Inserimento dati della temperatura e dell'umidità nella tabella: @done(18-09-04 14:49)
+    ✔ ciclare prima per recuperare i due array (umidità e temperatura) @done(18-09-04 14:49)
+    ✔ Ciclare i due array per avere i dati @done(18-09-04 14:49)
   ☐ Test in spiaggia
   ☐ Articolo
 
-  API:
+  PUSH:
     ☐ Registrazione dispositivo e user per notifiche push
+    ☐ Notifiche push android @mattia
+    ☐ Invio notifica push lato server
+    ☐ notifiche inteligenti
+
+  API:
+    ☐ metodo per recupero dati attuali da tutti i sensori. @mattia 
+    ☐ salvataggio e cancellazione delle notifiche nel database @mattia 
+
