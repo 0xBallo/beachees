@@ -23,8 +23,8 @@
     "express": "^4.16.3",
     "moment": "^2.22.2",
     "nedb": "^1.8.0",
-    "serialport": "^6.2.2",
-    "web-push": "^3.3.2"
+    "node-gcm": "^1.0.2",
+    "serialport": "^6.2.2"
   },
   "devDependencies": {
     "ngrok": "^3.0.1",
