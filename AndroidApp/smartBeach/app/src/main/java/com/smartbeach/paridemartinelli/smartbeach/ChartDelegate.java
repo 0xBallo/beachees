@@ -21,21 +21,18 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.smartbeach.paridemartinelli.smartbeach.utils.RequestHelper;
 
 import java.util.ArrayList;
 
 public class ChartDelegate implements OnChartGestureListener, OnChartValueSelectedListener {
     private final MainActivity mainActivity;
-    private RequestHelper requests;
 
     public ChartDelegate(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        this.requests = new RequestHelper(mainActivity.getApplicationContext(), "http://a933fb73.ngrok.io/api");
-        this.requests.dhtData("","");
 
-    }//TODO: verificre se ci servono e gestire in modo da non doverne creare uno per ogni grafico (rifattorizzare come per il setData)
+    }
 
+    //TODO: verificre se ci servono e gestire in modo da non doverne creare uno per ogni grafico (rifattorizzare come per il setData)
     @Override
     public void onChartGestureStart(MotionEvent me,
                                     ChartTouchListener.ChartGesture
@@ -109,26 +106,24 @@ public class ChartDelegate implements OnChartGestureListener, OnChartValueSelect
 
     //Asse x
     ArrayList<String> setXAxisValues() {
-        //TODO: debug
-        Log.i("PINO-GET", requests.getResult());
 
         ArrayList<String> xVals = new ArrayList<String>();
-        xVals.add("10");
+        /*xVals.add("10");
         xVals.add("20");
         xVals.add("30");
         xVals.add("30.5");
-        xVals.add("40");
+        xVals.add("40");*/
 
         return xVals;
     }//Asse y
 
     ArrayList<Entry> setYAxisValues() {
         ArrayList<Entry> yVals = new ArrayList<Entry>();
-        yVals.add(new Entry(60, 0));
+        /*yVals.add(new Entry(60, 0));
         yVals.add(new Entry(48, 1));
         yVals.add(new Entry(70.5f, 2));
         yVals.add(new Entry(100, 3));
-        yVals.add(new Entry(180.9f, 4));
+        yVals.add(new Entry(180.9f, 4));*/
 
         return yVals;
     }//Metodo per popolare i grafici, vuole in input il lineChart (il grafico da popolare, e i parametri mettere sulla x (x) e sulla y (y)
@@ -198,5 +193,31 @@ public class ChartDelegate implements OnChartGestureListener, OnChartValueSelect
         leftAxis.setDrawLimitLinesBehindData(true);
 
         lineChart.getAxisRight().setEnabled(false);
+    }
+
+    public void dhtData(String user, String date) {
+        //TODO: debug request
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(mainActivity);
+        String url = MainActivity.URL + "/dht?user=PM12&date=2018-08-25";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        Log.i("PINO",response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // mTextView.setText("That didn't work!");
+                Log.e("PINO-ERROR",error.getMessage());
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 }
