@@ -6,8 +6,7 @@
   "scripts": {
     "start": "env PUBLIC_VAPID_KEY='BNkCYDAYelxetRFIQrxVeMPaEZIebQxQf7MbEXT2ioP9bUnpGU-0wKq0Cq4J8leEXyVZMhrHu57GxafDeiSXTF4' env PRIVATE_VAPID_KEY='xRL_xQhECjPCeXKsteZhyYpiqicjnUGYNfW_NfY3wiU' nodemon server/serverAPI.js",
     "arduino": "node server/serverArduino.js",
-    "webapp": "node_modules/.bin/gulp",
-    "test": "node_modules/.bin/gulp beacon-test"
+    "expose": "./node_modules/.bin/ngrok http 3001"
   },
   "repository": {
     "type": "git",
@@ -20,8 +19,6 @@
   },
   "homepage": "https://github.com/mattiaballo/beachees#readme",
   "dependencies": {
-    "@material/tab-bar": "^0.38.1",
-    "air-datepicker": "^2.2.3",
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "moment": "^2.22.2",
@@ -30,8 +27,7 @@
     "web-push": "^3.3.2"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-connect": "^5.5.0",
+    "ngrok": "^3.0.1",
     "nodemon": "^1.18.3"
   }
 }
