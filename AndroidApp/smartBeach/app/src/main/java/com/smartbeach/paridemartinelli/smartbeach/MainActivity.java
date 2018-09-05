@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity{
     private final HomeDelegate homeDelegate = new HomeDelegate();
     private Context mContext;
     public static final String URL = "http://bf57077b.ngrok.io/api";
-    RequestQueue queue;
+    public static String user = "PM12";
+    public static RequestQueue queue;
 
     //Sezione home
     private ScrollView homeScrollView;
