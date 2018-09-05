@@ -1,5 +1,6 @@
 package com.smartbeach.paridemartinelli.smartbeach;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
@@ -18,6 +19,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -55,20 +58,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
+    private static final int REQUEST_COARSE_LOCATION = 2;
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     private final HomeDelegate homeDelegate = new HomeDelegate();
     private Context mContext;
-<<<<<<< HEAD
-    public static final String URL = "http://fb6a8d27.ngrok.io/api";
-    RequestQueue queue;
-=======
     public static final String URL = "http://bf57077b.ngrok.io/api";
     public static String user = "PM12";
     public static RequestQueue queue;
->>>>>>> 859b8c6b989511c955e500544e0e3452a4838536
 
     //Sezione home
     private ScrollView homeScrollView;
@@ -183,16 +182,21 @@ public class MainActivity extends AppCompatActivity{
             return false;
         }
     };
-    private Object BTAdapter;
+
+
+    //private Object BTAdapter;
     public static int REQUEST_BLUETOOTH = 1;
-    private BluetoothAdapter mBluetoothAdapter;
-    boolean mScanning;
+    //private BluetoothAdapter mBluetoothAdapter;
+    //boolean mScanning;
     Handler mHandler;
 
     // Stops scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 10000;
-    private BluetoothAdapter bTAdapter;
+    private static final long SCAN_PERIOD = 15000;
+    //private BluetoothAdapter bTAdapter;
     ToggleButton scan;
+    //TODO: test BLE Mattia
+    BluetoothAdapter mBluetoothAdapter;
+
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @SuppressLint("WrongViewCast")
@@ -201,7 +205,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024*1024);
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         Network network = new BasicNetwork(new HurlStack());
         queue = new RequestQueue(cache, network);
         queue.start();
@@ -211,35 +215,106 @@ public class MainActivity extends AppCompatActivity{
         // Use this check to determine whether BLE is supported on the device. Then
         // you can selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, "Non supportato", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "BLE Non supportato", Toast.LENGTH_SHORT).show();
             finish();
         }
 
-        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
+        //TODO: test BLE Mattia
 
-        bTAdapter = BluetoothAdapter.getDefaultAdapter();
-        //Controllo se il dispositivo supporta il bluetooth
-        if (bTAdapter == null) {
-
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Device doesn't support Bluetooth
+            Toast.makeText(this, "Bluetooth Non supportato", Toast.LENGTH_SHORT).show();
+            //    finish();
         }
-        //Controllo se il dispositivo supporta il bluetooth
-        if(!bTAdapter.isEnabled()){
-            // We need to enable the Bluetooth, so we ask the user
+
+        if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 1);
-
+            startActivityForResult(enableBtIntent, REQUEST_COARSE_LOCATION);
         }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            checkLocationPermission();
+        } else {
+            proceedDiscovery();
+        }
+
+        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        REQUEST_COARSE_LOCATION);
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        REQUEST_COARSE_LOCATION);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }else{
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter == null) {
+                // Device doesn't support Bluetooth
+                Toast.makeText(this, "Bluetooth Non supportato", Toast.LENGTH_SHORT).show();
+                //    finish();
+            }
+
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, 1);
+            }
+
+            // Register for broadcasts when a device is discovered.
+            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            registerReceiver(mReceiver, filter);
+        }*/
+        /*leScanner = bluetoothAdapter.getBluetoothLeScanner();
+
+        Button boton = (Button) findViewById(R.id.button1);
+        boton.setOnClickListener(new OnClickListener(){
+            public void onClick(View v) {
+                leScanner.startScan(scanCallback);
+            }
+        });*/
+
+        //TODO: FINE TEST BLE Mattia
+
+        //final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        //mBluetoothAdapter = bluetoothManager.getAdapter();
+
+        //bTAdapter = BluetoothAdapter.getDefaultAdapter();
+        //Controllo se il dispositivo supporta il bluetooth
+        //if (bTAdapter == null) {
+
+        //}
+        //Controllo se il dispositivo supporta il bluetooth
+        //if(!bTAdapter.isEnabled()){
+        // We need to enable the Bluetooth, so we ask the user
+        //  Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        //startActivityForResult(enableBtIntent, 1);
+
+        //}
 
         // Register the broadcast receiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(mReceiver, filter);
+        //IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        //registerReceiver(mReceiver, filter);
 
         /*if (mBluetoothAdapter.isDiscovering()) {
             // Bluetooth is already in modo discovery mode, we cancel to restart it again
             mBluetoothAdapter.cancelDiscovery();
         }*/
-        mBluetoothAdapter.startDiscovery();
+        //mBluetoothAdapter.startDiscovery();
 
 
         /*Set<BluetoothDevice> pairedDevices = bTAdapter.getBondedDevices();
@@ -282,7 +357,7 @@ public class MainActivity extends AppCompatActivity{
         currentTempTextView = (TextView) findViewById(R.id.currentTemp);
         currentDateTempTextView = (TextView) findViewById(R.id.currentDateTemp);
         iconTempImageView = (ImageView) findViewById(R.id.warningTempIcon);
-        warningTempTextView  = (TextView) findViewById(R.id.warningTemperature);
+        warningTempTextView = (TextView) findViewById(R.id.warningTemperature);
 
         //TODO: richiamare lo stesso metodo per creare tutti gli altri post relativi agli altri dati
         homeDelegate.createHomePost(currentTempTextView, currentDateTempTextView, iconTempImageView, warningTempTextView);
@@ -588,7 +663,7 @@ public class MainActivity extends AppCompatActivity{
                     Log.i("PINO", response.toString());
                     ArrayList<Entry> y = new ArrayList<Entry>();
                     ArrayList<String> x = new ArrayList<String>();
-                    for (int i = 0; i < response.getJSONArray("data").length(); i ++){
+                    for (int i = 0; i < response.getJSONArray("data").length(); i++) {
 
                         float yVal = Float.parseFloat(response.getJSONArray("data").getJSONObject(i).getString("temperature"));
                         String xVal = response.getJSONArray("data").getJSONObject(i).getString("hour");
@@ -630,7 +705,7 @@ public class MainActivity extends AppCompatActivity{
         mContext = getApplicationContext();
 
         //TODO:Cliclare per il numero di notifiche e creare la notifica con i valori giusti
-        for(int i = 0 ; i < 20; i ++){
+        for (int i = 0; i < 20; i++) {
 
             String date = "31-08-18 ore 17:36";
             //TODO: creare icona anche per le notifiche "positive" e per quelle derivanti dal beacon
@@ -664,22 +739,67 @@ public class MainActivity extends AppCompatActivity{
                 Log.i("NewDevice: ", device.getName());
             }
         }
-    };
+    };*/
+
+    protected void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_COARSE_LOCATION);
+        }
+    }
+
+    protected void proceedDiscovery() {
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_NAME_CHANGED);
+        registerReceiver(mReceiver, filter);
+
+        mBluetoothAdapter.startDiscovery();
+    }
 
     @Override
-    protected void onDestroy(){
-        super .onDestroy();
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_COARSE_LOCATION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    proceedDiscovery(); // --->
+                } else {
+                    //TODO re-request
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(mReceiver);
-    }*/
+    }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
         public void onReceive(Context context, Intent intent) {
+            //Log.d("BLE", intent.getDataString());
+
+            //Log.d("BLE", intent.toString());
+            //Log.d("BLE", context.toString();
             String action = intent.getAction();
+            //Log.i("BLE", action);
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                Log.d("BLE", intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString());
+                if(intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString().equals("E1:A4:B8:01:EA:35")){
+                    Log.d("BLE","BEACONNNNNNNNN");
+                    //TODO: richiamare il metodo per la creazione della notifica
+                }
                 // A Bluetooth device was found
                 // Getting device information from the intent
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                Log.i("newDevice", device.getName());
+                //BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                //Log.i("newDevice", device.getName());
             }
         }
     };
