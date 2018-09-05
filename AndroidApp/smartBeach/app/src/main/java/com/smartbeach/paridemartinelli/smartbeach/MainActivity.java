@@ -1,16 +1,30 @@
 package com.smartbeach.paridemartinelli.smartbeach;
 
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +33,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.app.DatePickerDialog;
 import android.widget.DatePicker;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -45,7 +61,7 @@ public class MainActivity extends AppCompatActivity{
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     private final HomeDelegate homeDelegate = new HomeDelegate();
     private Context mContext;
-    public static final String URL = "http://bf57077b.ngrok.io/api";
+    public static final String URL = "http://fb6a8d27.ngrok.io/api";
     RequestQueue queue;
 
     //Sezione home
@@ -161,7 +177,18 @@ public class MainActivity extends AppCompatActivity{
             return false;
         }
     };
+    private Object BTAdapter;
+    public static int REQUEST_BLUETOOTH = 1;
+    private BluetoothAdapter mBluetoothAdapter;
+    boolean mScanning;
+    Handler mHandler;
 
+    // Stops scanning after 10 seconds.
+    private static final long SCAN_PERIOD = 10000;
+    private BluetoothAdapter bTAdapter;
+    ToggleButton scan;
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -172,6 +199,75 @@ public class MainActivity extends AppCompatActivity{
         Network network = new BasicNetwork(new HurlStack());
         queue = new RequestQueue(cache, network);
         queue.start();
+
+
+        //---------------------SEZIONE BEACON-------------------------//
+        // Use this check to determine whether BLE is supported on the device. Then
+        // you can selectively disable BLE-related features.
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, "Non supportato", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+
+        bTAdapter = BluetoothAdapter.getDefaultAdapter();
+        //Controllo se il dispositivo supporta il bluetooth
+        if (bTAdapter == null) {
+
+        }
+        //Controllo se il dispositivo supporta il bluetooth
+        if(!bTAdapter.isEnabled()){
+            // We need to enable the Bluetooth, so we ask the user
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, 1);
+
+        }
+
+        // Register the broadcast receiver
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter);
+
+        /*if (mBluetoothAdapter.isDiscovering()) {
+            // Bluetooth is already in modo discovery mode, we cancel to restart it again
+            mBluetoothAdapter.cancelDiscovery();
+        }*/
+        mBluetoothAdapter.startDiscovery();
+
+
+        /*Set<BluetoothDevice> pairedDevices = bTAdapter.getBondedDevices();
+
+        if (pairedDevices.size() > 0) {
+            for (BluetoothDevice device : pairedDevices) {
+                Log.i("NameBT: ", device.getName());
+            }
+        }
+
+        mBluetoothAdapter.startDiscovery();
+        BroadcastReceiver mReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+
+                //Finding devices
+                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                    // Get the BluetoothDevice object from the Intent
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    // Add the name and address to an array adapter to show in a ListView
+                    //mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                    Log.i("newDevice", device.getName());
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter);*/
+
+        //IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        //registerReceiver(mReceiver, filter);
+        //Log.i("startDiscovery: ", String.valueOf(bTAdapter.startDiscovery()));
+
+        //-----------------------------------------------------------//
 
         //----------------------Sezione home--------------------------//
         homeScrollView = (ScrollView) findViewById(R.id.homeScrollView);
@@ -256,9 +352,7 @@ public class MainActivity extends AppCompatActivity{
         //TODO: recuperare i valori corretti dal db
         chartDelegate.setData(tempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura", Color.RED);
         tempLineChart.setDescription("");
-
-        //TODO: inserire i limiti corretti e aggiungere il metodo per ogni grafico (se lo si richiama due volte aggiungo due limiti quello superiore e quello inferiore
-        chartDelegate.setLimit(120f, "Tempertura troppo elevata", tempLineChart, 220f, -50f);
+        //chartDelegate.setLimit(120f, "Tempertura troppo elevata", tempLineChart, 220f, -50f);
 
         //TODO: pensare se inserire due calendari from-to
         dateTempImageButton = (ImageButton) findViewById(R.id.dateTempImageButton);
@@ -484,7 +578,32 @@ public class MainActivity extends AppCompatActivity{
             public void onResponse(JSONObject response) {
                 //TODO: aggiornare i dati del grafico
                 try {
-                    Log.i("PINO", response.getJSONArray("data").getJSONObject(0).getString("temperature"));
+                    //Log.i("PINO", response.getJSONArray("data").getJSONObject(0).getString("temperature"));
+                    Log.i("PINO", response.toString());
+                    ArrayList<Entry> y = new ArrayList<Entry>();
+                    ArrayList<String> x = new ArrayList<String>();
+                    for (int i = 0; i < response.getJSONArray("data").length(); i ++){
+
+                        float yVal = Float.parseFloat(response.getJSONArray("data").getJSONObject(i).getString("temperature"));
+                        String xVal = response.getJSONArray("data").getJSONObject(i).getString("hour");
+                        y.add(new Entry(yVal, i));
+                        x.add(xVal);
+
+                    }
+                    /*x.add("10");
+                    x.add("20");
+                    x.add("30");
+                    x.add("30.5");
+                    x.add("40");
+                    y.add(new Entry(60, 0));
+                    y.add(new Entry(48, 1));
+                    y.add(new Entry(70.5f, 2));
+                    y.add(new Entry(100, 3));
+                    y.add(new Entry(180.9f, 4));*/
+                    chartDelegate.setData(tempLineChart, x, y, "Temperatura", Color.RED);
+                    //TODO: inserire i limiti corretti e aggiungere il metodo per ogni grafico (se lo si richiama due volte aggiungo due limiti quello superiore e quello inferiore
+                    chartDelegate.setLimit(35f, "Tempertura troppo elevata", tempLineChart, 100f, -50f);
+                    //chartDelegate.setLimit(120f, "Tempertura troppo elevata", tempLineChart, 220f, -50f);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -528,6 +647,36 @@ public class MainActivity extends AppCompatActivity{
     public LineChart getTempLineChart() {
         return tempLineChart;
     }
+
+    /*private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            Log.i("Message: ", "SONO QUI1");
+            String action = intent.getAction();
+            Log.i("Message: ", "SONO QUI");
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                Log.i("NewDevice: ", device.getName());
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy(){
+        super .onDestroy();
+        unregisterReceiver(mReceiver);
+    }*/
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // A Bluetooth device was found
+                // Getting device information from the intent
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                Log.i("newDevice", device.getName());
+            }
+        }
+    };
 }
 
 

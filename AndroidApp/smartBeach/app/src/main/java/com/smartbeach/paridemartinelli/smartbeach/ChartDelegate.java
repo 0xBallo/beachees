@@ -108,26 +108,27 @@ public class ChartDelegate implements OnChartGestureListener, OnChartValueSelect
     ArrayList<String> setXAxisValues() {
 
         ArrayList<String> xVals = new ArrayList<String>();
-        /*xVals.add("10");
+        xVals.add("10");
         xVals.add("20");
         xVals.add("30");
         xVals.add("30.5");
-        xVals.add("40");*/
+        xVals.add("40");
 
         return xVals;
     }//Asse y
 
     ArrayList<Entry> setYAxisValues() {
         ArrayList<Entry> yVals = new ArrayList<Entry>();
-        /*yVals.add(new Entry(60, 0));
+        yVals.add(new Entry(60, 0));
         yVals.add(new Entry(48, 1));
         yVals.add(new Entry(70.5f, 2));
         yVals.add(new Entry(100, 3));
-        yVals.add(new Entry(180.9f, 4));*/
+        yVals.add(new Entry(180.9f, 4));
 
         return yVals;
-    }//Metodo per popolare i grafici, vuole in input il lineChart (il grafico da popolare, e i parametri mettere sulla x (x) e sulla y (y)
+    }
 
+    // /Metodo per popolare i grafici, vuole in input il lineChart (il grafico da popolare, e i parametri mettere sulla x (x) e sulla y (y)
     void setData(LineChart lineChart, ArrayList<String> x, ArrayList<Entry> y, String label, Integer color) {
 
         ArrayList<String> xVals = x;
@@ -193,31 +194,5 @@ public class ChartDelegate implements OnChartGestureListener, OnChartValueSelect
         leftAxis.setDrawLimitLinesBehindData(true);
 
         lineChart.getAxisRight().setEnabled(false);
-    }
-
-    public void dhtData(String user, String date) {
-        //TODO: debug request
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(mainActivity);
-        String url = MainActivity.URL + "/dht?user=PM12&date=2018-08-25";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Log.i("PINO",response);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // mTextView.setText("That didn't work!");
-                Log.e("PINO-ERROR",error.getMessage());
-            }
-        });
-
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
     }
 }
