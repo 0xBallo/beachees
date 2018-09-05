@@ -4,7 +4,7 @@ const beachCtrl = require('../controllers/beach');
 const usersCtrl = require('../controllers/user');
 const seaCtrl = require('../controllers/sea');
 
-module.exports = function (router, db) {
+module.exports = function (router, db, admin) {
   // using router.get() to prefix our path
   // url: http://localhost:3001/api/
   router.get('/', (request, response) => {
@@ -93,7 +93,17 @@ module.exports = function (router, db) {
 
   // Send push to User
   router.post('/push', (request, response) => {
-    usersCtrl.send_push(request, response, db);
+    usersCtrl.send_push(request, response, db, admin);
+  });
+
+  // Get all notifies of a user
+  router.get('/notify', (request, response) => {
+    usersCtrl.get_notifications(request, response, db);
+  });
+
+  // Delete notify specified from id
+  router.delete('/notify', (request, response) => {
+    usersCtrl.del_notification(request, response, db)
   });
 
 };

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "238055793797",
+    "firebase_url": "https://beachees-980a4.firebaseio.com",
+    "project_id": "beachees-980a4",
+    "storage_bucket": "beachees-980a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238055793797:android:d599d3538d70d7fd",
+        "android_client_info": {
+          "package_name": "com.pmconsulting.beachees"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "238055793797-nvv95gjcdjtqnbbincn8ki47p0a0akmd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLlPi6mxTtuuMELH0n8-50Nxe6I6FtwUs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

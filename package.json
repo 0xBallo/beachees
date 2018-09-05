@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-    "start": "env PUBLIC_VAPID_KEY='BNkCYDAYelxetRFIQrxVeMPaEZIebQxQf7MbEXT2ioP9bUnpGU-0wKq0Cq4J8leEXyVZMhrHu57GxafDeiSXTF4' env PRIVATE_VAPID_KEY='xRL_xQhECjPCeXKsteZhyYpiqicjnUGYNfW_NfY3wiU' nodemon server/serverAPI.js",
+    "start": "nodemon server/serverAPI.js",
     "arduino": "node server/serverArduino.js",
     "expose": "./node_modules/.bin/ngrok http 3001"
   },
@@ -21,9 +21,9 @@
   "dependencies": {
     "cors": "^2.8.4",
     "express": "^4.16.3",
+    "firebase-admin": "^6.0.0",
     "moment": "^2.22.2",
     "nedb": "^1.8.0",
-    "node-gcm": "^1.0.2",
     "serialport": "^6.2.2"
   },
   "devDependencies": {

@@ -20,12 +20,21 @@ Task:
   ☐ Articolo
 
   PUSH:
-    ☐ Registrazione dispositivo e user per notifiche push
-    ☐ Notifiche push android @mattia
-    ☐ Invio notifica push lato server
+    ✔ Registrazione dispositivo e user per notifiche push @done(18-09-05 12:07)
+    ✔ Notifiche push android @mattia @done(18-09-05 12:07)
+    ✔ Invio notifica push lato server @done(18-09-05 12:07)
     ☐ notifiche inteligenti
 
   API:
-    ☐ metodo per recupero dati attuali da tutti i sensori. @mattia 
-    ☐ salvataggio e cancellazione delle notifiche nel database @mattia 
+    ✘ metodo per recupero dati attuali da tutti i sensori. @mattia @cancelled(18-09-05 12:07)
+    ✔ salvataggio e cancellazione delle notifiche nel database @mattia @done(18-09-05 15:12)
+
+  NOTIFICHE:
+    ✔ Data e ora @done(18-09-05 15:12)
+    ✔ message: @done(18-09-05 15:12)
+      ✔ Titolo (tipo) @done(18-09-05 15:12)
+      ✔ Descrizione @done(18-09-05 15:12)
+      ✔ icona @done(18-09-05 15:12)
+      ✔ colore @done(18-09-05 15:12)
+    ✔ utente @done(18-09-05 15:12)
 

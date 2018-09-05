@@ -61,8 +61,14 @@ public class MainActivity extends AppCompatActivity{
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     private final HomeDelegate homeDelegate = new HomeDelegate();
     private Context mContext;
+<<<<<<< HEAD
     public static final String URL = "http://fb6a8d27.ngrok.io/api";
     RequestQueue queue;
+=======
+    public static final String URL = "http://bf57077b.ngrok.io/api";
+    public static String user = "PM12";
+    public static RequestQueue queue;
+>>>>>>> 859b8c6b989511c955e500544e0e3452a4838536
 
     //Sezione home
     private ScrollView homeScrollView;

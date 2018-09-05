@@ -1,6 +1,8 @@
 'use strict';
 const url = require('url');
 const Moment = require('moment');
+const CONF = require('../../config/config.json');
+const Notifier = require('../utils/notify-helper');
 
 //========================= BEACH ====================================
 
@@ -93,12 +95,49 @@ exports.add_temp_hum = (req, res, db) => {
    let data = req.body;
 
    if (data.u == undefined || data.h == undefined || data.t == undefined) {
-      res.json({
+      res.status(401).json({
          message: data,
          error: "Incomplete data!"
       });
    } else {
-      let dht = {
+
+      //INFO: send notification and save to server
+      if (data.t > CONF.threshold.t) {
+         //INFO send temperature notify
+         const message = {
+            android: {
+               ttl: 3600 * 1000, // 1 hour in milliseconds
+               priority: 'normal',
+               notification: {
+                  title: 'Temperature',
+                  body: 'Temperature reach ' + data.t + '°C!',
+                  icon: CONF.notify.alert.icon,
+                  color: CONF.notify.alert.color
+               }
+            }
+         }
+         Notifier.send_push(admin, db, data.u, message);
+      }
+
+      if (data.h > CONF.threshold.h) {
+         //INFO send humidity notify
+         const message = {
+            android: {
+               ttl: 3600 * 1000, // 1 hour in milliseconds
+               priority: 'normal',
+               notification: {
+                  title: 'Humidity',
+                  body: 'Humidity reach ' + data.t + '%!',
+                  icon: CONF.notify.alert.icon,
+                  color: CONF.notify.alert.color
+               }
+            }
+         }
+         Notifier.send_push(admin, db, data.u, message);
+      }
+
+      //INFO: save data to server
+      const dht = {
          user: data.u,
          humidity: data.h,
          temperature: data.t,
@@ -107,9 +146,10 @@ exports.add_temp_hum = (req, res, db) => {
          ISO: Moment().format()
       };
       db.beach.insert(dht, function (err, newDoc) {
-         res.json({
-            message: newDoc,
-            error: err
+         if (err)
+            res.status(501).json(err);
+         res.status(201).json({
+            message: newDoc
          });
       });
    }
@@ -238,6 +278,23 @@ exports.add_uva = (req, res, db) => {
          error: "Incomplete data!"
       });
    } else {
+      if (data.l > CONF.threshold.uv) {
+         //INFO send UVA notify
+         const message = {
+            android: {
+               ttl: 3600 * 1000, // 1 hour in milliseconds
+               priority: 'normal',
+               notification: {
+                  title: 'UVA',
+                  body: 'UVA level reach ' + data.t + ' mW/Cm2!',
+                  icon: CONF.notify.alert.icon,
+                  color: CONF.notify.alert.color
+               }
+            }
+         }
+         Notifier.send_push(admin, db, data.u, message);
+      }
+
       let dht = {
          user: data.u,
          uva: data.l,

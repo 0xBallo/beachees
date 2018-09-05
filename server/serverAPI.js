@@ -2,15 +2,18 @@ const Express = require('express');
 const Cors = require('cors');
 const Datastore = require('nedb');
 const Parser = require('body-parser');
-const Webpush = require('web-push');
+const Admin = require("firebase-admin");
+
 const app = Express();
 const router = Express.Router();
 const Route = require('./API/routes/route');
 
+const serviceAccount = require("./config/beachees-980a4-firebase.json");
+
 const port = process.env.PORT || 3001;
-// Keys for Web Push notifications
-const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
-const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
+
+
+
 
 // DATABASE
 let lidoBase = {};
@@ -22,7 +25,11 @@ lidoBase.sea.loadDatabase();
 lidoBase.beach.loadDatabase();
 lidoBase.users.loadDatabase();
 
-Webpush.setVapidDetails('mailto:mattia.ballo@studio.unibo.it', publicVapidKey, privateVapidKey);
+// Initialize Firebase Admin services
+Admin.initializeApp({
+   credential: Admin.credential.cert(serviceAccount),
+   databaseURL: "https://beachees-980a4.firebaseio.com"
+});
 
 // ALLOW CORS request
 app.use(Cors());
@@ -35,7 +42,7 @@ app.use(Parser.json());
 // all routes prefixed with /api
 app.use('/api', router);
 
-Route(router, lidoBase);
+Route(router, lidoBase, Admin);
 
 // set the server to listen on port 3001
 app.listen(port, () => console.log('Listening on port', port));
