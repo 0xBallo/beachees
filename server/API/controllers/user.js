@@ -1,5 +1,6 @@
 'use strict';
 const url = require('url');
+const Notifier = require('../utils/notify-helper');
 
 /**
  * Register User device for push notifications
@@ -47,14 +48,6 @@ exports.send_push = (req, res, db, admin) => {
             res.status(202).send('No device/user found!');
          } else {
             results.forEach(r => {
-               //TODO: send push notification for all device
-               //TODO: send push
-               // This registration token comes from the client FCM SDKs.
-               const registrationToken = 'fGF2s7xxIN8:APA91bEWl_6nXvYyLn3tm4Ks2kiQUj4WQMI4fdwSs4RDBMOEmrMYQtV5KXWy7sJnv-32p3OnKu9RW9bencesaI6ZqvOkCDRCLs9gKATBlSkvRpKMdc7SL0QJCs4TOGLzTaLGSb3YE8NN';
-               //TODO: retrieve registration token from device
-
-               // See documentation on defining a message payload.
-               // https://firebase.google.com/docs/cloud-messaging/admin/send-messages
                const message = {
                   android: {
                      ttl: 3600 * 1000, // 1 hour in milliseconds
@@ -66,21 +59,10 @@ exports.send_push = (req, res, db, admin) => {
                         color: '#f45342'
                      }
                   },
-                  token: registrationToken
+                  token: r.token
                };
 
-               // Send a message to the device corresponding to the provided
-               // registration token.
-               admin.messaging().send(message)
-                  .then((response) => {
-                     // Response is a message ID string.
-                     console.log('Successfully sent message:', response);
-                  })
-                  .catch((error) => {
-                     console.log('Error sending message:', error);
-                  });
-
-               //TODO: END
+               Notifier.send_push(admin, message);
 
             });
             res.status(201).json(results);
@@ -107,7 +89,16 @@ exports.get_notifications = (res, req, db) => {
    } else {
 
       db.users.find({
-         user: data.user,
+         $or: [{
+            user: data.user
+         }, {
+            user: {
+               $exists: false
+            }
+         }],
+         notification: {
+            $exists: true
+         }
       }, (err, results) => {
          if (err)
             res.status(501).json(err);

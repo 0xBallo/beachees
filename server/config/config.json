@@ -1,0 +1,25 @@
+{
+   "threshold": {
+      "t": 35.5,
+      "h": 80.0,
+      "uv": 12.0,
+      "wtl": 23.0,
+      "wth": 27.0,
+      "turb": 35.0,
+      "wave": 3
+   },
+   "notify": {
+      "alert": {
+         "icon": "ic_notifications_black_24dp",
+         "color": "#f45342"
+      },
+      "smart": {
+         "icon": "ic_notifications_black_24dp",
+         "color": "#f45342"
+      },
+      "beacon": {
+         "icon": "ic_notifications_black_24dp",
+         "color": "#f45342"
+      }
+   }
+}

@@ -1,6 +1,8 @@
 'use strict';
 const url = require('url');
 const Moment = require('moment');
+const CONF = require('../../config/config.json');
+const Notifier = require('../utils/notify-helper');
 
 //==================================== SEA ====================
 
@@ -79,6 +81,40 @@ exports.add_water_temp = (req, res, db) => {
          error: "Incomplete data!"
       });
    } else {
+
+      if (data.t > CONF.threshold.wth) {
+         //INFO send water temperature high notify
+         const message = {
+            android: {
+               ttl: 3600 * 1000, // 1 hour in milliseconds
+               priority: 'normal',
+               notification: {
+                  title: 'Sea Temperature High',
+                  body: 'Sea temperature go over ' + data.t + '°C!',
+                  icon: CONF.notify.alert.icon,
+                  color: CONF.notify.alert.color
+               }
+            }
+         }
+         Notifier.send_push_broadcast(admin, db, message);
+      }
+      if (data.t < CONF.threshold.wtl) {
+         //INFO send water temperature low notify
+         const message = {
+            android: {
+               ttl: 3600 * 1000, // 1 hour in milliseconds
+               priority: 'normal',
+               notification: {
+                  title: 'Sea Temperature Low',
+                  body: 'Sea temperature go under ' + data.t + '°C!',
+                  icon: CONF.notify.alert.icon,
+                  color: CONF.notify.alert.color
+               }
+            }
+         }
+         Notifier.send_push_broadcast(admin, db, message);
+      }
+
       let obj = {
          watertemp: data.t,
          date: Moment().format('YYYY-MM-DD'),
@@ -200,6 +236,24 @@ exports.add_water_turb = (req, res, db) => {
          error: "Incomplete data!"
       });
    } else {
+
+      if (data.t > CONF.threshold.turb) {
+         //INFO send water temperature notify
+         const message = {
+            android: {
+               ttl: 3600 * 1000, // 1 hour in milliseconds
+               priority: 'normal',
+               notification: {
+                  title: 'Sea Turbidity',
+                  body: 'Sea Turbidity reach ' + data.t + ' !',
+                  icon: CONF.notify.alert.icon,
+                  color: CONF.notify.alert.color
+               }
+            }
+         }
+         Notifier.send_push_broadcast(admin, db, message);
+      }
+
       let obj = {
          turbidity: data.t,
          date: Moment().format('YYYY-MM-DD'),
@@ -325,11 +379,28 @@ exports.add_waves_acc = (req, res, db) => {
          error: "Incomplete data!"
       });
    } else {
+      //TODO: set wave normilized level based on accelerometer and gyroscope
+      let waves = 0;
+      if (waves > CONF.threshold.wave) {
+         //INFO send water temperature notify
+         const message = {
+            android: {
+               ttl: 3600 * 1000, // 1 hour in milliseconds
+               priority: 'normal',
+               notification: {
+                  title: 'Sea Waves',
+                  body: 'Sea waves go over ' + waves + ' level!',
+                  icon: CONF.notify.alert.icon,
+                  color: CONF.notify.alert.color
+               }
+            }
+         }
+         Notifier.send_push_broadcast(admin, db, message);
+      }
+
       let obj = {
          //TODO impostare waves
-         waves: 'calmo|mosso|molto mosso',
-         acc: data.a,
-         gyro: data.g,
+         waves: waves,
          date: Moment().format('YYYY-MM-DD'),
          hour: Moment().format('HH'),
          ISO: Moment().format()
