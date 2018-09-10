@@ -8,13 +8,6 @@
     tools:context=".MainActivity">
 
     //SEZIONE HOME
-    <!--TODO: sistemare dimensioni-->
-    <!--TODO: sistemare i bottini in una sezione in alto con titolo come per i grafici-->
-    //Mettere in grande temperatura in grande
-    //Tre bottoni in alto
-    //1. Allert: in base al colore identifica se la notifica è positiva o no compare un popup con il testo;
-    //2. More info: compare un popup cn il grafico della temperatura;
-    //3. Refresh
     <ScrollView
         android:id="@+id/homeScrollView"
         android:layout_width="match_parent"
@@ -24,19 +17,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/lightBlueGray">
 
-            //Temperatura attuale
+            //Dati relativi alla spiaggia
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="250dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                app:cardBackgroundColor="@color/cardViewColor"
+                app:cardBackgroundColor="@color/lightYellow"
                 app:cardCornerRadius="4dp">
 
                 <RelativeLayout
@@ -53,88 +47,119 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:orientation="horizontal"
-                            android:padding="10dp">
+                            android:padding="10dp"
+                            android:background="@color/yellow">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/icons8_ombrellone_da_spiaggia"
+                                android:layout_marginRight="10dp"/>
 
                             <TextView
-                                android:id="@+id/currentTemp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="45dp"
-                                android:text="Temperatura: 35°C" />
+                                android:layout_marginRight="47dp"
+                                android:text="Informazioni attuali relative alla spiaggia"
+                                android:textColor="@color/white"/>
 
-                            <TextView
-                                android:id="@+id/currentDateTemp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Rilevazione: 9.00 del 1-9-19" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:padding="5dp">
+                            android:padding="5dp"
+                            android:gravity="center"
+                            android:layout_marginTop="25dp">
 
-                            <ImageView
+                            <LinearLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:layout_marginLeft="10dp"
-                                android:src="@drawable/ic_report_problem_black_24dp"
-                                android:id="@+id/warningTempIcon"/>
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_marginRight="10dp">
 
-                            <TextView
-                                android:id="@+id/warningTemperature"
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="35°C"
+                                    android:textSize="35dp"
+                                    android:background="@drawable/data_border_beach"
+                                    android:id="@+id/tempNowTextView"
+                                    android:clickable="true" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Temperatura"
+                                    android:layout_marginTop="10dp"/>
+                            </LinearLayout>
+
+                            <LinearLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Temperatura abbastanza elevata, si consiglia di rinfrescarsi e di non stare troppo tempo al sole"
-                                android:textColor="@color/black" />
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_marginRight="10dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="35°C"
+                                    android:textSize="35dp"
+                                    android:background="@drawable/data_border_beach"
+                                    android:id="@+id/humNowTextView"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Umidità"
+                                    android:layout_marginTop="10dp"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="35°C"
+                                    android:textSize="35dp"
+                                    android:background="@drawable/data_border_beach"
+                                    android:id="@+id/uvNowTextView"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Raggi UV"
+                                    android:layout_marginTop="10dp"/>
+                            </LinearLayout>
+
                         </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/moreInfoButtonTemp"
-                                android:layout_width="185dp"
-                                android:layout_height="wrap_content"
-                                android:drawableLeft="@drawable/ic_info_outline_black_24dp"
-                                android:padding="15dp"
-                                android:text="More Info"/>
-
-                            <Button
-                                android:id="@+id/refreshButtonTemp"
-                                android:layout_width="185dp"
-                                android:layout_height="wrap_content"
-                                android:drawableLeft="@drawable/ic_refresh_black_24dp"
-                                android:padding="15dp"
-                                android:text="Refresh"/>
-                        </LinearLayout>
-
                     </LinearLayout>
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 
-            //Umidità attuale
+            //Dati relativi al mare
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="250dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                app:cardBackgroundColor="@color/cardViewColor"
+                app:cardBackgroundColor="@color/lighterBlue"
                 app:cardCornerRadius="4dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -145,456 +170,104 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/currentHum"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="45dp"
-                                android:text="Umidità: 30%" />
-
-                            <TextView
-                                android:id="@+id/currentDateHum"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Rilevazione: 9.00 del 1-9-19" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:padding="10dp"
+                            android:background="@color/lightBlue">
 
                             <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_report_problem_black_24dp"
-                                android:id="@+id/warningHumIcon"/>
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/icons8_salvagente"
+                                android:layout_marginRight="10dp"/>
 
                             <TextView
-                                android:id="@+id/warningHumidity"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Temperatura abbastanza elevata, si consiglia di rinfrescarsi e di non stare troppo tempo al sole"
-                                android:textColor="@color/black" />
+                                android:layout_marginRight="50dp"
+                                android:text="Informazioni attuali relative al mare"
+                                android:textColor="@color/white"/>
+
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:padding="5dp"
+                            android:gravity="center"
+                            android:layout_marginTop="25dp">
 
-                            <Button
-                                android:id="@+id/moreInfoButtonHum"
+                            <LinearLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="90dp"
-                                android:layout_marginRight="5dp"
-                                android:background="@drawable/button_bg_rounded_corners"
-                                android:drawableLeft="@drawable/ic_info_outline_black_24dp"
-                                android:padding="15dp"
-                                android:text="More Info" />
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_marginRight="10dp">
 
-                            <Button
-                                android:id="@+id/refreshButtonHum"
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="35°C"
+                                    android:textSize="35dp"
+                                    android:background="@drawable/data_border_sea"
+                                    android:id="@+id/tempSeaNowTextView"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Temperatura"
+                                    android:layout_marginTop="10dp"/>
+                            </LinearLayout>
+
+                            <LinearLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:background="@drawable/button_bg_rounded_corners"
-                                android:drawableLeft="@drawable/ic_refresh_black_24dp"
-                                android:padding="15dp"
-                                android:text="Refresh" />
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_marginRight="10dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="35°C"
+                                    android:textSize="35dp"
+                                    android:background="@drawable/data_border_sea"
+                                    android:id="@+id/turbSeaNowTextView"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Torbidità"
+                                    android:layout_marginTop="10dp"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="35°C"
+                                    android:textSize="35dp"
+                                    android:background="@drawable/data_border_sea"
+                                    android:id="@+id/roughSeaNowTextView"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Potenza onde"
+                                    android:layout_marginTop="10dp"/>
+                            </LinearLayout>
+
                         </LinearLayout>
                     </LinearLayout>
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 
-            //Raggi UV
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
-                app:cardBackgroundColor="@color/cardViewColor"
-                app:cardCornerRadius="4dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/currentUV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="45dp"
-                                android:text="Raggi UV: 15" />
-
-                            <TextView
-                                android:id="@+id/currentDateUV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Rilevazione: 9.00 del 1-9-19" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_report_problem_black_24dp"
-                                android:id="@+id/warningUVIcon"/>
-
-                            <TextView
-                                android:id="@+id/warningUV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Temperatura abbastanza elevata, si consiglia di rinfrescarsi e di non stare troppo tempo al sole"
-                                android:textColor="@color/black" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/moreInfoButtoUV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="90dp"
-                                android:drawableLeft="@drawable/ic_info_outline_black_24dp"
-                                android:padding="15dp"
-                                android:text="More Info" />
-
-                            <Button
-                                android:id="@+id/refreshButtonUV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:drawableLeft="@drawable/ic_refresh_black_24dp"
-                                android:padding="15dp"
-                                android:text="Refresh" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
-
-            //Temperatura attuale del mare
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="165dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
-                app:cardBackgroundColor="@color/cardViewColor"
-                app:cardCornerRadius="4dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/currentTempSea"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="45dp"
-                                android:text="Temperatura mare: 15°C" />
-
-                            <TextView
-                                android:id="@+id/currentDateTempSea"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Rilevazione: 9.00 del 1-9-19" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_star_black_24dp"
-                                android:id="@+id/warningSeaTempIcon"/>
-
-                            <TextView
-                                android:id="@+id/warningTemperatureSea"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Il mare non è troppo freddo, temperatura ideale per rinfrescarsi un pò"
-                                android:textColor="@color/black" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/moreInfoButtonTempSea"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="90dp"
-                                android:drawableLeft="@drawable/ic_info_outline_black_24dp"
-                                android:padding="15dp"
-                                android:text="More Info" />
-
-                            <Button
-                                android:id="@+id/refreshButtonTempSea"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:drawableLeft="@drawable/ic_refresh_black_24dp"
-                                android:padding="15dp"
-                                android:text="Refresh" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
-
-            //Torbidità attuale del mare
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="165dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
-                app:cardBackgroundColor="@color/cardViewColor"
-                app:cardCornerRadius="4dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/currentTurb"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="45dp"
-                                android:text="Torbidità del mare: 5" />
-
-                            <TextView
-                                android:id="@+id/currentDateTurb"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Data/Ora: 9.00 del 1-9-19" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_star_black_24dp"
-                                android:id="@+id/warningTurbIcon"/>
-
-                            <TextView
-                                android:id="@+id/warningTurb"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Torbidità bassa vuol dire mare pulito, approfittane per un tuffo"
-                                android:textColor="@color/black" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/moreInfoButtonTurb"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="90dp"
-                                android:drawableLeft="@drawable/ic_info_outline_black_24dp"
-                                android:padding="15dp"
-                                android:text="More Info" />
-
-                            <Button
-                                android:id="@+id/refreshButtonTurb"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:drawableLeft="@drawable/ic_refresh_black_24dp"
-                                android:padding="15dp"
-                                android:text="Refresh" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
-
-            //Livello li mare mosso attuale
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
-                app:cardBackgroundColor="@color/cardViewColor"
-                app:cardCornerRadius="4dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/currentRoughSea"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="45dp"
-                                android:text="Mare mosso: 3" />
-
-                            <TextView
-                                android:id="@+id/currentDateRoughSea"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Rilevazione: 9.00 del 1-9-19" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_star_black_24dp"
-                                android:id="@+id/warningRoughSeaIcon"/>
-
-                            <TextView
-                                android:id="@+id/warningRoughSea"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Il mare è calmo, nessun pericolo di balneazione"
-                                android:textColor="@color/black" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/moreInfoButtonRoughSea"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="90dp"
-                                android:drawableLeft="@drawable/ic_info_outline_black_24dp"
-                                android:padding="15dp"
-                                android:text="More Info" />
-
-                            <Button
-                                android:id="@+id/refreshButtonRoughSea"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:drawableLeft="@drawable/ic_refresh_black_24dp"
-                                android:padding="15dp"
-                                android:text="Refresh" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
         </LinearLayout>
-    </ScrollView>
-
-
-    //SEZIONE TIPS
-    <ScrollView
-        android:id="@+id/tipsScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="545dp"
-        android:visibility="invisible">
-
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">-->
-
-        <!--TODO: inserire la sezione consigli IoT-->
-        <!--ovvero mettere il consiglio generale. Es: mare calmo + mare pulito + temperatura alta = fare il bagno-->
-
-    <!--</LinearLayout>-->
     </ScrollView>
 
     //SEZIONE CHART
@@ -630,7 +303,8 @@
 
                     <ScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:background="@color/lightBlueGray">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -646,7 +320,7 @@
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="10dp"
-                                app:cardBackgroundColor="@color/cardViewColor"
+                                app:cardBackgroundColor="@color/white"
                                 app:cardCornerRadius="4dp">
 
                                 <LinearLayout
@@ -659,7 +333,13 @@
                                         android:layout_height="wrap_content"
                                         android:orientation="horizontal"
                                         android:padding="10dp"
-                                        android:background="@color/darkGray">
+                                        android:background="@color/yellow">
+
+                                        <ImageView
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:src="@drawable/icons8_temperatura"
+                                            android:layout_marginRight="10dp"/>
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -671,9 +351,9 @@
                                             android:id="@+id/dateTempImageButton"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:background="@color/darkGray"
+                                            android:background="@color/yellow"
                                             android:src="@drawable/ic_date_range_black_24dp"
-                                            android:layout_marginLeft="265dp"/>
+                                            android:layout_marginLeft="240dp"/>
                                     </LinearLayout>
 
                                     <RelativeLayout
@@ -701,7 +381,7 @@
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="10dp"
-                                app:cardBackgroundColor="@color/cardViewColor"
+                                app:cardBackgroundColor="@color/white"
                                 app:cardCornerRadius="4dp">
 
                                 <LinearLayout
@@ -714,7 +394,13 @@
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
                                     android:padding="10dp"
-                                    android:background="@color/darkGray">
+                                    android:background="@color/yellow">
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:src="@drawable/icons8_punto_di_rugiada"
+                                        android:layout_marginRight="10dp"/>
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -726,9 +412,9 @@
                                         android:id="@+id/dateHumImageButton"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:background="@color/darkGray"
+                                        android:background="@color/yellow"
                                         android:src="@drawable/ic_date_range_black_24dp"
-                                        android:layout_marginLeft="300dp"/>
+                                        android:layout_marginLeft="260dp"/>
                                 </LinearLayout>
 
                                 <RelativeLayout
@@ -755,7 +441,7 @@
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="10dp"
-                                app:cardBackgroundColor="@color/cardViewColor"
+                                app:cardBackgroundColor="@color/white"
                                 app:cardCornerRadius="4dp">
 
                                 <LinearLayout
@@ -768,7 +454,13 @@
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
                                     android:padding="10dp"
-                                    android:background="@color/darkGray">
+                                    android:background="@color/yellow">
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:src="@drawable/icons8_estate"
+                                        android:layout_marginRight="10dp"/>
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -780,9 +472,9 @@
                                         android:id="@+id/dateUVImageButton"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:background="@color/darkGray"
+                                        android:background="@color/yellow"
                                         android:src="@drawable/ic_date_range_black_24dp"
-                                        android:layout_marginLeft="290dp"/>
+                                        android:layout_marginLeft="250dp"/>
                                 </LinearLayout>
 
                                 <RelativeLayout
@@ -814,7 +506,8 @@
 
                     <ScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:background="@color/lightBlueGray">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -830,7 +523,7 @@
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="10dp"
-                                app:cardBackgroundColor="@color/cardViewColor"
+                                app:cardBackgroundColor="@color/white"
                                 app:cardCornerRadius="4dp">
 
                                 <LinearLayout
@@ -843,7 +536,13 @@
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
                                     android:padding="10dp"
-                                    android:background="@color/darkGray">
+                                    android:background="@color/lightBlue">
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:src="@drawable/icons8_temperatura"
+                                        android:layout_marginRight="10dp"/>
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -855,9 +554,9 @@
                                         android:id="@+id/dateSeaTempImageButton"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:background="@color/darkGray"
+                                        android:background="@color/lightBlue"
                                         android:src="@drawable/ic_date_range_black_24dp"
-                                        android:layout_marginLeft="205dp"/>
+                                        android:layout_marginLeft="165dp"/>
                                 </LinearLayout>
 
                                 <RelativeLayout
@@ -883,7 +582,7 @@
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="10dp"
-                                app:cardBackgroundColor="@color/cardViewColor"
+                                app:cardBackgroundColor="@color/white"
                                 app:cardCornerRadius="4dp">
 
                                 <LinearLayout
@@ -896,7 +595,13 @@
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
                                     android:padding="10dp"
-                                    android:background="@color/darkGray">
+                                    android:background="@color/lightBlue">
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:src="@drawable/icons8_ambiente"
+                                        android:layout_marginRight="10dp"/>
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -908,9 +613,9 @@
                                         android:id="@+id/dateTurbImageButton"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:background="@color/darkGray"
+                                        android:background="@color/lightBlue"
                                         android:src="@drawable/ic_date_range_black_24dp"
-                                        android:layout_marginLeft="230dp"/>
+                                        android:layout_marginLeft="190dp"/>
                                 </LinearLayout>
 
                                 <RelativeLayout
@@ -936,7 +641,7 @@
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="10dp"
-                                app:cardBackgroundColor="@color/cardViewColor"
+                                app:cardBackgroundColor="@color/white"
                                 app:cardCornerRadius="4dp">
 
                                 <LinearLayout
@@ -949,7 +654,13 @@
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
                                     android:padding="10dp"
-                                    android:background="@color/darkGray">
+                                    android:background="@color/lightBlue">
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:src="@drawable/icons8_onde_del_mare"
+                                        android:layout_marginRight="10dp"/>
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -961,9 +672,9 @@
                                         android:id="@+id/dateRoughSeaImageButton"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:background="@color/darkGray"
+                                        android:background="@color/lightBlue"
                                         android:src="@drawable/ic_date_range_black_24dp"
-                                        android:layout_marginLeft="220dp"/>
+                                        android:layout_marginLeft="180dp"/>
                                 </LinearLayout>
 
                                 <RelativeLayout
@@ -995,7 +706,8 @@
         android:layout_width="match_parent"
         android:layout_height="549dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/navigation">
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        android:background="@color/lightBlueGray">
 
         <LinearLayout
             android:id="@+id/notificationLinearLayout"

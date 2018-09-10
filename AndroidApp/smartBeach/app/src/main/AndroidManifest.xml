@@ -10,6 +10,7 @@
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
 
+    //android:theme="@style/AppTheme"
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
 
         <!-- TODO: Set custom default icon. This is used when no icon is set for incoming notification messages.
      See README(https://goo.gl/l4GJaQ) for more. -->

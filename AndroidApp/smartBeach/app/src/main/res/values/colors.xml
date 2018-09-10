@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#26A69A</color>
+    <color name="colorPrimaryDark">#00897B</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="cardViewColor">#B0BEC5</color>
+
+    <!--Beach color-->
+    <color name="darkYellow">#FFA000</color>
+    <color name="yellow">#FBC02D</color>
+    <color name="lightYellow">#FFF59D</color>
+
+    <!--Sea color-->
+    <color name="blue">#0277BD</color>
+    <color name="lightBlue">#29B6F6</color>
+    <color name="lighterBlue">#B3E5FC</color>
+
+    <color name="blueGray">#B0BEC5</color>
     <color name="black">#000000</color>
-    <color name="lightGray">#E0E0E0</color>
+    <color name="lightBlueGray">#E0E0E0</color>
     <color name="white">#FFFFFF</color>
-    <color name="darkGray">#607D8B</color>
+    <color name="darkBlueGray">#607D8B</color>
 </resources>

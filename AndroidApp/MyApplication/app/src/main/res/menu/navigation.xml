@@ -8,8 +8,8 @@
 
     <item
         android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_insert_chart_black_24dp"
-        android:title="Charts" />
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_dashboard" />
 
     <item
         android:id="@+id/navigation_notifications"
