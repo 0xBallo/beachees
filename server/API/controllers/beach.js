@@ -295,14 +295,14 @@ exports.add_uva = (req, res, db) => {
          Notifier.send_push(admin, db, data.u, message);
       }
 
-      let dht = {
+      const uv = {
          user: data.u,
          uva: data.l,
          date: Moment().format('YYYY-MM-DD'),
          hour: Moment().format('HH'),
          ISO: Moment().format()
       };
-      db.beach.insert(dht, function (err, newDoc) {
+      db.beach.insert(uv, function (err, newDoc) {
          res.json({
             message: newDoc,
             error: err

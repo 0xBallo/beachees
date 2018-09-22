@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server/serverAPI.js",
     "arduino": "node server/serverArduino.js",
-    "expose": "./node_modules/.bin/ngrok http 3001"
+    "expose": "./node_modules/.bin/ngrok http 3001",
+    "debug": "DEBUG=true nodemon server/serverAPI.js"
   },
   "repository": {
     "type": "git",

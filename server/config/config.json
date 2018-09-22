@@ -21,5 +21,31 @@
          "icon": "ic_notifications_black_24dp",
          "color": "#f45342"
       }
+   },
+   "debug": {
+      "temperature":{
+         "h": 38.0,
+         "l": 24.0
+      },
+      "humidity": {
+         "h": 85.0,
+         "l": 65.0
+      },
+      "uv": {
+         "h": 13.5,
+         "l": 9.2
+      },
+      "water": {
+         "h": 28.5,
+         "l": 21.1
+      },
+      "turbidity": {
+         "h": 40.0,
+         "l": 15.0
+      },
+      "waves": {
+         "h": 5,
+         "l": 2
+      }
    }
 }

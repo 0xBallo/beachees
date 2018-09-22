@@ -7,6 +7,7 @@ const Admin = require("firebase-admin");
 const app = Express();
 const router = Express.Router();
 const Route = require('./API/routes/route');
+const Debug = require('./debug');
 
 const serviceAccount = require("./config/beachees-980a4-firebase.json");
 
@@ -43,6 +44,11 @@ app.use(Parser.json());
 app.use('/api', router);
 
 Route(router, lidoBase, Admin);
+
+if (process.env.DEBUG) {
+   console.log('DEBUG MODE enabled!');
+   Debug.populate_db(lidoBase);
+}
 
 // set the server to listen on port 3001
 app.listen(port, () => console.log('Listening on port', port));

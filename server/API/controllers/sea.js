@@ -115,13 +115,13 @@ exports.add_water_temp = (req, res, db) => {
          Notifier.send_push_broadcast(admin, db, message);
       }
 
-      let obj = {
+      const wt = {
          watertemp: data.t,
          date: Moment().format('YYYY-MM-DD'),
          hour: Moment().format('HH'),
          ISO: Moment().format()
       };
-      db.sea.insert(obj, function (err, newDoc) {
+      db.sea.insert(wt, function (err, newDoc) {
          res.json({
             message: newDoc,
             error: err
@@ -254,13 +254,13 @@ exports.add_water_turb = (req, res, db) => {
          Notifier.send_push_broadcast(admin, db, message);
       }
 
-      let obj = {
+      const turb = {
          turbidity: data.t,
          date: Moment().format('YYYY-MM-DD'),
          hour: Moment().format('HH'),
          ISO: Moment().format()
       };
-      db.sea.insert(obj, function (err, newDoc) {
+      db.sea.insert(turb, function (err, newDoc) {
          res.json({
             message: newDoc,
             error: err
@@ -398,14 +398,14 @@ exports.add_waves_acc = (req, res, db) => {
          Notifier.send_push_broadcast(admin, db, message);
       }
 
-      let obj = {
+      const w = {
          //TODO impostare waves
          waves: waves,
          date: Moment().format('YYYY-MM-DD'),
          hour: Moment().format('HH'),
          ISO: Moment().format()
       };
-      db.sea.insert(obj, function (err, newDoc) {
+      db.sea.insert(w, function (err, newDoc) {
          res.json({
             message: newDoc,
             error: err

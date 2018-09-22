@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://cce69c29.ngrok.io/api";
+    public static final String URL = "http://b0e0f2f3.ngrok.io/api";
     public static String user = "PM12";
     public static RequestQueue queue;
     BluetoothAdapter mBluetoothAdapter;
