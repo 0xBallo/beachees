@@ -15,6 +15,7 @@ const Notifier = require('../utils/notify-helper');
 exports.get_water_temp = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
+   const user = parameters.user;
    const date = parameters.date;
 
    let queryDate;
@@ -140,7 +141,9 @@ exports.add_water_temp = (req, res, db) => {
 exports.get_water_temp_now = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
+   const user = parameters.user;
    db.beach.find({
+         user: user,
          watertemp: {
             $exists: true
          }
@@ -171,6 +174,7 @@ exports.get_water_turb = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const date = parameters.date;
+   const user = parameters.user;
 
    let queryDate;
    if (date == undefined) {
@@ -279,7 +283,9 @@ exports.add_water_turb = (req, res, db) => {
 exports.get_water_turb_now = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
+   const user = parameters.user;
    db.beach.find({
+         user: user,
          turbidity: {
             $exists: true
          }
@@ -310,6 +316,7 @@ exports.get_waves_acc = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const date = parameters.date;
+   const user = parameters.user;
 
    let queryDate;
    if (date == undefined) {
@@ -424,7 +431,9 @@ exports.add_waves_acc = (req, res, db) => {
 exports.get_waves_now = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
+   const user = parameters.user;
    db.beach.find({
+         user: user,
          acc: {
             $exists: true
          },

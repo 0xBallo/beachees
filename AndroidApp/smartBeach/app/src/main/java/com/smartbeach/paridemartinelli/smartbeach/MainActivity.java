@@ -2,6 +2,7 @@ package com.smartbeach.paridemartinelli.smartbeach;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://b0e0f2f3.ngrok.io/api";
+    public static final String URL = "https://d495a017.ngrok.io/api";
     public static String user = "PM12";
     public static RequestQueue queue;
     BluetoothAdapter mBluetoothAdapter;
@@ -138,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    @TargetApi(Build.VERSION_CODES.M)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @SuppressLint("WrongViewCast")
     @Override
@@ -199,14 +201,18 @@ public class MainActivity extends AppCompatActivity {
         //Temperatura e umidità
         tempNowTextView = (TextView) findViewById(R.id.tempNowTextView);
         humNowTextView = (TextView) findViewById(R.id.humNowTextView);
-        String dhtNowURL = URL + "/dht/now?user=";
+        String dhtNowURL = URL + "/dht/now?user=" + user;
         JsonObjectRequest requestDhtNow = new JsonObjectRequest(Request.Method.GET, dhtNowURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String temNow = response.getJSONArray("data").getJSONObject(0).getString("temperature");
-                    String humNow = response.getJSONArray("data").getJSONObject(0).getString("humidity");
-                    tempNowTextView.setText(temNow);
+                    float tempNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("temperature"));
+                    int tempNowInt = Math.round(tempNowFloat);
+                    String tempNow = String.valueOf(tempNowInt) + "°C";
+                    float humNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("humidity"));
+                    int humNowInt = Math.round(humNowFloat);
+                    String humNow = String.valueOf(humNowInt) + "%";
+                    tempNowTextView.setText(tempNow);
                     humNowTextView.setText(humNow);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -252,12 +258,14 @@ public class MainActivity extends AppCompatActivity {
 
         //Raggi UV
         uvNowTextView = (TextView) findViewById(R.id.uvNowTextView);
-        final String uvNowURL = URL + "/uva/now?user=";
+        final String uvNowURL = URL + "/uva/now?user=" + user;
         JsonObjectRequest requestUvNow = new JsonObjectRequest(Request.Method.GET, uvNowURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String uvNow = response.getJSONArray("data").getJSONObject(0).getString("uva");
+                    float uvNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("uva"));
+                    int uvNowInt = Math.round(uvNowFloat);
+                    String uvNow = String.valueOf(uvNowInt);
                     uvNowTextView.setText(uvNow);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -291,12 +299,14 @@ public class MainActivity extends AppCompatActivity {
 
         //temperatura del mare
         seaTempNowTextView = (TextView) findViewById(R.id.tempSeaNowTextView);
-        String seaTempNowURL = URL + "/sea/temp/now?user=";
+        String seaTempNowURL = URL + "/sea/temp/now?user=" + user;
         JsonObjectRequest requestSeaTempNow = new JsonObjectRequest(Request.Method.GET, seaTempNowURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String seaTempNow = response.getJSONArray("data").getJSONObject(0).getString("watertemp");
+                    float seaTempNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("watertemp"));
+                    int seaTempNowInt = Math.round(seaTempNowFloat);
+                    String seaTempNow = String.valueOf(seaTempNowInt) + "°C";
                     seaTempNowTextView.setText(seaTempNow);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -328,12 +338,14 @@ public class MainActivity extends AppCompatActivity {
 
         //tordibità
         seaTurbNowTextView = (TextView) findViewById(R.id.turbSeaNowTextView);
-        String seaTurbNowURL = URL + "/sea/turbidity/now?user=";
+        String seaTurbNowURL = URL + "/sea/turbidity/now?user=" + user;
         JsonObjectRequest requestSeaTurbNow = new JsonObjectRequest(Request.Method.GET, seaTurbNowURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String seaTurbNow = response.getJSONArray("data").getJSONObject(0).getString("turbidity");
+                    float seaTurbNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("turbidity"));
+                    int seaTurbNowInt = Math.round(seaTurbNowFloat);
+                    String seaTurbNow = String.valueOf(seaTurbNowInt);
                     seaTurbNowTextView.setText(seaTurbNow);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -364,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
 
         //mare mosso
         seaRoughTextView = (TextView) findViewById(R.id.roughSeaNowTextView);
-        String seaRoughNowURL = URL + "/sea/waves/now?user=";
+        String seaRoughNowURL = URL + "/sea/waves/now?user=" + user;
         JsonObjectRequest requestSeaRoughNow = new JsonObjectRequest(Request.Method.GET, seaRoughNowURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -443,7 +455,8 @@ public class MainActivity extends AppCompatActivity {
                                                   int monthOfYear, int dayOfMonth) {
 
                                 //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String tempURL = URL + "/dht?user=" + user + "&date=" + date;
                                 JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
                                     @Override
@@ -486,7 +499,8 @@ public class MainActivity extends AppCompatActivity {
                                                   int monthOfYear, int dayOfMonth) {
 
                                 //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String humURL = URL + "/dht?user=" + user + "&date=" + date;
                                 JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
                                     @Override
@@ -529,7 +543,8 @@ public class MainActivity extends AppCompatActivity {
                                                   int monthOfYear, int dayOfMonth) {
 
                                 //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String uvaURL = URL + "/uva?user=" + user + "&date=" + date;
                                 JsonObjectRequest requestUVA = new JsonObjectRequest(Request.Method.GET, uvaURL, null, new Response.Listener<JSONObject>() {
                                     @Override
@@ -572,7 +587,8 @@ public class MainActivity extends AppCompatActivity {
                                                   int monthOfYear, int dayOfMonth) {
 
                                 //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaTempURL = URL + "/sea/temp?user=" + user + "&date=" + date;
                                 JsonObjectRequest requestSeaTemp = new JsonObjectRequest(Request.Method.GET, seaTempURL, null, new Response.Listener<JSONObject>() {
                                     @Override
@@ -616,7 +632,8 @@ public class MainActivity extends AppCompatActivity {
                                                   int monthOfYear, int dayOfMonth) {
 
                                 //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaTurbURL = URL + "/sea/turbidity?user=" + user + "&date=" + date;
                                 JsonObjectRequest requestSeaTurb = new JsonObjectRequest(Request.Method.GET, seaTurbURL, null, new Response.Listener<JSONObject>() {
                                     @Override
@@ -659,7 +676,8 @@ public class MainActivity extends AppCompatActivity {
                                                   int monthOfYear, int dayOfMonth) {
 
                                 //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaWavesURL = URL + "/sea/turbidity?user=" + user + "&date=" + date;
                                 JsonObjectRequest requestSeaWaves = new JsonObjectRequest(Request.Method.GET, seaWavesURL, null, new Response.Listener<JSONObject>() {
                                     @Override
@@ -686,8 +704,8 @@ public class MainActivity extends AppCompatActivity {
         String dateUrl = "2018-08-25";
 
         //temperatura
-        String tempURL = URL + "/dht?user=" + user + "&date=" + dateUrl;
-        //String tempURL = URL + "/dht?user=" + user;
+        //String tempURL = URL + "/dht?user=" + user + "&date=" + dateUrl;
+        String tempURL = URL + "/dht?user=" + user;
         JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -702,8 +720,8 @@ public class MainActivity extends AppCompatActivity {
         queue.add(requestTemp);
 
         //umidità
-        String humURL = URL + "/dht?user=" + user + "&date=" + dateUrl;
-        //String humURL = URL + "/dht?user=" + user;
+        //String humURL = URL + "/dht?user=" + user + "&date=" + dateUrl;
+        String humURL = URL + "/dht?user=" + user;
         JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
