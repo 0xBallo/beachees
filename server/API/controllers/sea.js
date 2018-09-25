@@ -343,25 +343,29 @@ exports.get_waves_acc = (req, res, db) => {
       .exec(function (err, data) {
          let temp = 0,
             result = [];
-         let sum_h = 0.0,
-            sum_t = 0.0,
+         /*let sum_h = 0.0,
+            sum_t = 0.0,*/
+         let sum_w = 0.0,
             count = 0;
          data.forEach(el => {
             if (temp !== parseInt(el.hour)) {
                if (count !== 0) {
                   result.push({
-                     acc: sum_t / parseFloat(count),
-                     gyro: sum_h / parseFloat(count),
+                     /*acc: sum_t / parseFloat(count),
+                     gyro: sum_h / parseFloat(count),*/
+                     waves: sum_w / parseFloat(count),
                      hour: temp
                   });
                }
                temp = parseInt(el.hour);
-               count = 0;
+               /*count = 0;
                sum_t = 0.0;
-               sum_h = 0.0;
+               sum_h = 0.0;*/
+               sum_w = 0.0;
             }
-            sum_t += parseFloat(el.acc);
-            sum_h += parseFloat(el.gyro);
+            /*sum_t += parseFloat(el.acc);
+            sum_h += parseFloat(el.gyro);*/
+            sum_w += parseFloat(el.waves);
             count++;
          });
          res.json({
