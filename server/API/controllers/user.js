@@ -83,33 +83,37 @@ exports.send_push = (req, res, db, admin) => {
  */
 exports.get_notifications = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
-   const parameters = urlParts.query;
-   const user = parameters.user;
    const data = urlParts.query;
 
-   if (user === undefined) {
+   if (data.user === undefined) {
       res.status(401).send('Incomplete data in request!');
    } else {
 
       db.users.find({
-         $or: [{
-            user: user
+         /*$or: [{
+            user: data.user
          }, {
             user: {
                $exists: false
             }
-         }],
+         }],*/
+         user:data.user,
          notification: {
             $exists: true
          }
-      }, (err, results) => {
-         if (err)
+      }, (err, data) => {
+         if (err){
             res.status(501).json(err);
-         if (results.length == 0) {
+         /*if (results.length == 0) {
             res.status(202).send('No notifies found!');
          } else {
             res.status(201).json(results);
-         }
+         }*/
+        }else{
+            res.json({
+                data: data
+             });
+        }
       });
 
    }

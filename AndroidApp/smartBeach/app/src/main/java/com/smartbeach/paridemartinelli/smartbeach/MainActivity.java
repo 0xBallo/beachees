@@ -3,6 +3,7 @@ package com.smartbeach.paridemartinelli.smartbeach;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -13,7 +14,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,7 +26,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -34,7 +33,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.app.DatePickerDialog;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -59,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://67e18b26.ngrok.io/api";
+    public static final String URL = "http://d2e5fd0f.ngrok.io/api";
     //TODO: recuperare username da login
     public static String user = "PM12";
     public static RequestQueue queue;
@@ -816,7 +814,7 @@ public class MainActivity extends AppCompatActivity {
         notificationLinearLayout = (LinearLayout) findViewById(R.id.notificationLinearLayout);
 
         //TODO: una volta sistemata la grafica togliere questo e scommentare la parte sotto
-        for (int i = 0; i < 20; i++) {
+        /*for (int i = 0; i < 20; i++) {
 
             //TODO: recuperare i dati corretti
             String date = "31-08-18 ore 17:36";
@@ -827,45 +825,15 @@ public class MainActivity extends AppCompatActivity {
             String id = "dguguefgiefo";
             int color = Color.parseColor("#FBC02D");
             notificationDelegate.createNotification(MainActivity.this, notificationLinearLayout, date, text, typeNotString, typeNotImage, icon, id, MainActivity.this, color);
-        };
+        };*/
 
 
-        /*String notificationsURL = URL + "/notify?user=" + user;
+        String notificationsURL = URL + "/notify?user=" + user;
         JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.GET, notificationsURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-                try {
-                    if(response.getJSONArray("data").length() == 0){
-
-                        TextView noNotificationsTV = new TextView(MainActivity.this);
-                        LinearLayout.LayoutParams noNotificationsTVParams = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.MATCH_PARENT
-                        );
-                        noNotificationsTV.setLayoutParams(noNotificationsTVParams);
-                        noNotificationsTV.setText("Nessuna nuova notifica da mostrare");
-                        noNotificationsTV.setGravity(Gravity.CENTER);
-                        noNotificationsTV.setPadding(15,300,15,15);
-                        notificationLinearLayout.addView(noNotificationsTV);
-
-
-
-                    }else{
-                        for (int i = 0; i < response.getJSONArray("data").length(); i++) {
-
-                            //TODO: recuperare i dati corretti
-                            String date = "31-08-18 ore 17:36";
-                            String text = "Attenzione: Temperatura troppo elevata";
-                            String tipoNot = "Temperatura";
-                            Integer icon = R.drawable.ic_report_problem_black_24dp;
-                            String id = "dguguefgiefo";
-                            notificationDelegate.createNotification(mContext, notificationLinearLayout, date, text, tipoNot, icon, id, MainActivity.this);
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                Log.i("response ", String.valueOf(response));
+                notificationDelegate.createNotification(response, notificationLinearLayout, MainActivity.this);
 
             }
         }, new Response.ErrorListener() {
@@ -874,7 +842,7 @@ public class MainActivity extends AppCompatActivity {
                 //TODO: stampare l'errore
             }
         });
-        queue.add(requestNotifications);*/
+        queue.add(requestNotifications);
 
         //-----------------------------------------------------------//
 

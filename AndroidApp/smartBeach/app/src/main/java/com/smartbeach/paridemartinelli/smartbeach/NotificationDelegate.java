@@ -13,6 +13,7 @@ import android.media.Image;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,12 +32,47 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import static com.smartbeach.paridemartinelli.smartbeach.MainActivity.URL;
+import static com.smartbeach.paridemartinelli.smartbeach.MainActivity.mContext;
 import static com.smartbeach.paridemartinelli.smartbeach.MainActivity.queue;
 import static com.smartbeach.paridemartinelli.smartbeach.MainActivity.user;
 import static com.smartbeach.paridemartinelli.smartbeach.R.drawable.icons8_temperatura;
 
 public class NotificationDelegate {
     public NotificationDelegate() {
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void createNotification(JSONObject response, LinearLayout notificationLinearLayout, Activity activity) {
+        try {
+            if(response.getJSONArray("data").length() == 0){
+                TextView noNotificationsTV = new TextView(activity);
+                LinearLayout.LayoutParams noNotificationsTVParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                );
+                noNotificationsTV.setLayoutParams(noNotificationsTVParams);
+                noNotificationsTV.setText("Nessuna nuova notifica da mostrare");
+                noNotificationsTV.setGravity(Gravity.CENTER);
+                noNotificationsTV.setPadding(15,300,15,15);
+                notificationLinearLayout.addView(noNotificationsTV);
+
+            }else{
+                for (int i = 0; i < response.getJSONArray("data").length(); i++) {
+
+                    //TODO: recuperare i dati corretti
+                    String date = "31-08-18 ore 17:36";
+                    String text = "Attenzione: Temperatura troppo elevata";
+                    String typeNotString = "Temperatura";
+                    int typeNotImage = R.drawable.icons8_temperatura;
+                    Integer icon = R.drawable.ic_report_problem_black_24dp;
+                    String id = "dguguefgiefo";
+                    int color = Color.parseColor("#FBC02D");
+                    createNotification(activity, notificationLinearLayout, date, text, typeNotString, typeNotImage, icon, id, activity, color);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
