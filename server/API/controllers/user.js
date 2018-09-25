@@ -36,6 +36,7 @@ exports.add_user_device = (req, res, db) => {
  * @param {*} db 
  */
 exports.send_push = (req, res, db, admin) => {
+   const urlParts = url.parse(req.url, true);
    const data = req.body;
 
    if (data.user === undefined || data.message === undefined) {
@@ -80,17 +81,19 @@ exports.send_push = (req, res, db, admin) => {
  * @param {*} req 
  * @param {*} db 
  */
-exports.get_notifications = (res, req, db) => {
+exports.get_notifications = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
+   const parameters = urlParts.query;
+   const user = parameters.user;
    const data = urlParts.query;
 
-   if (data.user === undefined) {
+   if (user === undefined) {
       res.status(401).send('Incomplete data in request!');
    } else {
 
       db.users.find({
          $or: [{
-            user: data.user
+            user: user
          }, {
             user: {
                $exists: false

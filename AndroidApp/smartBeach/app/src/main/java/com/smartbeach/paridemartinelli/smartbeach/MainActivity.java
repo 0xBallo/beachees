@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "https://d495a017.ngrok.io/api";
+    public static final String URL = "http://67e18b26.ngrok.io/api";
+    //TODO: recuperare username da login
     public static String user = "PM12";
     public static RequestQueue queue;
     BluetoothAdapter mBluetoothAdapter;
@@ -433,10 +434,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico della temperatura
         tempLineChart = (LineChart) findViewById(R.id.tempLineChart);
-
-        chartDelegate.setData(tempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura", yellow);
-        tempLineChart.setDescription("");
-
+        //chartDelegate.setData(tempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura", yellow);
+        //tempLineChart.setDescription("");
         dateTempImageButton = (ImageButton) findViewById(R.id.dateTempImageButton);
         dateTempImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -458,10 +457,11 @@ public class MainActivity extends AppCompatActivity {
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String tempURL = URL + "/dht?user=" + user + "&date=" + date;
+                                final String label = "Temperatura " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "temperature", "Temperatua", "Temperatura troppo elevata", 35f, 45f, 15f, tempLineChart, yellow );
+                                        chartDelegate.createChart(response, "temperature", label, "Temperatura troppo elevata", 35f, 45f, 15f, tempLineChart, yellow );
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -479,8 +479,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico dell'umidità
         humLineChart = (LineChart) findViewById(R.id.humLineChart);
-        chartDelegate.setData(humLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Umidità", yellow);
-        humLineChart.setDescription("");
+        //chartDelegate.setData(humLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Umidità", yellow);
+        //humLineChart.setDescription("");
         dateHumImageButton = (ImageButton) findViewById(R.id.dateHumImageButton);
         dateHumImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -502,10 +502,11 @@ public class MainActivity extends AppCompatActivity {
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String humURL = URL + "/dht?user=" + user + "&date=" + date;
+                                final String label = "Umidità " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "humidity", "Umidità", "Umidità troppo elevata", 80f, 90f, 70f, humLineChart, yellow );
+                                        chartDelegate.createChart(response, "humidity", label, "Umidità troppo elevata", 80f, 90f, 70f, humLineChart, yellow );
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -523,8 +524,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico dei raggi UV
         UVLineChart = (LineChart) findViewById(R.id.UVLineChart);
-        chartDelegate.setData(UVLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Raggi UV", yellow);
-        UVLineChart.setDescription("");
+        //chartDelegate.setData(UVLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Raggi UV", yellow);
+        //UVLineChart.setDescription("");
         dateUVImageButton = (ImageButton) findViewById(R.id.dateUVImageButton);
         dateUVImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -546,10 +547,11 @@ public class MainActivity extends AppCompatActivity {
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String uvaURL = URL + "/uva?user=" + user + "&date=" + date;
+                                final String label = "Raggi UV " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestUVA = new JsonObjectRequest(Request.Method.GET, uvaURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "uva", "Raggi UV", "Soglia limite consigliato", 12f, 15f, 0f , UVLineChart, yellow);
+                                        chartDelegate.createChart(response, "uva", label, "Soglia limite consigliato", 12f, 15f, 0f , UVLineChart, yellow);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -567,8 +569,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico della temperatura del mare
         seaTempLineChart = (LineChart) findViewById(R.id.seaTempLineChart);
-        chartDelegate.setData(seaTempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura del mare", blue);
-        seaTempLineChart.setDescription("");
+        //chartDelegate.setData(seaTempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura del mare", blue);
+        //seaTempLineChart.setDescription("");
         dateSeaTempImageButton = (ImageButton) findViewById(R.id.dateSeaTempImageButton);
         dateSeaTempImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -590,10 +592,11 @@ public class MainActivity extends AppCompatActivity {
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaTempURL = URL + "/sea/temp?user=" + user + "&date=" + date;
+                                final String label = " Temperatura del mare " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestSeaTemp = new JsonObjectRequest(Request.Method.GET, seaTempURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "watertemp", "Temperatura del mare", "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue );
+                                        chartDelegate.createChart(response, "watertemp", label, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue );
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -612,8 +615,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico della torbidità del mare
         seaTurbLineChart = (LineChart) findViewById(R.id.seaTurbLineChart);
-        chartDelegate.setData(seaTurbLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Torbidità del mare", blue);
-        seaTurbLineChart.setDescription("");
+        //chartDelegate.setData(seaTurbLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Torbidità del mare", blue);
+        //seaTurbLineChart.setDescription("");
         dateTurbImageButton = (ImageButton) findViewById(R.id.dateTurbImageButton);
         dateTurbImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -635,10 +638,11 @@ public class MainActivity extends AppCompatActivity {
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaTurbURL = URL + "/sea/turbidity?user=" + user + "&date=" + date;
+                                final String label = "Torbidità del mare " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestSeaTurb = new JsonObjectRequest(Request.Method.GET, seaTurbURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "turbidity", "Torbidità del mare", "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue );
+                                        chartDelegate.createChart(response, "turbidity", label, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue );
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -656,8 +660,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico del movimento del mare
         roughSeaLineChart = (LineChart) findViewById(R.id.roughSeaLineChart);
-        chartDelegate.setData(roughSeaLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Movimento del mare", blue);
-        roughSeaLineChart.setDescription("");
+        //chartDelegate.setData(roughSeaLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Movimento del mare", blue);
+        //roughSeaLineChart.setDescription("");
         dateRoughSeaImageButton = (ImageButton) findViewById(R.id.dateRoughSeaImageButton);
         dateRoughSeaImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -679,10 +683,11 @@ public class MainActivity extends AppCompatActivity {
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaWavesURL = URL + "/sea/turbidity?user=" + user + "&date=" + date;
+                                final String label = "Livello mare mosso " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestSeaWaves = new JsonObjectRequest(Request.Method.GET, seaWavesURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "waves", "Livello mare mosso", "Bandiera rossa", 3f, 5f, 0f, roughSeaLineChart, blue);
+                                        chartDelegate.createChart(response, "waves", label, "Bandiera rossa", 3f, 5f, 0f, roughSeaLineChart, blue);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -700,16 +705,20 @@ public class MainActivity extends AppCompatActivity {
 
         //Aggiornamento dati dal server
 
-        //Temperatura e umidità
-        String dateUrl = "2018-08-25";
+        //Date
+        Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR); // current year
+        int mMonth = c.get(Calendar.MONTH); // current month
+        int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
+        String currentDate = + mDay + "/" + mMonth + "/" + mYear;
 
         //temperatura
-        //String tempURL = URL + "/dht?user=" + user + "&date=" + dateUrl;
         String tempURL = URL + "/dht?user=" + user;
+        final String labelTemp = "Temperatura " + currentDate;
         JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "temperature", "Temperatua", "Temperatura troppo elevata", 35f, 45f, 15f, tempLineChart , yellow);
+                chartDelegate.createChart(response, "temperature", labelTemp, "Temperatura troppo elevata", 35f, 40f, 21f, tempLineChart , yellow );
             }
         }, new Response.ErrorListener() {
             @Override
@@ -720,12 +729,12 @@ public class MainActivity extends AppCompatActivity {
         queue.add(requestTemp);
 
         //umidità
-        //String humURL = URL + "/dht?user=" + user + "&date=" + dateUrl;
         String humURL = URL + "/dht?user=" + user;
+        final String labelHum = "Umidità " + currentDate;
         JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "humidity", "Umidità", "Umidità troppo elevata", 80f, 85f, 70f, humLineChart, yellow );
+                chartDelegate.createChart(response, "humidity", labelHum, "Umidità troppo elevata", 80f, 85f, 70f, humLineChart, yellow );
             }
         }, new Response.ErrorListener() {
             @Override
@@ -737,10 +746,11 @@ public class MainActivity extends AppCompatActivity {
 
         //raggi UV
         String uvaURL = URL + "/uva?user=" + user;
+        final String labelUV = "Raggi UV " + currentDate;
         JsonObjectRequest requestUVA = new JsonObjectRequest(Request.Method.GET, uvaURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "uva", "Raggi UV", "Soglia limite consigliato", 12f, 15f, 0f , UVLineChart, yellow);
+                chartDelegate.createChart(response, "uva", labelUV, "Soglia limite consigliato", 12f, 15f, 5f , UVLineChart, yellow);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -752,10 +762,11 @@ public class MainActivity extends AppCompatActivity {
 
         //temperatura del mare
         String seaTempURL = URL + "/sea/temp?user=" + user;
+        final String labelSeaTemp = "Temperatura del mare " + currentDate;
         JsonObjectRequest requestSeaTemp = new JsonObjectRequest(Request.Method.GET, seaTempURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "watertemp", "Temperatura del mare", "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue );
+                chartDelegate.createChart(response, "watertemp", labelSeaTemp, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue );
             }
         }, new Response.ErrorListener() {
             @Override
@@ -767,10 +778,11 @@ public class MainActivity extends AppCompatActivity {
 
         //torbidità
         String seaTurbURL = URL + "/sea/turbidity?user=" + user;
+        final String labelSeaTurb = "Torbidità " + currentDate;
         JsonObjectRequest requestSeaTurb = new JsonObjectRequest(Request.Method.GET, seaTurbURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "turbidity", "Torbidità del mare", "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue );
+                chartDelegate.createChart(response, "turbidity", labelSeaTurb, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue );
             }
         }, new Response.ErrorListener() {
             @Override
@@ -782,10 +794,11 @@ public class MainActivity extends AppCompatActivity {
 
         //mare mosso
         String seaWavesURL = URL + "/sea/waves?user=" + user;
+        final String labelWaves = "Livello mare mosso " + currentDate;
         JsonObjectRequest requestSeaWaves = new JsonObjectRequest(Request.Method.GET, seaWavesURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "waves", "Livello mare mosso", "Bandiera rossa", 3f, 5f, 0f, roughSeaLineChart, blue);
+                chartDelegate.createChart(response, "waves", labelWaves, "Bandiera rossa", 3f, 5f, 0f, roughSeaLineChart, blue);
             }
         }, new Response.ErrorListener() {
             @Override
