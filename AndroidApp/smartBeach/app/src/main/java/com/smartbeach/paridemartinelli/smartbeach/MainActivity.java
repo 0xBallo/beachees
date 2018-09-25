@@ -51,6 +51,8 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
+import static com.smartbeach.paridemartinelli.smartbeach.R.color.darkYellow;
+
 public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_COARSE_LOCATION = 2;
@@ -195,8 +197,6 @@ public class MainActivity extends AppCompatActivity {
         //bottone info spiaggia (secondo me non serve)
         //moreInfoBeachButton = (ImageButton) findViewById(R.id.moreInfoBeachButton);
 
-        //TODO: controllare il valore, se supera la soglia colorare cerchio e valore di rosso
-
         //Temperatura e umidità
         tempNowTextView = (TextView) findViewById(R.id.tempNowTextView);
         humNowTextView = (TextView) findViewById(R.id.humNowTextView);
@@ -212,7 +212,18 @@ public class MainActivity extends AppCompatActivity {
                     int humNowInt = Math.round(humNowFloat);
                     String humNow = String.valueOf(humNowInt) + "%";
                     tempNowTextView.setText(tempNow);
+                    //TODO: fare lo stesso controllo anche per gli altri dati
+                    if (tempNowInt >= 35){
+                        tempNowTextView.setTextColor(Color.RED);
+                    }else{
+                        tempNowTextView.setTextColor(Color.parseColor("#FBC02D"));
+                    }
                     humNowTextView.setText(humNow);
+                    if (humNowInt >= 80){
+                        humNowTextView.setTextColor(Color.RED);
+                    }else{
+                        humNowTextView.setTextColor(Color.parseColor("#FBC02D"));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -496,7 +507,6 @@ public class MainActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String humURL = URL + "/dht?user=" + user + "&date=" + date;
@@ -541,7 +551,6 @@ public class MainActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String uvaURL = URL + "/uva?user=" + user + "&date=" + date;
@@ -586,7 +595,6 @@ public class MainActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaTempURL = URL + "/sea/temp?user=" + user + "&date=" + date;
@@ -632,7 +640,6 @@ public class MainActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaTurbURL = URL + "/sea/turbidity?user=" + user + "&date=" + date;
@@ -677,7 +684,6 @@ public class MainActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaWavesURL = URL + "/sea/turbidity?user=" + user + "&date=" + date;
@@ -812,22 +818,6 @@ public class MainActivity extends AppCompatActivity {
         //----------------------Sezione notifiche--------------------//
         notificationScrollView = (ScrollView) findViewById(R.id.notificationScrollView);
         notificationLinearLayout = (LinearLayout) findViewById(R.id.notificationLinearLayout);
-
-        //TODO: una volta sistemata la grafica togliere questo e scommentare la parte sotto
-        /*for (int i = 0; i < 20; i++) {
-
-            //TODO: recuperare i dati corretti
-            String date = "31-08-18 ore 17:36";
-            String text = "Attenzione: Temperatura troppo elevata";
-            String typeNotString = "Temperatura";
-            int typeNotImage = R.drawable.icons8_temperatura;
-            Integer icon = R.drawable.ic_report_problem_black_24dp;
-            String id = "dguguefgiefo";
-            int color = Color.parseColor("#FBC02D");
-            notificationDelegate.createNotification(MainActivity.this, notificationLinearLayout, date, text, typeNotString, typeNotImage, icon, id, MainActivity.this, color);
-        };*/
-
-
         String notificationsURL = URL + "/notify?user=" + user;
         JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.GET, notificationsURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -910,6 +900,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -917,7 +908,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("BLE", intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString());
                 if(intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString().equals("E1:A4:B8:01:EA:35")){
                     Log.d("BLE","BEACONNNNNNNNN");
-                    //TODO: richiamare il metodo per la creazione della notifica
+                    //TODO:creare oggetto con valori corretti
+                    JSONObject response = null;
+                    notificationDelegate.createNotification(response, notificationLinearLayout, MainActivity.this);
                 }
             }
         }

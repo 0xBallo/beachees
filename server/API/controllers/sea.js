@@ -142,7 +142,7 @@ exports.get_water_temp_now = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const user = parameters.user;
-   db.beach.find({
+   db.sea.find({
          user: user,
          watertemp: {
             $exists: true
@@ -284,7 +284,7 @@ exports.get_water_turb_now = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const user = parameters.user;
-   db.beach.find({
+   db.sea.find({
          user: user,
          turbidity: {
             $exists: true
@@ -432,7 +432,7 @@ exports.get_waves_now = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const user = parameters.user;
-   db.beach.find({
+   db.sea.find({
          user: user,
          acc: {
             $exists: true
