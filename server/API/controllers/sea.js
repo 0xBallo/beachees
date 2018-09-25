@@ -436,14 +436,18 @@ exports.get_waves_now = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const user = parameters.user;
+   
    db.sea.find({
          user: user,
-         acc: {
+         waves:{
+               $exists: true
+         },
+         /*acc: {
             $exists: true
          },
          gyro: {
             $exists: true
-         }
+         }*/
       })
       .sort({
          ISO: -1
