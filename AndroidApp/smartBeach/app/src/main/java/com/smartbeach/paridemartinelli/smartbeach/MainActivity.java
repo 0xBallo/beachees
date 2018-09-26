@@ -49,6 +49,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 
 import static com.smartbeach.paridemartinelli.smartbeach.R.color.darkYellow;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://d2e5fd0f.ngrok.io/api";
+    public static final String URL = "http://a6f0b763.ngrok.io/api";
     //TODO: recuperare username da login
     public static String user = "PM12";
     public static RequestQueue queue;
@@ -412,6 +413,7 @@ public class MainActivity extends AppCompatActivity {
                     }else{
                         seaRoughTextView.setTextColor(Color.parseColor("#29B6F6"));
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

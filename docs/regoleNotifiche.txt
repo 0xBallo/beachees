@@ -8,7 +8,7 @@ Torbidità (troppo elevata): (max=46,50) >35;
 Movimento del mare (Troppo mosso): 3; ***
 
 Notifiche “intelligenti”:
->2h con temp >35°C  ”Sono più di tre ore che sei sottoposto ad una temperatura troppo elevata ti consigliamo di metterti in una zona più riparata. Il nostro bar avrà sicuramente qualcosa che farà al caso tuo”;
+>2h con temp >35°C  ”Sono più di due ore che sei sottoposto ad una temperatura troppo elevata ti consigliamo di metterti in una zona più riparata. Il nostro bar avrà sicuramente qualcosa che farà al caso tuo”;
 >2h con temp >35°C + UV>12  “Sono più di tre ore che stai al sole ad una temperatura molto elevata, ti consigliamo di metterti all’ombra”;
 23°C < Temperatura mare < 27°C + torbidità < 35 + mosso:1 “le condizioni del mare sono ottime: pulito, calmo e di una giusta temperatura. Fatti un bel bagno!”
 23°C < Temperatura mare < 27°C + torbidità < 35 + mosso:2 “Il mare è pulito, la temperatura è quella ottimale. Goditi le onde intanto che non sono troppo alte!”

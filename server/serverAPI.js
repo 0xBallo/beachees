@@ -21,10 +21,12 @@ let lidoBase = {};
 lidoBase.beach = new Datastore('lidoBase-beach.db');
 lidoBase.sea = new Datastore('lidoBase-sea.db');
 lidoBase.users = new Datastore('lidoBase-users.db');
+lidoBase.notifies = new Datastore('lidoBase-notifies.db');
 
 lidoBase.sea.loadDatabase();
 lidoBase.beach.loadDatabase();
 lidoBase.users.loadDatabase();
+lidoBase.notifies.loadDatabase();
 
 // Initialize Firebase Admin services
 Admin.initializeApp({
