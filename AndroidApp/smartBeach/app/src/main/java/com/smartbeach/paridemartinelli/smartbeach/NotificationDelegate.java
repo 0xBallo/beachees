@@ -59,15 +59,47 @@ public class NotificationDelegate {
             }else{
                 for (int i = 0; i < response.getJSONArray("data").length(); i++) {
 
-                    //TODO: recuperare i dati corretti
-                    String date = "31-08-18 ore 17:36";
-                    String text = "Attenzione: Temperatura troppo elevata";
-                    String typeNotString = "Temperatura";
-                    int typeNotImage = R.drawable.icons8_temperatura;
-                    Integer icon = R.drawable.ic_report_problem_black_24dp;
-                    String id = "dguguefgiefo";
-                    int color = Color.parseColor("#FBC02D");
-                    createNotification(activity, notificationLinearLayout, date, text, typeNotString, typeNotImage, icon, id, activity, color);
+                    String date = response.getJSONArray("data").getJSONObject(i).getString("date");
+                    String text = response.getJSONArray("data").getJSONObject(i).getJSONObject("notification").getString("body");
+                    String typeNotString = response.getJSONArray("data").getJSONObject(i).getJSONObject("notification").getString("title");
+                    //int typeNotImage = R.drawable.icons8_temperatura;
+                    //int icon = R.drawable.ic_report_problem_black_24dp;
+                    //String iconString = "R.drawable." + response.getJSONArray("data").getJSONObject(i).getJSONObject("notification").getString("icon");
+                    //int iconInt = Integer.valueOf(iconString);
+                    String id = response.getJSONArray("data").getJSONObject(i).getString("_id");
+                    int color;
+                    int icon;
+                    switch (typeNotString){
+                        case "Temperatura":
+                            color = Color.parseColor("#FBC02D");
+                            icon = R.drawable.ic_report_problem_black_24dp;
+                            break;
+                        case "Umidità":
+                            color = Color.parseColor("#FBC02D");
+                            icon = R.drawable.ic_report_problem_black_24dp;
+                            break;
+                        case "UVA":
+                            color = Color.parseColor("#FBC02D");
+                            icon = R.drawable.ic_report_problem_black_24dp;
+                            break;
+                        case "Temperatura Mare":
+                            color = Color.parseColor("#29B6F6");
+                            icon = R.drawable.ic_report_problem_black_24dp;
+                            break;
+                        case "Torbidità Mare":
+                            color = Color.parseColor("#29B6F6");
+                            icon = R.drawable.ic_report_problem_black_24dp;
+                            break;
+                        case "Onde":
+                            color = Color.parseColor("#29B6F6");
+                            icon = R.drawable.ic_report_problem_black_24dp;
+                            break;
+                        default:
+                            color = Color.parseColor("#FF4081");
+                            icon = R.drawable.ic_lightbulb_outline_black_24dp;
+
+                    }
+                    createNotification(activity, notificationLinearLayout, date, text, typeNotString, icon, id, activity, color);
                 }
             }
         } catch (JSONException e) {
@@ -77,7 +109,7 @@ public class NotificationDelegate {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("ResourceAsColor")
-    void createNotification(final Context mContext, final LinearLayout notificationLinearLayout, String date, String text, String type, int typeImage, Integer icon, final String id, final Activity activity, int color) {
+    void createNotification(final Context mContext, final LinearLayout notificationLinearLayout, String date, String text, String type, Integer icon, final String id, final Activity activity, int color) {
         // Initialize a new CardView
         CardView card = new CardView(mContext);
         // Set the CardView layoutParams
@@ -88,7 +120,7 @@ public class NotificationDelegate {
         card.setLayoutParams(cardParams);
         //Set CardView Margins
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
-        layoutParams.setMargins(35, 35, 35, 0);
+        layoutParams.setMargins(35, 35, 35, 10);
         card.requestLayout();
         //Set CardView corner radius
         card.setRadius(9);
@@ -121,9 +153,9 @@ public class NotificationDelegate {
         ln.requestLayout();
 
         //Immagine del tipo
-        ImageView imageView = new ImageView(mContext);
+        /*ImageView imageView = new ImageView(mContext);
         imageView.setImageResource(typeImage);
-        imageView.setPadding(10,10, 0,0);
+        imageView.setPadding(10,10, 0,0);*/
 
         //Tipo della notifica
         TextView typeTV = new TextView(mContext);

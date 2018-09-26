@@ -5,7 +5,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/lightBlueGray">
 
     //SEZIONE HOME
     <!--<FrameLayout
@@ -292,7 +293,7 @@
     <TabHost
         android:id="@+id/dashboardTabHost"
         android:layout_width="match_parent"
-        android:layout_height="546dp"
+        android:layout_height="550dp"
         android:visibility="invisible">
 
         <LinearLayout
@@ -719,10 +720,14 @@
 
     //SEZIONE NOTIFICHE
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="540dp">
+
     <ScrollView
         android:id="@+id/notificationScrollView"
         android:layout_width="match_parent"
-        android:layout_height="549dp"
+        android:layout_height="match_parent"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         android:background="@color/lightBlueGray">
@@ -733,6 +738,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"></LinearLayout>
     </ScrollView>
+    </LinearLayout>
 
     //BOTTOM NAVIGATION MENU
 

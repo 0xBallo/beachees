@@ -92,13 +92,13 @@ exports.get_notifications = (req, res, db) => {
     } else {
 
         db.notifies.find({
-            //$or: [{
+            $or: [{
                 user: data.user
-            /*}, {
+            }, {
                 user: {
                     $exists: false
                 }
-            }]*/
+            }]
         })
         .exec(function(err, data) {
             if (err){
