@@ -1,0 +1,5 @@
+{"user":"PM12","notification":{"title":"Temperatura","body":"Temperatura superiore a 35°C!","icon":"ic_report_problem_black_24dp","color":"#FBC02D"},"date":"2018-09-26T12:19:37+02:00","_id":"0RCDMXCmp4eCLbJG"}
+{"user":"PM12","notification":{"title":"Temperatura Mare","body":"Temperatura del mare inferiore a 23°C!","icon":"ic_report_problem_black_24dp","color":"#FBC02D"},"date":"2018-09-26T12:23:23+02:00","_id":"cAszRFUR2kLrDpJ5"}
+{"user":"PM12","notification":{"title":"Temperatura Mare","body":"Temperatura del mare superiore a 27°C!","icon":"ic_report_problem_black_24dp","color":"#FBC02D"},"date":"2018-09-26T12:43:10+02:00","_id":"QaacoZ2NvN4dLNUE"}
+{"user":"PM12","notification":{"title":"Torbidità Mare","body":"Torbidità del mare superiore a 35!","icon":"ic_report_problem_black_24dp","color":"#FBC02D"},"date":"2018-09-26T12:44:13+02:00","_id":"JHd1rXmc0AX9PSkE"}
+{"user":"PM12","notification":{"title":"Onde","body":"Mare molto mosso (3)!","icon":"ic_report_problem_black_24dp","color":"#FBC02D"},"date":"2018-09-26T12:44:58+02:00","_id":"yKXlSibN82uRSAyf"}

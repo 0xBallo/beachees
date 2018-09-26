@@ -10,21 +10,21 @@ const Notifier = require('../utils/notify-helper');
  * @param {*} db 
  */
 exports.add_user_device = (req, res, db) => {
-   const data = req.body;
+    const data = req.body;
 
-   if (data.user === undefined || data.token === undefined) {
-      res.status(401).send('Incomplete data in request!');
-   } else {
+    if (data.user === undefined || data.token === undefined) {
+        res.status(401).send('Incomplete data in request!');
+    } else {
 
-      db.users.insert(data, function (err, newDoc) {
-         if (err) {
-            res.status(501).json(err);
-         } else {
-            res.status(201).json(newDoc);
-         }
-      });
+        db.users.insert(data, function (err, newDoc) {
+            if (err) {
+                res.status(501).json(err);
+            } else {
+                res.status(201).json(newDoc);
+            }
+        });
 
-   }
+    }
 };
 
 /**
@@ -36,41 +36,43 @@ exports.add_user_device = (req, res, db) => {
  * @param {*} db 
  */
 exports.send_push = (req, res, db, admin) => {
-   const urlParts = url.parse(req.url, true);
-   const data = req.body;
+    const urlParts = url.parse(req.url, true);
+    const data = req.body;
 
-   if (data.user === undefined || data.message === undefined) {
-      res.status(401).send('Incomplete data in request!');
-   } else {
-      db.users.find({
-         user: data.user
-      }, (err, results) => {
-         if (results.length == 0) {
-            res.status(202).send('No device/user found!');
-         } else {
-            results.forEach(r => {
-               const message = {
-                  android: {
-                     ttl: 3600 * 1000, // 1 hour in milliseconds
-                     priority: 'normal',
-                     notification: {
-                        title: '$GOOG up 1.43% on the day',
-                        body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
-                        icon: 'ic_notifications_black_24dp',
-                        color: '#f45342'
-                     }
-                  },
-                  token: r.token
-               };
+    if (data.user === undefined || data.message === undefined || data.title === undefined || data.icon === undefined || data.color === undefined) {
+        res.status(401).send('Incomplete data in request!');
+    } else {
+        db.users.find({
+            user: data.user
+        }, (err, results) => {
+            if (err)
+                res.status(501).send(err);
+            if (results.length == 0) {
+                res.status(202).send('No device/user found!');
+            } else {
+                results.forEach(r => {
+                    const message = {
+                        android: {
+                            ttl: 3600 * 1000, // 1 hour in milliseconds
+                            priority: 'normal',
+                            notification: {
+                                title: data.title,
+                                body: data.message,
+                                icon: data.icon,
+                                color: data.color
+                            }
+                        },
+                        token: r.token
+                    };
 
-               Notifier.send_push(admin, message);
+                    Notifier.send_push(admin, db, data.user, message);
 
-            });
-            res.status(201).json(results);
-         }
-      });
+                });
+                res.status(201).json(results);
+            }
+        });
 
-   }
+    }
 
 };
 
@@ -82,41 +84,32 @@ exports.send_push = (req, res, db, admin) => {
  * @param {*} db 
  */
 exports.get_notifications = (req, res, db) => {
-   const urlParts = url.parse(req.url, true);
-   const data = urlParts.query;
+    const urlParts = url.parse(req.url, true);
+    const data = urlParts.query;
 
-   if (data.user === undefined) {
-      res.status(401).send('Incomplete data in request!');
-   } else {
+    if (data.user === undefined) {
+        res.status(401).send('Incomplete data in request!');
+    } else {
 
-      db.users.find({
-         /*$or: [{
-            user: data.user
-         }, {
-            user: {
-               $exists: false
+        db.notifies.find({
+            $or: [{
+                user: data.user
+            }, {
+                user: {
+                    $exists: false
+                }
+            }]
+        }, (err, data) => {
+            if (err)
+                res.status(501).json(err);
+            if (data.length == 0) {
+                res.status(202).send('No notifies found!');
+            } else {
+                res.status(201).json(data);
             }
-         }],*/
-         user:data.user,
-         notification: {
-            $exists: true
-         }
-      }, (err, data) => {
-         if (err){
-            res.status(501).json(err);
-         /*if (results.length == 0) {
-            res.status(202).send('No notifies found!');
-         } else {
-            res.status(201).json(results);
-         }*/
-        }else{
-            res.json({
-                data: data
-             });
-        }
-      });
+        });
 
-   }
+    }
 };
 
 /**
@@ -127,21 +120,21 @@ exports.get_notifications = (req, res, db) => {
  * @param {*} db 
  */
 exports.del_notification = (res, req, db) => {
-   const data = req.body;
+    const data = req.body;
 
-   if (data._id === undefined) {
-      res.status(401).send('Identifiers not specified!');
-   } else {
-      db.users.remove({
-         _id: data._id
-      }, {}, function (err, numRemoved) {
-         if (err)
-            res.status(501).json(err);
-         if (numRemoved === 0) {
-            res.status(202).send('No document find with specified id!');
-         } else {
-            res.status(201).send('Correctly removed ' + numRemoved + ' document/s!');
-         }
-      });
-   }
+    if (data._id === undefined) {
+        res.status(401).send('Identifiers not specified!');
+    } else {
+        db.notifies.remove({
+            _id: data._id
+        }, {}, function (err, numRemoved) {
+            if (err)
+                res.status(501).json(err);
+            if (numRemoved === 0) {
+                res.status(202).send('No document find with specified id!');
+            } else {
+                res.status(201).send('Correctly removed ' + numRemoved + ' document/s!');
+            }
+        });
+    }
 };

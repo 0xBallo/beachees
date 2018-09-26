@@ -61,4 +61,6 @@ typings/
 .next
 
 .vscode
-lidoBase-*
+lidoBase-b*
+lidoBase-s*
+lidoBase-u*
