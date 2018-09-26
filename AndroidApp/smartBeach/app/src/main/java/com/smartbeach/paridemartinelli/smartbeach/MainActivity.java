@@ -158,10 +158,8 @@ public class MainActivity extends AppCompatActivity {
         // 1. SISTEMARE LA HOME CHE NON MI PIACE (CHIEDERE CONSIGLIO A MATTIA)
         // 2. SISTEMARE LA GRAFICA DEL DIALOG NELLA HOME
         // 3. SISTEMARE LA GRAFICA DELLA CANCELLAZIONE DELLE NOTIFICHE
-        // 4. POPOLARE IL DB
-        // 5. FAR FUNZIONARE NOTIDICHE PUSH
-        // 6. NOTIFCHE BEACON
-        // 7. TEST
+        // 4. FAR FUNZIONARE NOTIDICHE PUSH
+        // 5. NOTIFCHE BEACON
 
 
         //---------------------Sezione beacon-----------------------------//
@@ -192,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         //-------------------------------------------------------------//
 
         //----------------------Sezione home--------------------------//
-        homeScrollView = (ScrollView) findViewById(R.id.homeScrollView);
+        /*homeScrollView = (ScrollView) findViewById(R.id.homeScrollView);
 
         //bottone info spiaggia (secondo me non serve)
         //moreInfoBeachButton = (ImageButton) findViewById(R.id.moreInfoBeachButton);
@@ -212,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
                     int humNowInt = Math.round(humNowFloat);
                     String humNow = String.valueOf(humNowInt) + "%";
                     tempNowTextView.setText(tempNow);
-                    //TODO: fare lo stesso controllo anche per gli altri dati
                     if (tempNowInt >= 35){
                         tempNowTextView.setTextColor(Color.RED);
                     }else{
@@ -277,6 +274,11 @@ public class MainActivity extends AppCompatActivity {
                     int uvNowInt = Math.round(uvNowFloat);
                     String uvNow = String.valueOf(uvNowInt);
                     uvNowTextView.setText(uvNow);
+                    if(uvNowFloat >= 12){
+                        uvNowTextView.setTextColor(Color.RED);
+                    }else{
+                        uvNowTextView.setTextColor(Color.parseColor("#FBC02D"));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -318,6 +320,11 @@ public class MainActivity extends AppCompatActivity {
                     int seaTempNowInt = Math.round(seaTempNowFloat);
                     String seaTempNow = String.valueOf(seaTempNowInt) + "°C";
                     seaTempNowTextView.setText(seaTempNow);
+                    if(seaTempNowInt >= 27 || seaTempNowInt <= 23){
+                        seaTempNowTextView.setTextColor(Color.RED);
+                    }else{
+                        seaTempNowTextView.setTextColor(Color.parseColor("#29B6F6"));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -357,6 +364,11 @@ public class MainActivity extends AppCompatActivity {
                     int seaTurbNowInt = Math.round(seaTurbNowFloat);
                     String seaTurbNow = String.valueOf(seaTurbNowInt);
                     seaTurbNowTextView.setText(seaTurbNow);
+                    if(seaTurbNowInt >= 35){
+                        seaTurbNowTextView.setTextColor(Color.RED);
+                    }else{
+                        seaTurbNowTextView.setTextColor(Color.parseColor("#29B6F6"));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -391,10 +403,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-
-                    //TODO: modificare la richiesta e fare in modo che torni un valore unico
-                    String seaRoughNow = response.getJSONArray("data").getJSONObject(0).getString("acc");
-                    seaRoughTextView.setText(seaRoughNow);
+                    float seaWavesNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("waves"));
+                    int seaWavesNowInt = Math.round(seaWavesNowFloat);
+                    String seaWavesNow = String.valueOf(seaWavesNowInt);
+                    seaRoughTextView.setText(seaWavesNow);
+                    if(seaWavesNowInt >= 3 ){
+                        seaRoughTextView.setTextColor(Color.RED);
+                    }else{
+                        seaRoughTextView.setTextColor(Color.parseColor("#29B6F6"));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -444,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
         //Grafico della temperatura
         tempLineChart = (LineChart) findViewById(R.id.tempLineChart);
         //chartDelegate.setData(tempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura", yellow);
-        //tempLineChart.setDescription("");
+        tempLineChart.setDescription("");
         dateTempImageButton = (ImageButton) findViewById(R.id.dateTempImageButton);
         dateTempImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -489,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
         //Grafico dell'umidità
         humLineChart = (LineChart) findViewById(R.id.humLineChart);
         //chartDelegate.setData(humLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Umidità", yellow);
-        //humLineChart.setDescription("");
+        humLineChart.setDescription("");
         dateHumImageButton = (ImageButton) findViewById(R.id.dateHumImageButton);
         dateHumImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -533,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
         //Grafico dei raggi UV
         UVLineChart = (LineChart) findViewById(R.id.UVLineChart);
         //chartDelegate.setData(UVLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Raggi UV", yellow);
-        //UVLineChart.setDescription("");
+        UVLineChart.setDescription("");
         dateUVImageButton = (ImageButton) findViewById(R.id.dateUVImageButton);
         dateUVImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -577,7 +594,7 @@ public class MainActivity extends AppCompatActivity {
         //Grafico della temperatura del mare
         seaTempLineChart = (LineChart) findViewById(R.id.seaTempLineChart);
         //chartDelegate.setData(seaTempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura del mare", blue);
-        //seaTempLineChart.setDescription("");
+        seaTempLineChart.setDescription("");
         dateSeaTempImageButton = (ImageButton) findViewById(R.id.dateSeaTempImageButton);
         dateSeaTempImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -622,7 +639,7 @@ public class MainActivity extends AppCompatActivity {
         //Grafico della torbidità del mare
         seaTurbLineChart = (LineChart) findViewById(R.id.seaTurbLineChart);
         //chartDelegate.setData(seaTurbLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Torbidità del mare", blue);
-        //seaTurbLineChart.setDescription("");
+        seaTurbLineChart.setDescription("");
         dateTurbImageButton = (ImageButton) findViewById(R.id.dateTurbImageButton);
         dateTurbImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -666,7 +683,7 @@ public class MainActivity extends AppCompatActivity {
         //Grafico del movimento del mare
         roughSeaLineChart = (LineChart) findViewById(R.id.roughSeaLineChart);
         //chartDelegate.setData(roughSeaLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Movimento del mare", blue);
-        //roughSeaLineChart.setDescription("");
+        roughSeaLineChart.setDescription("");
         dateRoughSeaImageButton = (ImageButton) findViewById(R.id.dateRoughSeaImageButton);
         dateRoughSeaImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -832,7 +849,7 @@ public class MainActivity extends AppCompatActivity {
                 //TODO: stampare l'errore
             }
         });
-        queue.add(requestNotifications);
+        queue.add(requestNotifications);*/
 
         //-----------------------------------------------------------//
 
