@@ -29,8 +29,6 @@ exports.send_push = (admin, db, user, message) => {
       db.users.find({
             user: user
       }, (err, results) => {
-            console.log(results);
-
             if (err) console.error(err);
             results.forEach(r => {
                   payload.token = r.token;

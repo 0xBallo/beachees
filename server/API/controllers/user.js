@@ -28,7 +28,7 @@ exports.add_user_device = (req, res, db) => {
 };
 
 /**
- * TODO: debug method
+ * INFO: debug method
  * Send notification to user's devices with message specified by request
  * 
  * @param {*} req 
