@@ -84,7 +84,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
-                                    android:text="35°C"
+                                    android:text="...."
                                     android:textSize="35dp"
                                     android:background="@drawable/data_border_beach"
                                     android:id="@+id/tempNowTextView"
@@ -107,7 +107,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
-                                    android:text="35°C"
+                                    android:text="...."
                                     android:textSize="35dp"
                                     android:background="@drawable/data_border_beach"
                                     android:id="@+id/humNowTextView"/>
@@ -128,7 +128,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
-                                    android:text="35°C"
+                                    android:text="...."
                                     android:textSize="35dp"
                                     android:background="@drawable/data_border_beach"
                                     android:id="@+id/uvNowTextView"/>
@@ -208,7 +208,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
-                                    android:text="35°C"
+                                    android:text="...."
                                     android:textSize="35dp"
                                     android:background="@drawable/data_border_sea"
                                     android:id="@+id/tempSeaNowTextView"/>
@@ -230,7 +230,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
-                                    android:text="35°C"
+                                    android:text="...."
                                     android:textSize="35dp"
                                     android:background="@drawable/data_border_sea"
                                     android:id="@+id/turbSeaNowTextView"/>
@@ -251,7 +251,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
-                                    android:text="35°C"
+                                    android:text="...."
                                     android:textSize="35dp"
                                     android:background="@drawable/data_border_sea"
                                     android:id="@+id/roughSeaNowTextView"/>

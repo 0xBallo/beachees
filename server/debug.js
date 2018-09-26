@@ -29,6 +29,7 @@ exports.populate_db = (db) => {
 
          //INFO: save SEA TEMPERATURE data
          const wt = {
+            user: 'PM12',
             watertemp: Math.random() * (CONF.debug.water.h - CONF.debug.water.l) + CONF.debug.water.l,
             date: Moment().subtract(i, 'd').format('YYYY-MM-DD'),
             hour: j,
@@ -38,6 +39,7 @@ exports.populate_db = (db) => {
 
          //INFO: save SEA TURBIDITY data
          const turb = {
+            user: 'PM12',
             turbidity: Math.random() * (CONF.debug.turbidity.h - CONF.debug.turbidity.l) + CONF.debug.turbidity.l,
             date: Moment().subtract(i, 'd').format('YYYY-MM-DD'),
             hour: j,
@@ -47,6 +49,7 @@ exports.populate_db = (db) => {
 
          //INFO: save SEA WAVES data
          const w = {
+            user: 'PM12',
             waves: Math.random() * (CONF.debug.waves.h - CONF.debug.waves.l) + CONF.debug.waves.l,
             date: Moment().subtract(i, 'd').format('YYYY-MM-DD'),
             hour: j,

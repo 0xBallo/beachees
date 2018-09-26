@@ -15,6 +15,7 @@ const Notifier = require('../utils/notify-helper');
 exports.get_water_temp = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
+   const user = parameters.user;
    const date = parameters.date;
 
    let queryDate;
@@ -140,7 +141,9 @@ exports.add_water_temp = (req, res, db) => {
 exports.get_water_temp_now = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
-   db.beach.find({
+   const user = parameters.user;
+   db.sea.find({
+         user: user,
          watertemp: {
             $exists: true
          }
@@ -171,6 +174,7 @@ exports.get_water_turb = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const date = parameters.date;
+   const user = parameters.user;
 
    let queryDate;
    if (date == undefined) {
@@ -279,7 +283,9 @@ exports.add_water_turb = (req, res, db) => {
 exports.get_water_turb_now = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
-   db.beach.find({
+   const user = parameters.user;
+   db.sea.find({
+         user: user,
          turbidity: {
             $exists: true
          }
@@ -310,6 +316,7 @@ exports.get_waves_acc = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
    const date = parameters.date;
+   const user = parameters.user;
 
    let queryDate;
    if (date == undefined) {
@@ -336,25 +343,29 @@ exports.get_waves_acc = (req, res, db) => {
       .exec(function (err, data) {
          let temp = 0,
             result = [];
-         let sum_h = 0.0,
-            sum_t = 0.0,
+         /*let sum_h = 0.0,
+            sum_t = 0.0,*/
+         let sum_w = 0.0,
             count = 0;
          data.forEach(el => {
             if (temp !== parseInt(el.hour)) {
                if (count !== 0) {
                   result.push({
-                     acc: sum_t / parseFloat(count),
-                     gyro: sum_h / parseFloat(count),
+                     /*acc: sum_t / parseFloat(count),
+                     gyro: sum_h / parseFloat(count),*/
+                     waves: sum_w / parseFloat(count),
                      hour: temp
                   });
                }
                temp = parseInt(el.hour);
-               count = 0;
+               /*count = 0;
                sum_t = 0.0;
-               sum_h = 0.0;
+               sum_h = 0.0;*/
+               sum_w = 0.0;
             }
-            sum_t += parseFloat(el.acc);
-            sum_h += parseFloat(el.gyro);
+            /*sum_t += parseFloat(el.acc);
+            sum_h += parseFloat(el.gyro);*/
+            sum_w += parseFloat(el.waves);
             count++;
          });
          res.json({
@@ -424,13 +435,19 @@ exports.add_waves_acc = (req, res, db) => {
 exports.get_waves_now = (req, res, db) => {
    const urlParts = url.parse(req.url, true);
    const parameters = urlParts.query;
-   db.beach.find({
-         acc: {
+   const user = parameters.user;
+   
+   db.sea.find({
+         user: user,
+         waves:{
+               $exists: true
+         },
+         /*acc: {
             $exists: true
          },
          gyro: {
             $exists: true
-         }
+         }*/
       })
       .sort({
          ISO: -1

@@ -2,6 +2,8 @@ package com.smartbeach.paridemartinelli.smartbeach;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -12,7 +14,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,7 +26,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -33,7 +33,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.app.DatePickerDialog;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -52,13 +51,16 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
+import static com.smartbeach.paridemartinelli.smartbeach.R.color.darkYellow;
+
 public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_COARSE_LOCATION = 2;
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://b0e0f2f3.ngrok.io/api";
+    public static final String URL = "http://d2e5fd0f.ngrok.io/api";
+    //TODO: recuperare username da login
     public static String user = "PM12";
     public static RequestQueue queue;
     BluetoothAdapter mBluetoothAdapter;
@@ -138,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    @TargetApi(Build.VERSION_CODES.M)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @SuppressLint("WrongViewCast")
     @Override
@@ -194,20 +197,33 @@ public class MainActivity extends AppCompatActivity {
         //bottone info spiaggia (secondo me non serve)
         //moreInfoBeachButton = (ImageButton) findViewById(R.id.moreInfoBeachButton);
 
-        //TODO: controllare il valore, se supera la soglia colorare cerchio e valore di rosso
-
         //Temperatura e umidità
         tempNowTextView = (TextView) findViewById(R.id.tempNowTextView);
         humNowTextView = (TextView) findViewById(R.id.humNowTextView);
-        String dhtNowURL = URL + "/dht/now?user=";
+        String dhtNowURL = URL + "/dht/now?user=" + user;
         JsonObjectRequest requestDhtNow = new JsonObjectRequest(Request.Method.GET, dhtNowURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String temNow = response.getJSONArray("data").getJSONObject(0).getString("temperature");
-                    String humNow = response.getJSONArray("data").getJSONObject(0).getString("humidity");
-                    tempNowTextView.setText(temNow);
+                    float tempNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("temperature"));
+                    int tempNowInt = Math.round(tempNowFloat);
+                    String tempNow = String.valueOf(tempNowInt) + "°C";
+                    float humNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("humidity"));
+                    int humNowInt = Math.round(humNowFloat);
+                    String humNow = String.valueOf(humNowInt) + "%";
+                    tempNowTextView.setText(tempNow);
+                    //TODO: fare lo stesso controllo anche per gli altri dati
+                    if (tempNowInt >= 35){
+                        tempNowTextView.setTextColor(Color.RED);
+                    }else{
+                        tempNowTextView.setTextColor(Color.parseColor("#FBC02D"));
+                    }
                     humNowTextView.setText(humNow);
+                    if (humNowInt >= 80){
+                        humNowTextView.setTextColor(Color.RED);
+                    }else{
+                        humNowTextView.setTextColor(Color.parseColor("#FBC02D"));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -252,12 +268,14 @@ public class MainActivity extends AppCompatActivity {
 
         //Raggi UV
         uvNowTextView = (TextView) findViewById(R.id.uvNowTextView);
-        final String uvNowURL = URL + "/uva/now?user=";
+        final String uvNowURL = URL + "/uva/now?user=" + user;
         JsonObjectRequest requestUvNow = new JsonObjectRequest(Request.Method.GET, uvNowURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String uvNow = response.getJSONArray("data").getJSONObject(0).getString("uva");
+                    float uvNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("uva"));
+                    int uvNowInt = Math.round(uvNowFloat);
+                    String uvNow = String.valueOf(uvNowInt);
                     uvNowTextView.setText(uvNow);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -291,12 +309,14 @@ public class MainActivity extends AppCompatActivity {
 
         //temperatura del mare
         seaTempNowTextView = (TextView) findViewById(R.id.tempSeaNowTextView);
-        String seaTempNowURL = URL + "/sea/temp/now?user=";
+        String seaTempNowURL = URL + "/sea/temp/now?user=" + user;
         JsonObjectRequest requestSeaTempNow = new JsonObjectRequest(Request.Method.GET, seaTempNowURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String seaTempNow = response.getJSONArray("data").getJSONObject(0).getString("watertemp");
+                    float seaTempNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("watertemp"));
+                    int seaTempNowInt = Math.round(seaTempNowFloat);
+                    String seaTempNow = String.valueOf(seaTempNowInt) + "°C";
                     seaTempNowTextView.setText(seaTempNow);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -328,12 +348,14 @@ public class MainActivity extends AppCompatActivity {
 
         //tordibità
         seaTurbNowTextView = (TextView) findViewById(R.id.turbSeaNowTextView);
-        String seaTurbNowURL = URL + "/sea/turbidity/now?user=";
+        String seaTurbNowURL = URL + "/sea/turbidity/now?user=" + user;
         JsonObjectRequest requestSeaTurbNow = new JsonObjectRequest(Request.Method.GET, seaTurbNowURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String seaTurbNow = response.getJSONArray("data").getJSONObject(0).getString("turbidity");
+                    float seaTurbNowFloat = Float.parseFloat(response.getJSONArray("data").getJSONObject(0).getString("turbidity"));
+                    int seaTurbNowInt = Math.round(seaTurbNowFloat);
+                    String seaTurbNow = String.valueOf(seaTurbNowInt);
                     seaTurbNowTextView.setText(seaTurbNow);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -364,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
 
         //mare mosso
         seaRoughTextView = (TextView) findViewById(R.id.roughSeaNowTextView);
-        String seaRoughNowURL = URL + "/sea/waves/now?user=";
+        String seaRoughNowURL = URL + "/sea/waves/now?user=" + user;
         JsonObjectRequest requestSeaRoughNow = new JsonObjectRequest(Request.Method.GET, seaRoughNowURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -421,10 +443,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico della temperatura
         tempLineChart = (LineChart) findViewById(R.id.tempLineChart);
-
-        chartDelegate.setData(tempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura", yellow);
-        tempLineChart.setDescription("");
-
+        //chartDelegate.setData(tempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura", yellow);
+        //tempLineChart.setDescription("");
         dateTempImageButton = (ImageButton) findViewById(R.id.dateTempImageButton);
         dateTempImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -443,12 +463,14 @@ public class MainActivity extends AppCompatActivity {
                                                   int monthOfYear, int dayOfMonth) {
 
                                 //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String tempURL = URL + "/dht?user=" + user + "&date=" + date;
+                                final String label = "Temperatura " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "temperature", "Temperatua", "Temperatura troppo elevata", 35f, 45f, 15f, tempLineChart, yellow );
+                                        chartDelegate.createChart(response, "temperature", label, "Temperatura troppo elevata", 35f, 45f, 15f, tempLineChart, yellow );
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -466,8 +488,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico dell'umidità
         humLineChart = (LineChart) findViewById(R.id.humLineChart);
-        chartDelegate.setData(humLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Umidità", yellow);
-        humLineChart.setDescription("");
+        //chartDelegate.setData(humLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Umidità", yellow);
+        //humLineChart.setDescription("");
         dateHumImageButton = (ImageButton) findViewById(R.id.dateHumImageButton);
         dateHumImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -485,13 +507,14 @@ public class MainActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String humURL = URL + "/dht?user=" + user + "&date=" + date;
+                                final String label = "Umidità " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "humidity", "Umidità", "Umidità troppo elevata", 80f, 90f, 70f, humLineChart, yellow );
+                                        chartDelegate.createChart(response, "humidity", label, "Umidità troppo elevata", 80f, 90f, 70f, humLineChart, yellow );
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -509,8 +532,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico dei raggi UV
         UVLineChart = (LineChart) findViewById(R.id.UVLineChart);
-        chartDelegate.setData(UVLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Raggi UV", yellow);
-        UVLineChart.setDescription("");
+        //chartDelegate.setData(UVLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Raggi UV", yellow);
+        //UVLineChart.setDescription("");
         dateUVImageButton = (ImageButton) findViewById(R.id.dateUVImageButton);
         dateUVImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -528,13 +551,14 @@ public class MainActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String uvaURL = URL + "/uva?user=" + user + "&date=" + date;
+                                final String label = "Raggi UV " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestUVA = new JsonObjectRequest(Request.Method.GET, uvaURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "uva", "Raggi UV", "Soglia limite consigliato", 12f, 15f, 0f , UVLineChart, yellow);
+                                        chartDelegate.createChart(response, "uva", label, "Soglia limite consigliato", 12f, 15f, 0f , UVLineChart, yellow);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -552,8 +576,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico della temperatura del mare
         seaTempLineChart = (LineChart) findViewById(R.id.seaTempLineChart);
-        chartDelegate.setData(seaTempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura del mare", blue);
-        seaTempLineChart.setDescription("");
+        //chartDelegate.setData(seaTempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura del mare", blue);
+        //seaTempLineChart.setDescription("");
         dateSeaTempImageButton = (ImageButton) findViewById(R.id.dateSeaTempImageButton);
         dateSeaTempImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -571,13 +595,14 @@ public class MainActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaTempURL = URL + "/sea/temp?user=" + user + "&date=" + date;
+                                final String label = " Temperatura del mare " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestSeaTemp = new JsonObjectRequest(Request.Method.GET, seaTempURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "watertemp", "Temperatura del mare", "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue );
+                                        chartDelegate.createChart(response, "watertemp", label, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue );
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -596,8 +621,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico della torbidità del mare
         seaTurbLineChart = (LineChart) findViewById(R.id.seaTurbLineChart);
-        chartDelegate.setData(seaTurbLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Torbidità del mare", blue);
-        seaTurbLineChart.setDescription("");
+        //chartDelegate.setData(seaTurbLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Torbidità del mare", blue);
+        //seaTurbLineChart.setDescription("");
         dateTurbImageButton = (ImageButton) findViewById(R.id.dateTurbImageButton);
         dateTurbImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -615,13 +640,14 @@ public class MainActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaTurbURL = URL + "/sea/turbidity?user=" + user + "&date=" + date;
+                                final String label = "Torbidità del mare " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestSeaTurb = new JsonObjectRequest(Request.Method.GET, seaTurbURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "turbidity", "Torbidità del mare", "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue );
+                                        chartDelegate.createChart(response, "turbidity", label, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue );
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -639,8 +665,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Grafico del movimento del mare
         roughSeaLineChart = (LineChart) findViewById(R.id.roughSeaLineChart);
-        chartDelegate.setData(roughSeaLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Movimento del mare", blue);
-        roughSeaLineChart.setDescription("");
+        //chartDelegate.setData(roughSeaLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Movimento del mare", blue);
+        //roughSeaLineChart.setDescription("");
         dateRoughSeaImageButton = (ImageButton) findViewById(R.id.dateRoughSeaImageButton);
         dateRoughSeaImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -658,13 +684,14 @@ public class MainActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaWavesURL = URL + "/sea/turbidity?user=" + user + "&date=" + date;
+                                final String label = "Livello mare mosso " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 JsonObjectRequest requestSeaWaves = new JsonObjectRequest(Request.Method.GET, seaWavesURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "waves", "Livello mare mosso", "Bandiera rossa", 3f, 5f, 0f, roughSeaLineChart, blue);
+                                        chartDelegate.createChart(response, "waves", label, "Bandiera rossa", 3f, 5f, 0f, roughSeaLineChart, blue);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -682,16 +709,20 @@ public class MainActivity extends AppCompatActivity {
 
         //Aggiornamento dati dal server
 
-        //Temperatura e umidità
-        String dateUrl = "2018-08-25";
+        //Date
+        Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR); // current year
+        int mMonth = c.get(Calendar.MONTH); // current month
+        int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
+        String currentDate = + mDay + "/" + mMonth + "/" + mYear;
 
         //temperatura
-        String tempURL = URL + "/dht?user=" + user + "&date=" + dateUrl;
-        //String tempURL = URL + "/dht?user=" + user;
+        String tempURL = URL + "/dht?user=" + user;
+        final String labelTemp = "Temperatura " + currentDate;
         JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "temperature", "Temperatua", "Temperatura troppo elevata", 35f, 45f, 15f, tempLineChart , yellow);
+                chartDelegate.createChart(response, "temperature", labelTemp, "Temperatura troppo elevata", 35f, 40f, 21f, tempLineChart , yellow );
             }
         }, new Response.ErrorListener() {
             @Override
@@ -702,12 +733,12 @@ public class MainActivity extends AppCompatActivity {
         queue.add(requestTemp);
 
         //umidità
-        String humURL = URL + "/dht?user=" + user + "&date=" + dateUrl;
-        //String humURL = URL + "/dht?user=" + user;
+        String humURL = URL + "/dht?user=" + user;
+        final String labelHum = "Umidità " + currentDate;
         JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "humidity", "Umidità", "Umidità troppo elevata", 80f, 85f, 70f, humLineChart, yellow );
+                chartDelegate.createChart(response, "humidity", labelHum, "Umidità troppo elevata", 80f, 85f, 70f, humLineChart, yellow );
             }
         }, new Response.ErrorListener() {
             @Override
@@ -719,10 +750,11 @@ public class MainActivity extends AppCompatActivity {
 
         //raggi UV
         String uvaURL = URL + "/uva?user=" + user;
+        final String labelUV = "Raggi UV " + currentDate;
         JsonObjectRequest requestUVA = new JsonObjectRequest(Request.Method.GET, uvaURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "uva", "Raggi UV", "Soglia limite consigliato", 12f, 15f, 0f , UVLineChart, yellow);
+                chartDelegate.createChart(response, "uva", labelUV, "Soglia limite consigliato", 12f, 15f, 5f , UVLineChart, yellow);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -734,10 +766,11 @@ public class MainActivity extends AppCompatActivity {
 
         //temperatura del mare
         String seaTempURL = URL + "/sea/temp?user=" + user;
+        final String labelSeaTemp = "Temperatura del mare " + currentDate;
         JsonObjectRequest requestSeaTemp = new JsonObjectRequest(Request.Method.GET, seaTempURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "watertemp", "Temperatura del mare", "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue );
+                chartDelegate.createChart(response, "watertemp", labelSeaTemp, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue );
             }
         }, new Response.ErrorListener() {
             @Override
@@ -749,10 +782,11 @@ public class MainActivity extends AppCompatActivity {
 
         //torbidità
         String seaTurbURL = URL + "/sea/turbidity?user=" + user;
+        final String labelSeaTurb = "Torbidità " + currentDate;
         JsonObjectRequest requestSeaTurb = new JsonObjectRequest(Request.Method.GET, seaTurbURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "turbidity", "Torbidità del mare", "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue );
+                chartDelegate.createChart(response, "turbidity", labelSeaTurb, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue );
             }
         }, new Response.ErrorListener() {
             @Override
@@ -764,10 +798,11 @@ public class MainActivity extends AppCompatActivity {
 
         //mare mosso
         String seaWavesURL = URL + "/sea/waves?user=" + user;
+        final String labelWaves = "Livello mare mosso " + currentDate;
         JsonObjectRequest requestSeaWaves = new JsonObjectRequest(Request.Method.GET, seaWavesURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "waves", "Livello mare mosso", "Bandiera rossa", 3f, 5f, 0f, roughSeaLineChart, blue);
+                chartDelegate.createChart(response, "waves", labelWaves, "Bandiera rossa", 3f, 5f, 0f, roughSeaLineChart, blue);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -783,58 +818,12 @@ public class MainActivity extends AppCompatActivity {
         //----------------------Sezione notifiche--------------------//
         notificationScrollView = (ScrollView) findViewById(R.id.notificationScrollView);
         notificationLinearLayout = (LinearLayout) findViewById(R.id.notificationLinearLayout);
-
-        //TODO: una volta sistemata la grafica togliere questo e scommentare la parte sotto
-        for (int i = 0; i < 20; i++) {
-
-            //TODO: recuperare i dati corretti
-            String date = "31-08-18 ore 17:36";
-            String text = "Attenzione: Temperatura troppo elevata";
-            String typeNotString = "Temperatura";
-            int typeNotImage = R.drawable.icons8_temperatura;
-            Integer icon = R.drawable.ic_report_problem_black_24dp;
-            String id = "dguguefgiefo";
-            int color = Color.parseColor("#FBC02D");
-            notificationDelegate.createNotification(MainActivity.this, notificationLinearLayout, date, text, typeNotString, typeNotImage, icon, id, MainActivity.this, color);
-        };
-
-
-        /*String notificationsURL = URL + "/notify?user=" + user;
+        String notificationsURL = URL + "/notify?user=" + user;
         JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.GET, notificationsURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-                try {
-                    if(response.getJSONArray("data").length() == 0){
-
-                        TextView noNotificationsTV = new TextView(MainActivity.this);
-                        LinearLayout.LayoutParams noNotificationsTVParams = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.MATCH_PARENT
-                        );
-                        noNotificationsTV.setLayoutParams(noNotificationsTVParams);
-                        noNotificationsTV.setText("Nessuna nuova notifica da mostrare");
-                        noNotificationsTV.setGravity(Gravity.CENTER);
-                        noNotificationsTV.setPadding(15,300,15,15);
-                        notificationLinearLayout.addView(noNotificationsTV);
-
-
-
-                    }else{
-                        for (int i = 0; i < response.getJSONArray("data").length(); i++) {
-
-                            //TODO: recuperare i dati corretti
-                            String date = "31-08-18 ore 17:36";
-                            String text = "Attenzione: Temperatura troppo elevata";
-                            String tipoNot = "Temperatura";
-                            Integer icon = R.drawable.ic_report_problem_black_24dp;
-                            String id = "dguguefgiefo";
-                            notificationDelegate.createNotification(mContext, notificationLinearLayout, date, text, tipoNot, icon, id, MainActivity.this);
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                Log.i("response ", String.valueOf(response));
+                notificationDelegate.createNotification(response, notificationLinearLayout, MainActivity.this);
 
             }
         }, new Response.ErrorListener() {
@@ -843,7 +832,7 @@ public class MainActivity extends AppCompatActivity {
                 //TODO: stampare l'errore
             }
         });
-        queue.add(requestNotifications);*/
+        queue.add(requestNotifications);
 
         //-----------------------------------------------------------//
 
@@ -911,6 +900,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -918,7 +908,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("BLE", intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString());
                 if(intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString().equals("E1:A4:B8:01:EA:35")){
                     Log.d("BLE","BEACONNNNNNNNN");
-                    //TODO: richiamare il metodo per la creazione della notifica
+                    //TODO:creare oggetto con valori corretti
+                    JSONObject response = null;
+                    notificationDelegate.createNotification(response, notificationLinearLayout, MainActivity.this);
                 }
             }
         }
