@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://a6f0b763.ngrok.io/api";
+    public static final String URL = "http://7582546d.ngrok.io/api";
     //TODO: recuperare username da login
     public static String user = "PM12";
     public static RequestQueue queue;
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         //-------------------------------------------------------------//
 
         //----------------------Sezione home--------------------------//
-        /*homeScrollView = (ScrollView) findViewById(R.id.homeScrollView);
+        homeScrollView = (ScrollView) findViewById(R.id.homeScrollView);
 
         //bottone info spiaggia (secondo me non serve)
         //moreInfoBeachButton = (ImageButton) findViewById(R.id.moreInfoBeachButton);
@@ -851,7 +851,7 @@ public class MainActivity extends AppCompatActivity {
                 //TODO: stampare l'errore
             }
         });
-        queue.add(requestNotifications);*/
+        queue.add(requestNotifications);
 
         //-----------------------------------------------------------//
 

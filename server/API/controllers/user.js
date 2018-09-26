@@ -92,21 +92,27 @@ exports.get_notifications = (req, res, db) => {
     } else {
 
         db.notifies.find({
-            $or: [{
+            //$or: [{
                 user: data.user
-            }, {
+            /*}, {
                 user: {
                     $exists: false
                 }
-            }]
-        }, (err, data) => {
-            if (err)
+            }]*/
+        })
+        .exec(function(err, data) {
+            if (err){
                 res.status(501).json(err);
-            if (data.length == 0) {
+            } else{
+                res.json({
+                    data:data
+                });
+            }
+            /*if (data.length == 0) {
                 res.status(202).send('No notifies found!');
             } else {
                 res.status(201).json(data);
-            }
+            }*/
         });
 
     }
