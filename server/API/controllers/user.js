@@ -125,21 +125,22 @@ exports.get_notifications = (req, res, db) => {
  * @param {*} req 
  * @param {*} db 
  */
-exports.del_notification = (res, req, db) => {
-    const data = req.body;
-
-    if (data._id === undefined) {
-        res.status(401).send('Identifiers not specified!');
+exports.del_notification = (req, res, db) => {
+    const data = req._id;
+    const id = req.body;
+    console.log(id);
+    if (id === undefined) {
+        res.send('Identifiers not specified!');
     } else {
         db.notifies.remove({
-            _id: data._id
+            _id: id
         }, {}, function (err, numRemoved) {
             if (err)
-                res.status(501).json(err);
+                res.json(err);
             if (numRemoved === 0) {
                 res.status(202).send('No document find with specified id!');
             } else {
-                res.status(201).send('Correctly removed ' + numRemoved + ' document/s!');
+                res.send('Correctly removed ' + numRemoved + ' document/s!');
             }
         });
     }

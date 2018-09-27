@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -30,6 +31,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.smartbeach.paridemartinelli.smartbeach.MainActivity.URL;
 import static com.smartbeach.paridemartinelli.smartbeach.MainActivity.mContext;
@@ -109,7 +113,7 @@ public class NotificationDelegate {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("ResourceAsColor")
-    void createNotification(final Context mContext, final LinearLayout notificationLinearLayout, String date, String text, String type, Integer icon, final String id, final Activity activity, int color) {
+    void createNotification(final Context mContext, final LinearLayout notificationLinearLayout, String date, String text, String type, Integer icon, final String idNotify, final Activity activity, int color) {
         // Initialize a new CardView
         CardView card = new CardView(mContext);
         // Set the CardView layoutParams
@@ -140,8 +144,8 @@ public class NotificationDelegate {
         ln.setLayoutParams(lnParams);
 
         //Sezione alta della notifica
-        LinearLayout lnTop = new LinearLayout(mContext);
-        lnTop.setOrientation(LinearLayout.HORIZONTAL);
+        RelativeLayout lnTop = new RelativeLayout(mContext);
+        //lnTop.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams lnTomParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -167,33 +171,42 @@ public class NotificationDelegate {
         typeTV.setText(type);
         typeTV.setTextColor(Color.WHITE);
         typeTV.getLayoutParams();
-        typeTV.setPadding(10,30,0,0);
+        typeTV.setPadding(10,5,0,5);
 
         //Bottone per cancellare la notifica
         ImageButton deleteIB = new ImageButton(mContext);
-        LinearLayout.LayoutParams deleteIBParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+        RelativeLayout.LayoutParams deleteIBParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
         );
+        deleteIBParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         deleteIB.setLayoutParams(deleteIBParams);
         deleteIB.setImageResource(R.drawable.ic_delete_white_24dp);
         deleteIB.setBackgroundColor(Color.TRANSPARENT);
-        ViewGroup.MarginLayoutParams deleteIBLayoutParams = (ViewGroup.MarginLayoutParams) deleteIB.getLayoutParams();
-        deleteIBLayoutParams.setMargins(700, 0, 0, 0);
-        //deleteIB.setForegroundGravity(Gravity.RIGHT);
-        deleteIB.requestLayout();
+        deleteIB.setPadding(0,5,10, 5);
         deleteIB.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                                            builder.setTitle("Cancellazione della notifica " + id)
+                                            builder.setTitle("Cancellazione della notifica " + idNotify)
                                                     .setMessage("Sei sicuro di voler eliminare la notifica?")
                                                     .setPositiveButton("SI", new DialogInterface.OnClickListener() {
                                                         public void onClick(final DialogInterface dialog, int id) {
 
                                                             //Rimozione della notifica
-                                                            String deleteNotificationsURL = URL + "/notify?user=" + user + "&id=" + id;
-                                                            JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.DELETE, deleteNotificationsURL, null, new Response.Listener<JSONObject>() {
+                                                            String deleteNotificationsURL = URL + "/notify/delete";
+                                                            Map<String, String> params = new HashMap();
+                                                            params.put("_id", idNotify);
+                                                            JSONObject parameters = new JSONObject(params);
+
+                                                            JSONObject obj = new JSONObject();
+                                                            try {
+                                                                obj.put("_id", idNotify);
+                                                            } catch (JSONException e) {
+                                                                e.printStackTrace();
+                                                            }
+
+                                                            JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.DELETE, deleteNotificationsURL, obj, new Response.Listener<JSONObject>() {
                                                                 @Override
                                                                 public void onResponse(JSONObject response) {
                                                                     dialog.cancel();
@@ -203,7 +216,14 @@ public class NotificationDelegate {
                                                                 public void onErrorResponse(VolleyError error) {
                                                                     //TODO: stampare l'errore
                                                                 }
-                                                            });
+                                                            }){
+                                                                @Override
+                                                                protected Map<String,String> getParams(){
+                                                                    Map<String,String> params = new HashMap<String, String>();
+                                                                    params.put("_id",idNotify);
+                                                                    return params;
+                                                                }
+                                                            };
                                                             queue.add(requestNotifications);
                                                         }
                                                     })

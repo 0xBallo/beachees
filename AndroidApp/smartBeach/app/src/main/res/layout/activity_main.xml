@@ -347,24 +347,30 @@
                                     android:layout_height="match_parent"
                                     android:orientation="vertical">
 
-                                    <LinearLayout
+                                    <RelativeLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:orientation="horizontal"
                                         android:padding="10dp"
                                         android:background="@color/yellow">
 
-                                        <ImageView
-                                            android:layout_width="20dp"
-                                            android:layout_height="20dp"
-                                            android:src="@drawable/icons8_temperatura"
-                                            android:layout_marginRight="10dp"/>
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:text="Temperatura"
-                                            android:textColor="@color/white"/>
+                                            android:orientation="horizontal">
+
+                                            <ImageView
+                                                android:layout_width="20dp"
+                                                android:layout_height="20dp"
+                                                android:src="@drawable/icons8_temperatura"
+                                                android:layout_marginRight="10dp"/>
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="Temperatura"
+                                                android:textColor="@color/white"/>
+
+                                        </LinearLayout>
 
                                         <ImageButton
                                             android:id="@+id/dateTempImageButton"
@@ -372,8 +378,8 @@
                                             android:layout_height="wrap_content"
                                             android:background="@color/yellow"
                                             android:src="@drawable/ic_date_range_black_24dp"
-                                            android:layout_marginLeft="240dp"/>
-                                    </LinearLayout>
+                                            android:layout_alignParentRight="true"/>
+                                    </RelativeLayout>
 
                                     <RelativeLayout
                                         android:layout_width="match_parent"
@@ -408,24 +414,28 @@
                                     android:layout_height="match_parent"
                                     android:orientation="vertical">
 
-                                <LinearLayout
+                                <RelativeLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
                                     android:padding="10dp"
                                     android:background="@color/yellow">
 
-                                    <ImageView
-                                        android:layout_width="20dp"
-                                        android:layout_height="20dp"
-                                        android:src="@drawable/icons8_punto_di_rugiada"
-                                        android:layout_marginRight="10dp"/>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="Umidità"
-                                        android:textColor="@color/white"/>
+                                        android:orientation="horizontal">
+                                        <ImageView
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:src="@drawable/icons8_punto_di_rugiada"
+                                            android:layout_marginRight="10dp"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Umidità"
+                                            android:textColor="@color/white"/>
+                                    </LinearLayout>
 
                                     <ImageButton
                                         android:id="@+id/dateHumImageButton"
@@ -433,8 +443,8 @@
                                         android:layout_height="wrap_content"
                                         android:background="@color/yellow"
                                         android:src="@drawable/ic_date_range_black_24dp"
-                                        android:layout_marginLeft="260dp"/>
-                                </LinearLayout>
+                                        android:layout_alignParentRight="true"/>
+                                </RelativeLayout>
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
@@ -468,24 +478,28 @@
                                     android:layout_height="match_parent"
                                     android:orientation="vertical">
 
-                                <LinearLayout
+                                <RelativeLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
                                     android:padding="10dp"
                                     android:background="@color/yellow">
 
-                                    <ImageView
-                                        android:layout_width="20dp"
-                                        android:layout_height="20dp"
-                                        android:src="@drawable/icons8_estate"
-                                        android:layout_marginRight="10dp"/>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="Raggi UV"
-                                        android:textColor="@color/white"/>
+                                        android:orientation="horizontal">
+                                        <ImageView
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:src="@drawable/icons8_estate"
+                                            android:layout_marginRight="10dp"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Raggi UV"
+                                            android:textColor="@color/white"/>
+                                    </LinearLayout>
 
                                     <ImageButton
                                         android:id="@+id/dateUVImageButton"
@@ -493,8 +507,8 @@
                                         android:layout_height="wrap_content"
                                         android:background="@color/yellow"
                                         android:src="@drawable/ic_date_range_black_24dp"
-                                        android:layout_marginLeft="250dp"/>
-                                </LinearLayout>
+                                        android:layout_alignParentRight="true"/>
+                                </RelativeLayout>
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
@@ -550,24 +564,28 @@
                                     android:layout_height="match_parent"
                                     android:orientation="vertical">
 
-                                <LinearLayout
+                                <RelativeLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
                                     android:padding="10dp"
                                     android:background="@color/lightBlue">
 
-                                    <ImageView
-                                        android:layout_width="20dp"
-                                        android:layout_height="20dp"
-                                        android:src="@drawable/icons8_temperatura"
-                                        android:layout_marginRight="10dp"/>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="Temperatura dell'acqua"
-                                        android:textColor="@color/white"/>
+                                        android:orientation="horizontal">
+                                        <ImageView
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:src="@drawable/icons8_temperatura"
+                                            android:layout_marginRight="10dp"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Temperatura dell'acqua"
+                                            android:textColor="@color/white"/>
+                                    </LinearLayout>
 
                                     <ImageButton
                                         android:id="@+id/dateSeaTempImageButton"
@@ -575,8 +593,8 @@
                                         android:layout_height="wrap_content"
                                         android:background="@color/lightBlue"
                                         android:src="@drawable/ic_date_range_black_24dp"
-                                        android:layout_marginLeft="165dp"/>
-                                </LinearLayout>
+                                        android:layout_alignParentRight="true"/>
+                                </RelativeLayout>
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
@@ -609,24 +627,28 @@
                                     android:layout_height="match_parent"
                                     android:orientation="vertical">
 
-                                <LinearLayout
+                                <RelativeLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
                                     android:padding="10dp"
                                     android:background="@color/lightBlue">
 
-                                    <ImageView
-                                        android:layout_width="20dp"
-                                        android:layout_height="20dp"
-                                        android:src="@drawable/icons8_ambiente"
-                                        android:layout_marginRight="10dp"/>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="Torbidità dell'acqua"
-                                        android:textColor="@color/white"/>
+                                        android:orientation="horizontal">
+                                        <ImageView
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:src="@drawable/icons8_ambiente"
+                                            android:layout_marginRight="10dp"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Torbidità dell'acqua"
+                                            android:textColor="@color/white"/>
+                                    </LinearLayout>
 
                                     <ImageButton
                                         android:id="@+id/dateTurbImageButton"
@@ -634,8 +656,8 @@
                                         android:layout_height="wrap_content"
                                         android:background="@color/lightBlue"
                                         android:src="@drawable/ic_date_range_black_24dp"
-                                        android:layout_marginLeft="190dp"/>
-                                </LinearLayout>
+                                        android:layout_alignParentRight="true"/>
+                                </RelativeLayout>
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"
@@ -668,24 +690,28 @@
                                     android:layout_height="match_parent"
                                     android:orientation="vertical">
 
-                                <LinearLayout
+                                <RelativeLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
                                     android:padding="10dp"
                                     android:background="@color/lightBlue">
 
-                                    <ImageView
-                                        android:layout_width="20dp"
-                                        android:layout_height="20dp"
-                                        android:src="@drawable/icons8_onde_del_mare"
-                                        android:layout_marginRight="10dp"/>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="Movimento del mare"
-                                        android:textColor="@color/white"/>
+                                        android:orientation="horizontal">
+                                        <ImageView
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:src="@drawable/icons8_onde_del_mare"
+                                            android:layout_marginRight="10dp"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Movimento del mare"
+                                            android:textColor="@color/white"/>
+                                    </LinearLayout>
 
                                     <ImageButton
                                         android:id="@+id/dateRoughSeaImageButton"
@@ -693,8 +719,8 @@
                                         android:layout_height="wrap_content"
                                         android:background="@color/lightBlue"
                                         android:src="@drawable/ic_date_range_black_24dp"
-                                        android:layout_marginLeft="180dp"/>
-                                </LinearLayout>
+                                        android:layout_alignParentRight="true"/>
+                                </RelativeLayout>
 
                                 <RelativeLayout
                                     android:layout_width="match_parent"

@@ -102,7 +102,7 @@ module.exports = function (router, db, admin) {
   });
 
   // Delete notify specified from id
-  router.delete('/notify', (request, response) => {
+  router.delete('/notify/delete', (request, response) => {
     usersCtrl.del_notification(request, response, db)
   });
 
