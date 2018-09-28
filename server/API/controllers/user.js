@@ -126,9 +126,8 @@ exports.get_notifications = (req, res, db) => {
  * @param {*} db 
  */
 exports.del_notification = (req, res, db) => {
-    const data = req._id;
-    const id = req.body;
-    console.log(id);
+    const id = req.params.id;
+
     if (id === undefined) {
         res.send('Identifiers not specified!');
     } else {

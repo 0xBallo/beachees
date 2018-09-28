@@ -194,8 +194,8 @@ public class NotificationDelegate {
                                                         public void onClick(final DialogInterface dialog, int id) {
 
                                                             //Rimozione della notifica
-                                                            String deleteNotificationsURL = URL + "/notify/delete";
-                                                            Map<String, String> params = new HashMap();
+                                                            String deleteNotificationsURL = URL + "/notify/" + idNotify;
+                                                            /*Map<String, String> params = new HashMap();
                                                             params.put("_id", idNotify);
                                                             JSONObject parameters = new JSONObject(params);
 
@@ -204,9 +204,9 @@ public class NotificationDelegate {
                                                                 obj.put("_id", idNotify);
                                                             } catch (JSONException e) {
                                                                 e.printStackTrace();
-                                                            }
+                                                            }*/
 
-                                                            JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.DELETE, deleteNotificationsURL, obj, new Response.Listener<JSONObject>() {
+                                                            JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.DELETE, deleteNotificationsURL, null, new Response.Listener<JSONObject>() {
                                                                 @Override
                                                                 public void onResponse(JSONObject response) {
                                                                     dialog.cancel();
@@ -224,7 +224,7 @@ public class NotificationDelegate {
                                                                     return params;
                                                                 }
                                                             };
-                                                            queue.add(requestNotifications);
+                                                            MainActivity.queue.add(requestNotifications);
                                                         }
                                                     })
                                                     .setNegativeButton("NO", new DialogInterface.OnClickListener() {
