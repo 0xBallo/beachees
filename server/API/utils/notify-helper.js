@@ -16,7 +16,7 @@ exports.send_push = (admin, db, user, message) => {
       const data = {
             user: user,
             notification: message.android.notification,
-            date: Moment().format()
+            date: Moment().format("YYYY/MM/DD HH:mm")
       }
       //INFO add notify to database
       db.notifies.insert(data, (err, newDoc) => {
@@ -61,7 +61,7 @@ exports.send_push_broadcast = (admin, db, message) => {
       let payload = message;
       const data = {
             notification: message.android.notification,
-            date: Moment().format()
+            date: Moment().format("YYYY/MM/DD HH:mm")
       }
       //INFO add notify to database
       db.notifies.insert(data, (err, newDoc) => {

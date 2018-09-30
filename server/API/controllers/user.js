@@ -36,7 +36,6 @@ exports.add_user_device = (req, res, db) => {
  * @param {*} db 
  */
 exports.send_push = (req, res, db, admin) => {
-    const urlParts = url.parse(req.url, true);
     const data = req.body;
 
     if (data.user === undefined || data.message === undefined || data.title === undefined || data.icon === undefined || data.color === undefined) {
@@ -104,15 +103,10 @@ exports.get_notifications = (req, res, db) => {
             if (err){
                 res.status(501).json(err);
             } else{
-                res.json({
+                res.status(201).json({
                     data:data
                 });
             }
-            /*if (data.length == 0) {
-                res.status(202).send('No notifies found!');
-            } else {
-                res.status(201).json(data);
-            }*/
         });
 
     }

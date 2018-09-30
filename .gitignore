@@ -64,3 +64,5 @@ typings/
 lidoBase-b*
 lidoBase-s*
 lidoBase-u*
+
+**/*.bak

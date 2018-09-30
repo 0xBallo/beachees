@@ -57,10 +57,12 @@ import static com.smartbeach.paridemartinelli.smartbeach.R.color.darkYellow;
 public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_COARSE_LOCATION = 2;
+    public ScrollView notificationScrollView;
+    public LinearLayout notificationLinearLayout;
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://93cadae2.ngrok.io/api";
+    public static final String URL = "http://ab6a6f91.ngrok.io/api";
     //TODO: recuperare username da login
     public static String user = "PM12";
     public static RequestQueue queue;
@@ -109,9 +111,6 @@ public class MainActivity extends AppCompatActivity {
     int yellow = Color.parseColor("#FBC02D");
     int blue = Color.parseColor("#29B6F6");
 
-    //Sezione notifiche
-    private ScrollView notificationScrollView;
-    LinearLayout notificationLinearLayout;
 
     //BottonNavigationView: menu di bottoni in basso
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -833,30 +832,40 @@ public class MainActivity extends AppCompatActivity {
 
 
         //-----------------------------------------------------------//
-
-        //----------------------Sezione notifiche--------------------//
         notificationScrollView = (ScrollView) findViewById(R.id.notificationScrollView);
         notificationLinearLayout = (LinearLayout) findViewById(R.id.notificationLinearLayout);
-        String notificationsURL = URL + "/notify?user=" + user;
-        JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.GET, notificationsURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.i("response ", String.valueOf(response));
-                notificationDelegate.createNotification(response, notificationLinearLayout, MainActivity.this);
+        populateNotifications(notificationScrollView, notificationLinearLayout, notificationDelegate, MainActivity.this);
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //TODO: stampare l'errore
-            }
-        });
-        queue.add(requestNotifications);
 
         //-----------------------------------------------------------//
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+
+    /**
+     * Method to refresh notifications view
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public static void populateNotifications(ScrollView notificationScrollView, final LinearLayout notificationLinearLayout, final NotificationDelegate notificationDelegate, final Activity activity) {
+        //----------------------Sezione notifiche--------------------//
+
+        String notificationsURL = URL + "/notify?user=" + user;
+        JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.GET, notificationsURL, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.i("response ", String.valueOf(response));
+                notificationDelegate.createNotification(response, notificationLinearLayout, activity);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.print(error);
+            }
+        });
+        queue.add(requestNotifications);
     }
 
     /**

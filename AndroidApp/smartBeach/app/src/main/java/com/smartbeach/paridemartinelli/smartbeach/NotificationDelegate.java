@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -115,7 +116,7 @@ public class NotificationDelegate {
     @SuppressLint("ResourceAsColor")
     void createNotification(final Context mContext, final LinearLayout notificationLinearLayout, String date, String text, String type, Integer icon, final String idNotify, final Activity activity, int color) {
         // Initialize a new CardView
-        CardView card = new CardView(mContext);
+        final CardView card = new CardView(mContext);
         // Set the CardView layoutParams
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -195,26 +196,20 @@ public class NotificationDelegate {
 
                                                             //Rimozione della notifica
                                                             String deleteNotificationsURL = URL + "/notify/" + idNotify;
-                                                            /*Map<String, String> params = new HashMap();
-                                                            params.put("_id", idNotify);
-                                                            JSONObject parameters = new JSONObject(params);
-
-                                                            JSONObject obj = new JSONObject();
-                                                            try {
-                                                                obj.put("_id", idNotify);
-                                                            } catch (JSONException e) {
-                                                                e.printStackTrace();
-                                                            }*/
 
                                                             JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.DELETE, deleteNotificationsURL, null, new Response.Listener<JSONObject>() {
                                                                 @Override
                                                                 public void onResponse(JSONObject response) {
                                                                     dialog.cancel();
+                                                                    notificationLinearLayout.removeView(card);
+                                                                    /*notificationLinearLayout.invalidate();
+                                                                    notificationLinearLayout.postInvalidate();*/
+                                                                    activity.recreate();
                                                                 }
                                                             }, new Response.ErrorListener() {
                                                                 @Override
                                                                 public void onErrorResponse(VolleyError error) {
-                                                                    //TODO: stampare l'errore
+                                                                    System.out.print(error);
                                                                 }
                                                             }){
                                                                 @Override
