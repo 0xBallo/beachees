@@ -4,4 +4,16 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="firebase_channel_id">000000</string>
+    <string name="title_activity_login">Sign in</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Username</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_user">Inserire un nome utente valido!</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="preference_file_key">com.smartbeach.paridemartinelli.smartbeach.PREFS</string>
+    <string name="saved_user_default_key" />
+    <string name="saved_user_key">SB_USER</string>
 </resources>

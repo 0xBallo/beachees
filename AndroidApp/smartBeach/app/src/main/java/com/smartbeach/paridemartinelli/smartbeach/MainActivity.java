@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     public static Context mContext;
     public static final String URL = "http://ab6a6f91.ngrok.io/api";
     //TODO: recuperare username da login
-    public static String user = "PM12";
+    public static String user;
     public static RequestQueue queue;
     BluetoothAdapter mBluetoothAdapter;
 

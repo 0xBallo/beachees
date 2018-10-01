@@ -37,7 +37,7 @@ Task:
       ✔ icona @done(18-09-05 15:12)
       ✔ colore @done(18-09-05 15:12)
     ✔ utente @done(18-09-05 15:12)
-    ☐ Aggiornamento automatico sezione notifiche @mattia @high @today 
+    ☐ Aggiornamento automatico sezione notifiche @mattia @high
     ✔ Restituire data notifiche in formato leggibile lato server @mattia @critical @done(18-09-30 13:09)
     ☐ Inserire badge notifiche non cancellate su tab notifiche @mattia @paride
 
@@ -46,7 +46,7 @@ Task:
     ☐ Capire perchè i grafici hanno problemi di visualizzazione @mattia @paride 
 
   LOGIN:
-    ☐ Schermata login @mattia @today
+    ✔ Schermata login @mattia @today @done(18-10-01 12:51)
 
   NOTIFICHE PUSH:
     ☐ Grafica notifiche push @mattia @paride 
