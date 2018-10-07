@@ -15,14 +15,8 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/home2"
+        android:src="@drawable/home"
         android:scaleType = "centerCrop">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
 
     </ImageView>
     </FrameLayout>-->
@@ -30,9 +24,9 @@
     <ScrollView
         android:id="@+id/homeScrollView"
         android:layout_width="match_parent"
-        android:layout_height="545dp"
+        android:layout_height="match_parent"
         android:visibility="visible"
-        android:background="@drawable/home">
+        android:background="@drawable/home_resize1">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -113,6 +107,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Temperatura"
+                                    android:textStyle="bold"
                                     android:layout_marginTop="10dp"/>
                             </LinearLayout>
 
@@ -135,6 +130,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Umidità"
+                                    android:textStyle="bold"
                                     android:layout_marginTop="10dp"/>
                             </LinearLayout>
 
@@ -156,6 +152,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Raggi UV"
+                                    android:textStyle="bold"
                                     android:layout_marginTop="10dp"/>
                             </LinearLayout>
 
@@ -236,6 +233,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Temperatura"
+                                    android:textStyle="bold"
                                     android:layout_marginTop="10dp"/>
                             </LinearLayout>
 
@@ -258,6 +256,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Torbidità"
+                                    android:textStyle="bold"
                                     android:layout_marginTop="10dp"/>
                             </LinearLayout>
 
@@ -279,6 +278,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Movimento"
+                                    android:textStyle="bold"
                                     android:layout_marginTop="10dp"/>
                             </LinearLayout>
 
@@ -293,7 +293,7 @@
     <TabHost
         android:id="@+id/dashboardTabHost"
         android:layout_width="match_parent"
-        android:layout_height="550dp"
+        android:layout_height="match_parent"
         android:visibility="invisible">
 
         <LinearLayout
@@ -750,12 +750,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="540dp">
+        android:layout_height="match_parent">
 
     <ScrollView
         android:id="@+id/notificationScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="540dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         android:background="@color/lightBlueGray">

@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://9705ad7b.ngrok.io/api";
+    public static final String URL = "http://fd4aef29.ngrok.io/api";
     //TODO: recuperare username da login
     public static String user;
     public static RequestQueue queue;
