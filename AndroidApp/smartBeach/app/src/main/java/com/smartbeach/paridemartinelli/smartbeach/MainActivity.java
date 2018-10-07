@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://ab6a6f91.ngrok.io/api";
+    public static final String URL = "http://9705ad7b.ngrok.io/api";
     //TODO: recuperare username da login
     public static String user;
     public static RequestQueue queue;
@@ -448,15 +448,15 @@ public class MainActivity extends AppCompatActivity {
         dashboardTabHost.setup();
 
         //TAB 1: grafici relativi all'utente
-        TabHost.TabSpec spec = dashboardTabHost.newTabSpec("Beach data");
+        TabHost.TabSpec spec = dashboardTabHost.newTabSpec("Spiaggia");
         spec.setContent(R.id.tab1);
-        spec.setIndicator("Beach data");
+        spec.setIndicator("Spiaggia");
         dashboardTabHost.addTab(spec);
 
         //TAB 2: grafici relativi al mare
-        spec = dashboardTabHost.newTabSpec("Sea Data");
+        spec = dashboardTabHost.newTabSpec("Mare");
         spec.setContent(R.id.tab2);
-        spec.setIndicator("Sea Data");
+        spec.setIndicator("Mare");
         dashboardTabHost.addTab(spec);
 
         //Grafico della temperatura

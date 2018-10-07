@@ -278,7 +278,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Potenza onde"
+                                    android:text="Movimento"
                                     android:layout_marginTop="10dp"/>
                             </LinearLayout>
 
@@ -584,7 +584,7 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Temperatura dell'acqua"
+                                            android:text="Temperatura del mare"
                                             android:textColor="@color/white"/>
                                     </LinearLayout>
 
@@ -647,7 +647,7 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Torbidità dell'acqua"
+                                            android:text="Torbidità del mare"
                                             android:textColor="@color/white"/>
                                     </LinearLayout>
 

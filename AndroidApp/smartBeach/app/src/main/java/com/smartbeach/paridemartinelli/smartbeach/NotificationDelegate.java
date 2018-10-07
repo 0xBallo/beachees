@@ -83,19 +83,19 @@ public class NotificationDelegate {
                             color = Color.parseColor("#FBC02D");
                             icon = R.drawable.ic_report_problem_black_24dp;
                             break;
-                        case "UVA":
+                        case "Raggi UV":
                             color = Color.parseColor("#FBC02D");
                             icon = R.drawable.ic_report_problem_black_24dp;
                             break;
-                        case "Temperatura Mare":
+                        case "Temperatura del mare":
                             color = Color.parseColor("#29B6F6");
                             icon = R.drawable.ic_report_problem_black_24dp;
                             break;
-                        case "Torbidità Mare":
+                        case "Torbidità del mare":
                             color = Color.parseColor("#29B6F6");
                             icon = R.drawable.ic_report_problem_black_24dp;
                             break;
-                        case "Onde":
+                        case "Movimento del mare":
                             color = Color.parseColor("#29B6F6");
                             icon = R.drawable.ic_report_problem_black_24dp;
                             break;
