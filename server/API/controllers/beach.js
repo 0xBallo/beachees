@@ -109,8 +109,8 @@ exports.add_temp_hum = (req, res, db) => {
                ttl: 3600 * 1000, // 1 hour in milliseconds
                priority: 'normal',
                notification: {
-                  title: 'Temperature',
-                  body: 'Temperature reach ' + data.t + '°C!',
+                  title: 'Temperatura',
+                  body: 'Temperatura elevata raggiunta (' + data.t + '°C)!',
                   icon: CONF.notify.alert.icon,
                   color: CONF.notify.alert.color
                }
@@ -126,8 +126,8 @@ exports.add_temp_hum = (req, res, db) => {
                ttl: 3600 * 1000, // 1 hour in milliseconds
                priority: 'normal',
                notification: {
-                  title: 'Humidity',
-                  body: 'Humidity reach ' + data.t + '%!',
+                  title: 'Umidità',
+                  body: 'Livello critico di umidità raggiunto (' + data.t + '%)!',
                   icon: CONF.notify.alert.icon,
                   color: CONF.notify.alert.color
                }
@@ -285,8 +285,8 @@ exports.add_uva = (req, res, db) => {
                ttl: 3600 * 1000, // 1 hour in milliseconds
                priority: 'normal',
                notification: {
-                  title: 'UVA',
-                  body: 'UVA level reach ' + data.t + ' mW/Cm2!',
+                  title: 'Raggi UV',
+                  body: 'Livello critico di raggi UV raggiunto! (' + data.t + ' mW/Cm2)!',
                   icon: CONF.notify.alert.icon,
                   color: CONF.notify.alert.color
                }
