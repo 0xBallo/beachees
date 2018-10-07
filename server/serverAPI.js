@@ -18,15 +18,27 @@ const port = process.env.PORT || 3001;
 
 // DATABASE
 let lidoBase = {};
-lidoBase.beach = new Datastore('lidoBase-beach.db');
-lidoBase.sea = new Datastore('lidoBase-sea.db');
-lidoBase.users = new Datastore('lidoBase-users.db');
-lidoBase.notifies = new Datastore('lidoBase-notifies.db');
+lidoBase.beach = new Datastore({
+   filename: 'lidoBase-beach.db',
+   autoload: true
+});
+lidoBase.sea = new Datastore({
+   filename: 'lidoBase-sea.db',
+   autoload: true
+});
+lidoBase.users = new Datastore({
+   filename: 'lidoBase-users.db',
+   autoload: true
+});
+lidoBase.notifies = new Datastore({
+   filename: 'lidoBase-notifies.db',
+   autoload: true
+});
 
-lidoBase.sea.loadDatabase();
-lidoBase.beach.loadDatabase();
-lidoBase.users.loadDatabase();
-lidoBase.notifies.loadDatabase();
+// lidoBase.sea.loadDatabase();
+// lidoBase.beach.loadDatabase();
+// lidoBase.users.loadDatabase();
+// lidoBase.notifies.loadDatabase();
 
 // Initialize Firebase Admin services
 Admin.initializeApp({

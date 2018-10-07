@@ -16,6 +16,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.smartbeach.paridemartinelli.smartbeach.services.MyFirebaseMessagingService;
+
 /**
  * A login screen that offers login via email/password.
  */

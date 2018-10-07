@@ -100,7 +100,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(token);
+        if (!MainActivity.user.isEmpty()) {
+            sendRegistrationToServer(MainActivity.user, token);
+        } else {
+            MainActivity.token = token;
+        }
     }
     // [END on_new_token]
 
@@ -119,11 +123,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param token The new token.
      */
-    private void sendRegistrationToServer(final String token) {
+    public static void sendRegistrationToServer(String user, final String token) {
         // INFO: send token to your app server.
         //Registrazione dispositivo ed utente sul server
         Map<String, String> params = new HashMap();
-        params.put("user", MainActivity.user);
+        params.put("user", user);
         params.put("token", token);
 
         JSONObject parameters = new JSONObject(params);
@@ -138,6 +142,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.toString());
+                sendRegistrationToServer(MainActivity.user, MainActivity.token);
             }
         });
         MainActivity.queue.add(request);

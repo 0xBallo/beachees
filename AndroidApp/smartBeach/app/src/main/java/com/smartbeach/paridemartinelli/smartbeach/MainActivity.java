@@ -45,6 +45,7 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.mikephil.charting.charts.LineChart;
+import com.smartbeach.paridemartinelli.smartbeach.services.MyFirebaseMessagingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,9 +63,10 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://fd4aef29.ngrok.io/api";
+    public static final String URL = "http://6726dda0.ngrok.io/api";
     //TODO: recuperare username da login
-    public static String user;
+    public static String user = "";
+    public static String token;
     public static RequestQueue queue;
     BluetoothAdapter mBluetoothAdapter;
 
@@ -152,6 +154,11 @@ public class MainActivity extends AppCompatActivity {
         Network network = new BasicNetwork(new HurlStack());
         queue = new RequestQueue(cache, network);
         queue.start();
+
+        if (MainActivity.token != null && !MainActivity.token.isEmpty())
+        {
+            MyFirebaseMessagingService.sendRegistrationToServer(MainActivity.user, MainActivity.token);
+        }
 
 
         //TODO: COSA MANCA:
