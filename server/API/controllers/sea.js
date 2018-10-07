@@ -90,8 +90,8 @@ exports.add_water_temp = (req, res, db) => {
                               ttl: 3600 * 1000, // 1 hour in milliseconds
                               priority: 'normal',
                               notification: {
-                                    title: 'Sea Temperature High',
-                                    body: 'Sea temperature go over ' + data.t + '°C!',
+                                    title: 'Temperatura del mare',
+                                    body: 'Temperatura del mare elevata (' + data.t + '°C)!',
                                     icon: CONF.notify.alert.icon,
                                     color: CONF.notify.alert.color
                               }
@@ -106,8 +106,8 @@ exports.add_water_temp = (req, res, db) => {
                               ttl: 3600 * 1000, // 1 hour in milliseconds
                               priority: 'normal',
                               notification: {
-                                    title: 'Sea Temperature Low',
-                                    body: 'Sea temperature go under ' + data.t + '°C!',
+                                    title: 'Temperatura del mare',
+                                    body: 'Temperatura del mare molto bassa (' + data.t + '°C)!',
                                     icon: CONF.notify.alert.icon,
                                     color: CONF.notify.alert.color
                               }
@@ -248,8 +248,8 @@ exports.add_water_turb = (req, res, db) => {
                               ttl: 3600 * 1000, // 1 hour in milliseconds
                               priority: 'normal',
                               notification: {
-                                    title: 'Sea Turbidity',
-                                    body: 'Sea Turbidity reach ' + data.t + ' !',
+                                    title: 'Torbidità del mare',
+                                    body: 'Torbidità del mare elevata (' + data.t + ')!',
                                     icon: CONF.notify.alert.icon,
                                     color: CONF.notify.alert.color
                               }
@@ -395,8 +395,8 @@ exports.add_waves_acc = (req, res, db) => {
                               ttl: 3600 * 1000, // 1 hour in milliseconds
                               priority: 'normal',
                               notification: {
-                                    title: 'Sea Waves',
-                                    body: 'Sea waves go over ' + waves + ' level!',
+                                    title: 'Movimento del mare',
+                                    body: 'Livello delle onde critico (' + waves + ')!',
                                     icon: CONF.notify.alert.icon,
                                     color: CONF.notify.alert.color
                               }
