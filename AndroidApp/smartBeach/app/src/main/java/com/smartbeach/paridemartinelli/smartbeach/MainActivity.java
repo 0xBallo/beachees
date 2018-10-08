@@ -5,9 +5,12 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +36,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.app.DatePickerDialog;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -45,6 +49,7 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.mikephil.charting.charts.LineChart;
+import com.smartbeach.paridemartinelli.smartbeach.services.MyBLEScanService;
 import com.smartbeach.paridemartinelli.smartbeach.services.MyFirebaseMessagingService;
 
 import org.json.JSONException;
@@ -63,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://6726dda0.ngrok.io/api";
+    public static final String URL = "http://b9a2b003.ngrok.io/api";
     //TODO: recuperare username da login
     public static String user = "";
     public static String token;
@@ -109,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     private LineChart roughSeaLineChart;
     private ImageButton dateRoughSeaImageButton;
     private DatePickerDialog datePickerDialogRoughSea;
-    
+
     int yellow = Color.parseColor("#FBC02D");
     int blue = Color.parseColor("#29B6F6");
 
@@ -171,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
         //---------------------Sezione beacon-----------------------------//
         //TODO: commentato per effettuare test con simulatore (scommentare)
-        /*mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //Controllo se il dispositivo supporta il bluethooth
         if (mBluetoothAdapter == null) {
@@ -189,10 +194,22 @@ public class MainActivity extends AppCompatActivity {
         //Chiedo all'utente i permessi per la localizzazione e poi faccio partire il processo per la ricerca dei dispositivi bluetooth
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            checkLocationPermission();
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MainActivity.REQUEST_COARSE_LOCATION);
         } else {
-            proceedDiscovery();
-        }*/
+            //lancia il servizio bluetooth
+            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+            JobInfo jobInfo = new JobInfo.Builder(11, new ComponentName(this, MyBLEScanService.class))
+                    // only add if network access is required
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .build();
+
+            jobScheduler.schedule(jobInfo);
+        }
+
+
 
         //-------------------------------------------------------------//
 
@@ -887,15 +904,6 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO: ricontrolla perchè forse nel cercare di creare il delegate ho fatto su del casino
     //TODO: creare la classe delegate con tutti queti metodi
-
-    protected void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    MainActivity.REQUEST_COARSE_LOCATION);
-        }
-    }
 
     protected void proceedDiscovery() {
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
