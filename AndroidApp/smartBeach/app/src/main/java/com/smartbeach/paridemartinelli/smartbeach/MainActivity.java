@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.bluetooth.BluetoothAdapter;
@@ -19,6 +20,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
@@ -26,16 +28,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.app.DatePickerDialog;
-import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.android.volley.Cache;
@@ -49,16 +49,15 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.mikephil.charting.charts.LineChart;
+import com.google.gson.Gson;
 import com.smartbeach.paridemartinelli.smartbeach.services.MyBLEScanService;
 import com.smartbeach.paridemartinelli.smartbeach.services.MyFirebaseMessagingService;
+import com.smartbeach.paridemartinelli.smartbeach.utils.SmartBroadcastReceiver;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.util.Calendar;
-
-import static com.smartbeach.paridemartinelli.smartbeach.R.color.darkYellow;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,12 +67,13 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://b9a2b003.ngrok.io/api";
-    //TODO: recuperare username da login
+    public static final String URL = "http://86e846f2.ngrok.io/api";
     public static String user = "";
     public static String token;
     public static RequestQueue queue;
-    BluetoothAdapter mBluetoothAdapter;
+
+    //Sezione Beacon
+    private BroadcastReceiver mReceiver = new SmartBroadcastReceiver(notificationDelegate, notificationLinearLayout, MainActivity.this);
 
     //Sezione home
     private ScrollView homeScrollView;
@@ -160,8 +160,7 @@ public class MainActivity extends AppCompatActivity {
         queue = new RequestQueue(cache, network);
         queue.start();
 
-        if (MainActivity.token != null && !MainActivity.token.isEmpty())
-        {
+        if (MainActivity.token != null && !MainActivity.token.isEmpty()) {
             MyFirebaseMessagingService.sendRegistrationToServer(MainActivity.user, MainActivity.token);
         }
 
@@ -176,21 +175,17 @@ public class MainActivity extends AppCompatActivity {
 
         //---------------------Sezione beacon-----------------------------//
         //TODO: commentato per effettuare test con simulatore (scommentare)
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //Controllo se il dispositivo supporta il bluethooth
-        if (mBluetoothAdapter == null) {
+        if (BluetoothAdapter.getDefaultAdapter() == null) {
             // Device doesn't support Bluetooth
             Toast.makeText(this, "Bluetooth Non supportato", Toast.LENGTH_SHORT).show();
             //    finish();
-        }
-
-        //Controllo se il dispositivo ha il bluetooth acceso, se non è acceso gli chiedo di accenderlo
-        if (!mBluetoothAdapter.isEnabled()) {
+        } else if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            //Controllo se il dispositivo ha il bluetooth acceso, se non è acceso gli chiedo di accenderlo
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_COARSE_LOCATION);
         }
-
         //Chiedo all'utente i permessi per la localizzazione e poi faccio partire il processo per la ricerca dei dispositivi bluetooth
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -198,30 +193,21 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     MainActivity.REQUEST_COARSE_LOCATION);
         } else {
-            //lancia il servizio bluetooth
-            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
-            JobInfo jobInfo = new JobInfo.Builder(11, new ComponentName(this, MyBLEScanService.class))
-                    // only add if network access is required
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .build();
-
-            jobScheduler.schedule(jobInfo);
+            startBGService();
         }
-
 
 
         //-------------------------------------------------------------//
 
         //----------------------Sezione home--------------------------//
-        homeScrollView = (ScrollView) findViewById(R.id.homeScrollView);
+        homeScrollView = findViewById(R.id.homeScrollView);
 
         //bottone info spiaggia (secondo me non serve)
         //moreInfoBeachButton = (ImageButton) findViewById(R.id.moreInfoBeachButton);
 
         //Temperatura e umidità
-        tempNowTextView = (TextView) findViewById(R.id.tempNowTextView);
-        humNowTextView = (TextView) findViewById(R.id.humNowTextView);
+        tempNowTextView = findViewById(R.id.tempNowTextView);
+        humNowTextView = findViewById(R.id.humNowTextView);
         String dhtNowURL = URL + "/dht/now?user=" + user;
         JsonObjectRequest requestDhtNow = new JsonObjectRequest(Request.Method.GET, dhtNowURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -234,15 +220,15 @@ public class MainActivity extends AppCompatActivity {
                     int humNowInt = Math.round(humNowFloat);
                     String humNow = String.valueOf(humNowInt) + "%";
                     tempNowTextView.setText(tempNow);
-                    if (tempNowInt >= 35){
+                    if (tempNowInt >= 35) {
                         tempNowTextView.setTextColor(Color.RED);
-                    }else{
+                    } else {
                         tempNowTextView.setTextColor(Color.parseColor("#FBC02D"));
                     }
                     humNowTextView.setText(humNow);
-                    if (humNowInt >= 80){
+                    if (humNowInt >= 80) {
                         humNowTextView.setTextColor(Color.RED);
-                    }else{
+                    } else {
                         humNowTextView.setTextColor(Color.parseColor("#FBC02D"));
                     }
                 } catch (JSONException e) {
@@ -288,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Raggi UV
-        uvNowTextView = (TextView) findViewById(R.id.uvNowTextView);
+        uvNowTextView = findViewById(R.id.uvNowTextView);
         final String uvNowURL = URL + "/uva/now?user=" + user;
         JsonObjectRequest requestUvNow = new JsonObjectRequest(Request.Method.GET, uvNowURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -298,9 +284,9 @@ public class MainActivity extends AppCompatActivity {
                     int uvNowInt = Math.round(uvNowFloat);
                     String uvNow = String.valueOf(uvNowInt);
                     uvNowTextView.setText(uvNow);
-                    if(uvNowFloat >= 12){
+                    if (uvNowFloat >= 12) {
                         uvNowTextView.setTextColor(Color.RED);
-                    }else{
+                    } else {
                         uvNowTextView.setTextColor(Color.parseColor("#FBC02D"));
                     }
                 } catch (JSONException e) {
@@ -334,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
         //moreInfoSeaButton = (ImageButton) findViewById(R.id.moreInfoSeaButton);
 
         //temperatura del mare
-        seaTempNowTextView = (TextView) findViewById(R.id.tempSeaNowTextView);
+        seaTempNowTextView = findViewById(R.id.tempSeaNowTextView);
         String seaTempNowURL = URL + "/sea/temp/now?user=" + user;
         JsonObjectRequest requestSeaTempNow = new JsonObjectRequest(Request.Method.GET, seaTempNowURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -344,9 +330,9 @@ public class MainActivity extends AppCompatActivity {
                     int seaTempNowInt = Math.round(seaTempNowFloat);
                     String seaTempNow = String.valueOf(seaTempNowInt) + "°C";
                     seaTempNowTextView.setText(seaTempNow);
-                    if(seaTempNowInt >= 27 || seaTempNowInt <= 23){
+                    if (seaTempNowInt >= 27 || seaTempNowInt <= 23) {
                         seaTempNowTextView.setTextColor(Color.RED);
-                    }else{
+                    } else {
                         seaTempNowTextView.setTextColor(Color.parseColor("#29B6F6"));
                     }
                 } catch (JSONException e) {
@@ -378,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //tordibità
-        seaTurbNowTextView = (TextView) findViewById(R.id.turbSeaNowTextView);
+        seaTurbNowTextView = findViewById(R.id.turbSeaNowTextView);
         String seaTurbNowURL = URL + "/sea/turbidity/now?user=" + user;
         JsonObjectRequest requestSeaTurbNow = new JsonObjectRequest(Request.Method.GET, seaTurbNowURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -388,9 +374,9 @@ public class MainActivity extends AppCompatActivity {
                     int seaTurbNowInt = Math.round(seaTurbNowFloat);
                     String seaTurbNow = String.valueOf(seaTurbNowInt);
                     seaTurbNowTextView.setText(seaTurbNow);
-                    if(seaTurbNowInt >= 35){
+                    if (seaTurbNowInt >= 35) {
                         seaTurbNowTextView.setTextColor(Color.RED);
-                    }else{
+                    } else {
                         seaTurbNowTextView.setTextColor(Color.parseColor("#29B6F6"));
                     }
                 } catch (JSONException e) {
@@ -421,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //mare mosso
-        seaRoughTextView = (TextView) findViewById(R.id.roughSeaNowTextView);
+        seaRoughTextView = findViewById(R.id.roughSeaNowTextView);
         String seaRoughNowURL = URL + "/sea/waves/now?user=" + user;
         JsonObjectRequest requestSeaRoughNow = new JsonObjectRequest(Request.Method.GET, seaRoughNowURL, null, new Response.Listener<JSONObject>() {
             @Override
@@ -431,9 +417,9 @@ public class MainActivity extends AppCompatActivity {
                     int seaWavesNowInt = Math.round(seaWavesNowFloat);
                     String seaWavesNow = String.valueOf(seaWavesNowInt);
                     seaRoughTextView.setText(seaWavesNow);
-                    if(seaWavesNowInt >= 3 ){
+                    if (seaWavesNowInt >= 3) {
                         seaRoughTextView.setTextColor(Color.RED);
-                    }else{
+                    } else {
                         seaRoughTextView.setTextColor(Color.parseColor("#29B6F6"));
                     }
 
@@ -468,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
         //-----------------------------------------------------------//
 
         //----------------------Sezione grafici----------------------//
-        dashboardTabHost = (TabHost) findViewById(R.id.dashboardTabHost);
+        dashboardTabHost = findViewById(R.id.dashboardTabHost);
         dashboardTabHost.setup();
 
         //TAB 1: grafici relativi all'utente
@@ -484,10 +470,10 @@ public class MainActivity extends AppCompatActivity {
         dashboardTabHost.addTab(spec);
 
         //Grafico della temperatura
-        tempLineChart = (LineChart) findViewById(R.id.tempLineChart);
+        tempLineChart = findViewById(R.id.tempLineChart);
         //chartDelegate.setData(tempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura", yellow);
         tempLineChart.setDescription("");
-        dateTempImageButton = (ImageButton) findViewById(R.id.dateTempImageButton);
+        dateTempImageButton = findViewById(R.id.dateTempImageButton);
         dateTempImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -512,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
                                 JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "temperature", label, "Temperatura troppo elevata", 35f, 45f, 15f, tempLineChart, yellow );
+                                        chartDelegate.createChart(response, "temperature", label, "Temperatura troppo elevata", 35f, 45f, 15f, tempLineChart, yellow);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -529,10 +515,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Grafico dell'umidità
-        humLineChart = (LineChart) findViewById(R.id.humLineChart);
+        humLineChart = findViewById(R.id.humLineChart);
         //chartDelegate.setData(humLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Umidità", yellow);
         humLineChart.setDescription("");
-        dateHumImageButton = (ImageButton) findViewById(R.id.dateHumImageButton);
+        dateHumImageButton = findViewById(R.id.dateHumImageButton);
         dateHumImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -556,7 +542,7 @@ public class MainActivity extends AppCompatActivity {
                                 JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "humidity", label, "Umidità troppo elevata", 80f, 90f, 70f, humLineChart, yellow );
+                                        chartDelegate.createChart(response, "humidity", label, "Umidità troppo elevata", 80f, 90f, 70f, humLineChart, yellow);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -573,10 +559,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Grafico dei raggi UV
-        UVLineChart = (LineChart) findViewById(R.id.UVLineChart);
+        UVLineChart = findViewById(R.id.UVLineChart);
         //chartDelegate.setData(UVLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Raggi UV", yellow);
         UVLineChart.setDescription("");
-        dateUVImageButton = (ImageButton) findViewById(R.id.dateUVImageButton);
+        dateUVImageButton = findViewById(R.id.dateUVImageButton);
         dateUVImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -600,7 +586,7 @@ public class MainActivity extends AppCompatActivity {
                                 JsonObjectRequest requestUVA = new JsonObjectRequest(Request.Method.GET, uvaURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "uva", label, "Soglia limite consigliato", 12f, 15f, 0f , UVLineChart, yellow);
+                                        chartDelegate.createChart(response, "uva", label, "Soglia limite consigliato", 12f, 15f, 0f, UVLineChart, yellow);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -617,10 +603,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Grafico della temperatura del mare
-        seaTempLineChart = (LineChart) findViewById(R.id.seaTempLineChart);
+        seaTempLineChart = findViewById(R.id.seaTempLineChart);
         //chartDelegate.setData(seaTempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura del mare", blue);
         seaTempLineChart.setDescription("");
-        dateSeaTempImageButton = (ImageButton) findViewById(R.id.dateSeaTempImageButton);
+        dateSeaTempImageButton = findViewById(R.id.dateSeaTempImageButton);
         dateSeaTempImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -644,7 +630,7 @@ public class MainActivity extends AppCompatActivity {
                                 JsonObjectRequest requestSeaTemp = new JsonObjectRequest(Request.Method.GET, seaTempURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "watertemp", label, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue );
+                                        chartDelegate.createChart(response, "watertemp", label, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -662,10 +648,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Grafico della torbidità del mare
-        seaTurbLineChart = (LineChart) findViewById(R.id.seaTurbLineChart);
+        seaTurbLineChart = findViewById(R.id.seaTurbLineChart);
         //chartDelegate.setData(seaTurbLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Torbidità del mare", blue);
         seaTurbLineChart.setDescription("");
-        dateTurbImageButton = (ImageButton) findViewById(R.id.dateTurbImageButton);
+        dateTurbImageButton = findViewById(R.id.dateTurbImageButton);
         dateTurbImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -689,7 +675,7 @@ public class MainActivity extends AppCompatActivity {
                                 JsonObjectRequest requestSeaTurb = new JsonObjectRequest(Request.Method.GET, seaTurbURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "turbidity", label, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue );
+                                        chartDelegate.createChart(response, "turbidity", label, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -706,10 +692,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Grafico del movimento del mare
-        roughSeaLineChart = (LineChart) findViewById(R.id.roughSeaLineChart);
+        roughSeaLineChart = findViewById(R.id.roughSeaLineChart);
         //chartDelegate.setData(roughSeaLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Movimento del mare", blue);
         roughSeaLineChart.setDescription("");
-        dateRoughSeaImageButton = (ImageButton) findViewById(R.id.dateRoughSeaImageButton);
+        dateRoughSeaImageButton = findViewById(R.id.dateRoughSeaImageButton);
         dateRoughSeaImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -756,7 +742,7 @@ public class MainActivity extends AppCompatActivity {
         int mYear = c.get(Calendar.YEAR); // current year
         int mMonth = c.get(Calendar.MONTH); // current month
         int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
-        String currentDate = + mDay + "/" + mMonth + "/" + mYear;
+        String currentDate = +mDay + "/" + mMonth + "/" + mYear;
 
         //temperatura
         String tempURL = URL + "/dht?user=" + user;
@@ -764,7 +750,7 @@ public class MainActivity extends AppCompatActivity {
         JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "temperature", labelTemp, "Temperatura troppo elevata", 35f, 40f, 21f, tempLineChart , yellow );
+                chartDelegate.createChart(response, "temperature", labelTemp, "Temperatura troppo elevata", 35f, 40f, 21f, tempLineChart, yellow);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -780,7 +766,7 @@ public class MainActivity extends AppCompatActivity {
         JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "humidity", labelHum, "Umidità troppo elevata", 80f, 85f, 70f, humLineChart, yellow );
+                chartDelegate.createChart(response, "humidity", labelHum, "Umidità troppo elevata", 80f, 85f, 70f, humLineChart, yellow);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -796,7 +782,7 @@ public class MainActivity extends AppCompatActivity {
         JsonObjectRequest requestUVA = new JsonObjectRequest(Request.Method.GET, uvaURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "uva", labelUV, "Soglia limite consigliato", 12f, 15f, 5f , UVLineChart, yellow);
+                chartDelegate.createChart(response, "uva", labelUV, "Soglia limite consigliato", 12f, 15f, 5f, UVLineChart, yellow);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -812,7 +798,7 @@ public class MainActivity extends AppCompatActivity {
         JsonObjectRequest requestSeaTemp = new JsonObjectRequest(Request.Method.GET, seaTempURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "watertemp", labelSeaTemp, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue );
+                chartDelegate.createChart(response, "watertemp", labelSeaTemp, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -828,7 +814,7 @@ public class MainActivity extends AppCompatActivity {
         JsonObjectRequest requestSeaTurb = new JsonObjectRequest(Request.Method.GET, seaTurbURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "turbidity", labelSeaTurb, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue );
+                chartDelegate.createChart(response, "turbidity", labelSeaTurb, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -856,14 +842,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         //-----------------------------------------------------------//
-        notificationScrollView = (ScrollView) findViewById(R.id.notificationScrollView);
-        notificationLinearLayout = (LinearLayout) findViewById(R.id.notificationLinearLayout);
+        notificationScrollView = findViewById(R.id.notificationScrollView);
+        notificationLinearLayout = findViewById(R.id.notificationLinearLayout);
         populateNotifications(notificationScrollView, notificationLinearLayout, notificationDelegate, MainActivity.this);
 
 
         //-----------------------------------------------------------//
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
@@ -896,30 +882,44 @@ public class MainActivity extends AppCompatActivity {
      * Getter and Setter
      */
 
-    public LineChart getTempLineChart() {
+    /*public LineChart getTempLineChart() {
         return getTempLineChart();
-    }
+    }*/
 
     //-------------------------METODI PER LA RICERCA DEL BEACON------------------------------------//
 
     //TODO: ricontrolla perchè forse nel cercare di creare il delegate ho fatto su del casino
     //TODO: creare la classe delegate con tutti queti metodi
 
-    protected void proceedDiscovery() {
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    void startBGService() {
+        //lancia il servizio bluetooth
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        /*PersistableBundle bundle = new PersistableBundle();
+        Gson g = new Gson();
+        bundle.putString("RECEIVER", g.toJson(getmReceiver()));*/
+
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothDevice.ACTION_NAME_CHANGED);
-        registerReceiver(getmReceiver(), filter);
+        registerReceiver(this.mReceiver, filter);
 
-        getmBluetoothAdapter().startDiscovery();
+        JobInfo jobInfo = new JobInfo.Builder(11, new ComponentName(this, MyBLEScanService.class))
+                // only add if network access is required
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                //.setExtras(bundle)
+                .build();
+
+        jobScheduler.schedule(jobInfo);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MainActivity.REQUEST_COARSE_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    proceedDiscovery(); // --->
+                    startBGService(); // --->
                 } else {
                     //TODO re-request
                 }
@@ -928,21 +928,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("MissingSuperCall")
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        onDestroy();
-
-        // Don't forget to unregister the ACTION_FOUND receiver.
-        unregisterReceiver(getmReceiver());
+        unregisterReceiver(this.mReceiver);
     }
 
-    public BroadcastReceiver getmReceiver() {
-        return mReceiver;
-    }
-
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    /*private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -950,18 +943,14 @@ public class MainActivity extends AppCompatActivity {
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 Log.d("BLE", intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString());
                 if(intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString().equals("E1:A4:B8:01:EA:35")){
-                    Log.d("BLE","BEACONNNNNNNNN");
+                    Log.d("BLE","BEACON LIDO BEACH");
                     //TODO:creare oggetto con valori corretti
                     JSONObject response = null;
                     notificationDelegate.createNotification(response, notificationLinearLayout, MainActivity.this);
                 }
             }
         }
-    };
-
-    public BluetoothAdapter getmBluetoothAdapter() {
-        return mBluetoothAdapter;
-    }
+    };*/
 
 
     //---------------------------------------------------------------------------------------------//
