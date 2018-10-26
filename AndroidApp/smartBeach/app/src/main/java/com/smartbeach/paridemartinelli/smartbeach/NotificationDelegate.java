@@ -47,7 +47,7 @@ public class NotificationDelegate {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void createNotification(JSONObject response, LinearLayout notificationLinearLayout, Activity activity) {
+    public void createNotification(JSONObject response, LinearLayout notificationLinearLayout, Activity activity, TextView badge) {
         try {
             if(response.getJSONArray("data").length() == 0){
                 TextView noNotificationsTV = new TextView(activity);
@@ -60,6 +60,7 @@ public class NotificationDelegate {
                 noNotificationsTV.setGravity(Gravity.CENTER);
                 noNotificationsTV.setPadding(15,300,15,15);
                 notificationLinearLayout.addView(noNotificationsTV);
+                badge.setText(Integer.toString(response.getJSONArray("data").length()));
 
             }else{
                 for (int i = 0; i < response.getJSONArray("data").length(); i++) {
