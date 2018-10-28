@@ -26,13 +26,20 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -49,7 +56,7 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.mikephil.charting.charts.LineChart;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 import com.smartbeach.paridemartinelli.smartbeach.services.MyBLEScanService;
 import com.smartbeach.paridemartinelli.smartbeach.services.MyFirebaseMessagingService;
 import com.smartbeach.paridemartinelli.smartbeach.utils.SmartBroadcastReceiver;
@@ -67,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://86e846f2.ngrok.io/api";
+    public static final String URL = "http://52bf0101.ngrok.io/api";
     public static String user = "";
     public static String token;
     public static RequestQueue queue;
@@ -91,32 +98,56 @@ public class MainActivity extends AppCompatActivity {
     //Sezione grafici
     private TabHost dashboardTabHost;
 
-    private LineChart tempLineChart;
+    private RecyclerView mRecyclerViewBeach;
+    private RecyclerView.Adapter mAdapterBeach;
+    private RecyclerView.LayoutManager mLayoutManagerBeach;
+
+    public LineChart tempLineChart;
     private ImageButton dateTempImageButton;
     private DatePickerDialog datePickerDialogTemp;
+    private RelativeLayout rl_temp;
 
-    private LineChart humLineChart;
+    public LineChart humLineChart;
     private ImageButton dateHumImageButton;
     private DatePickerDialog datePickerDialogHum;
 
-    private LineChart UVLineChart;
+    public LineChart UVLineChart;
     private ImageButton dateUVImageButton;
     private DatePickerDialog datePickerDialogUV;
 
-    private LineChart seaTempLineChart;
+    public LineChart seaTempLineChart;
     private ImageButton dateSeaTempImageButton;
     private DatePickerDialog datePickerDialogSeaTemp;
 
-    private LineChart seaTurbLineChart;
+    public LineChart seaTurbLineChart;
     private ImageButton dateTurbImageButton;
     private DatePickerDialog datePickerDialogTurb;
 
-    private LineChart roughSeaLineChart;
+
+    public LineChart roughSeaLineChart;
     private ImageButton dateRoughSeaImageButton;
     private DatePickerDialog datePickerDialogRoughSea;
 
     int yellow = Color.parseColor("#FBC02D");
     int blue = Color.parseColor("#29B6F6");
+
+    //Sezione notifiche
+    private TextView bedgeNot;
+
+
+
+    /*public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.navigation, menu);
+
+        //final MenuItem menuItem = menu.findItem(R.id.navigation_notifications);
+        textCartItemCount = findViewById(R.id.badge);
+        MenuItem menu = findViewById(R.id.navigation_notifications);
+
+
+        setupBadge();
+
+        return true;
+    }*/
 
 
     //BottonNavigationView: menu di bottoni in basso
@@ -165,19 +196,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        //TODO: COSA MANCA:
-        // 1. SISTEMARE LA HOME CHE NON MI PIACE (CHIEDERE CONSIGLIO A MATTIA)
-        // 2. SISTEMARE LA GRAFICA DEL DIALOG NELLA HOME
-        // 3. SISTEMARE LA GRAFICA DELLA CANCELLAZIONE DELLE NOTIFICHE
-        // 4. FAR FUNZIONARE NOTIDICHE PUSH
-        // 5. NOTIFCHE BEACON
-
-
         //---------------------Sezione beacon-----------------------------//
         //TODO: commentato per effettuare test con simulatore (scommentare)
 
         //Controllo se il dispositivo supporta il bluethooth
-        if (BluetoothAdapter.getDefaultAdapter() == null) {
+        /*if (BluetoothAdapter.getDefaultAdapter() == null) {
             // Device doesn't support Bluetooth
             Toast.makeText(this, "Bluetooth Non supportato", Toast.LENGTH_SHORT).show();
             //    finish();
@@ -194,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.REQUEST_COARSE_LOCATION);
         } else {
             startBGService();
-        }
+        }*/
 
 
         //-------------------------------------------------------------//
@@ -463,6 +486,13 @@ public class MainActivity extends AppCompatActivity {
         spec.setIndicator("Spiaggia");
         dashboardTabHost.addTab(spec);
 
+        //mRecyclerViewBeach = (RecyclerView) findViewById(R.id.my_recycler_view_beach);
+        //mRecyclerViewBeach.setHasFixedSize(true);
+        //mLayoutManagerBeach = new LinearLayoutManager(this);
+        //mRecyclerViewBeach.setLayoutManager(mLayoutManagerBeach);
+        //mAdapterBeach = new MyAdapter(myDataset);
+        //mRecyclerViewBeach.setAdapter(mAdapterBeach);
+
         //TAB 2: grafici relativi al mare
         spec = dashboardTabHost.newTabSpec("Mare");
         spec.setContent(R.id.tab2);
@@ -470,6 +500,7 @@ public class MainActivity extends AppCompatActivity {
         dashboardTabHost.addTab(spec);
 
         //Grafico della temperatura
+        rl_temp = findViewById(R.id.rl_temp);
         tempLineChart = findViewById(R.id.tempLineChart);
         //chartDelegate.setData(tempLineChart, chartDelegate.setXAxisValues(), chartDelegate.setYAxisValues(), "Temperatura", yellow);
         tempLineChart.setDescription("");
@@ -486,28 +517,19 @@ public class MainActivity extends AppCompatActivity {
                 datePickerDialogTemp = new DatePickerDialog(MainActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
 
+                            @SuppressLint("ResourceType")
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
                                 //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
+                                tempLineChart.clear();
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String tempURL = URL + "/dht?user=" + user + "&date=" + date;
                                 final String label = "Temperatura " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                                JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "temperature", label, "Temperatura troppo elevata", 35f, 45f, 15f, tempLineChart, yellow);
-                                    }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        //TODO: stampare l'errore
-                                    }
-                                });
-                                queue.add(requestTemp);
-
+                                getTempChart(tempURL, label);
+                                //rl_temp.addView(newLineChart);
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialogTemp.show();
@@ -539,18 +561,7 @@ public class MainActivity extends AppCompatActivity {
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String humURL = URL + "/dht?user=" + user + "&date=" + date;
                                 final String label = "Umidità " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                                JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "humidity", label, "Umidità troppo elevata", 80f, 90f, 70f, humLineChart, yellow);
-                                    }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        //TODO: stampare l'errore
-                                    }
-                                });
-                                queue.add(requestHum);
+                                getHumChart(humURL, label);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -583,18 +594,7 @@ public class MainActivity extends AppCompatActivity {
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String uvaURL = URL + "/uva?user=" + user + "&date=" + date;
                                 final String label = "Raggi UV " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                                JsonObjectRequest requestUVA = new JsonObjectRequest(Request.Method.GET, uvaURL, null, new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "uva", label, "Soglia limite consigliato", 12f, 15f, 0f, UVLineChart, yellow);
-                                    }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        //TODO: stampare l'errore
-                                    }
-                                });
-                                queue.add(requestUVA);
+                                getUVChart(uvaURL, label);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -627,18 +627,7 @@ public class MainActivity extends AppCompatActivity {
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaTempURL = URL + "/sea/temp?user=" + user + "&date=" + date;
                                 final String label = " Temperatura del mare " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                                JsonObjectRequest requestSeaTemp = new JsonObjectRequest(Request.Method.GET, seaTempURL, null, new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "watertemp", label, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue);
-                                    }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        //TODO: stampare l'errore
-                                    }
-                                });
-                                queue.add(requestSeaTemp);
+                                getTempSeaChart(seaTempURL, label);
 
 
                             }
@@ -672,18 +661,7 @@ public class MainActivity extends AppCompatActivity {
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String seaTurbURL = URL + "/sea/turbidity?user=" + user + "&date=" + date;
                                 final String label = "Torbidità del mare " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                                JsonObjectRequest requestSeaTurb = new JsonObjectRequest(Request.Method.GET, seaTurbURL, null, new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "turbidity", label, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue);
-                                    }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        //TODO: stampare l'errore
-                                    }
-                                });
-                                queue.add(requestSeaTurb);
+                                getTurbChart(seaTurbURL, label);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -714,20 +692,9 @@ public class MainActivity extends AppCompatActivity {
 
                                 //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                                String seaWavesURL = URL + "/sea/turbidity?user=" + user + "&date=" + date;
+                                String seaWavesURL = URL + "/sea/waves?user=" + user + "&date=" + date;
                                 final String label = "Livello mare mosso " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                                JsonObjectRequest requestSeaWaves = new JsonObjectRequest(Request.Method.GET, seaWavesURL, null, new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        chartDelegate.createChart(response, "waves", label, "Bandiera rossa", 3f, 5f, 0f, roughSeaLineChart, blue);
-                                    }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        //TODO: stampare l'errore
-                                    }
-                                });
-                                queue.add(requestSeaWaves);
+                                getWavesChart(seaWavesURL, label);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -747,86 +714,64 @@ public class MainActivity extends AppCompatActivity {
         //temperatura
         String tempURL = URL + "/dht?user=" + user;
         final String labelTemp = "Temperatura " + currentDate;
-        JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "temperature", labelTemp, "Temperatura troppo elevata", 35f, 40f, 21f, tempLineChart, yellow);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //TODO: stampare l'errore
-            }
-        });
-        queue.add(requestTemp);
+        getTempChart(tempURL, labelTemp);
 
         //umidità
         String humURL = URL + "/dht?user=" + user;
         final String labelHum = "Umidità " + currentDate;
-        JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "humidity", labelHum, "Umidità troppo elevata", 80f, 85f, 70f, humLineChart, yellow);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //TODO: stampare l'errore
-            }
-        });
-        queue.add(requestHum);
+        getHumChart(humURL, labelHum);
 
         //raggi UV
         String uvaURL = URL + "/uva?user=" + user;
         final String labelUV = "Raggi UV " + currentDate;
-        JsonObjectRequest requestUVA = new JsonObjectRequest(Request.Method.GET, uvaURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "uva", labelUV, "Soglia limite consigliato", 12f, 15f, 5f, UVLineChart, yellow);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //TODO: stampare l'errore
-            }
-        });
-        queue.add(requestUVA);
+        getUVChart(uvaURL, labelUV);
 
         //temperatura del mare
         String seaTempURL = URL + "/sea/temp?user=" + user;
         final String labelSeaTemp = "Temperatura del mare " + currentDate;
-        JsonObjectRequest requestSeaTemp = new JsonObjectRequest(Request.Method.GET, seaTempURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "watertemp", labelSeaTemp, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //TODO: stampare l'errore
-            }
-        });
-        queue.add(requestSeaTemp);
+        getTempSeaChart(seaTempURL, labelSeaTemp);
 
         //torbidità
         String seaTurbURL = URL + "/sea/turbidity?user=" + user;
         final String labelSeaTurb = "Torbidità " + currentDate;
-        JsonObjectRequest requestSeaTurb = new JsonObjectRequest(Request.Method.GET, seaTurbURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "turbidity", labelSeaTurb, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //TODO: stampare l'errore
-            }
-        });
-        queue.add(requestSeaTurb);
+        getTurbChart(seaTurbURL, labelSeaTurb);
 
         //mare mosso
         String seaWavesURL = URL + "/sea/waves?user=" + user;
         final String labelWaves = "Livello mare mosso " + currentDate;
+        getWavesChart(seaWavesURL, labelWaves);
+
+
+        //-----------------------------------------------------------//
+        //----------------------Sezione notifiche--------------------//
+        notificationScrollView = findViewById(R.id.notificationScrollView);
+        notificationLinearLayout = findViewById(R.id.notificationLinearLayout);
+        bedgeNot = findViewById(R.id.badgeNot);
+        String notificationsURL = URL + "/notify?user=" + user;
+        JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.GET, notificationsURL, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.i("response ", String.valueOf(response));
+                notificationDelegate.createNotification(response, notificationLinearLayout, MainActivity.this, bedgeNot);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.print(error);
+            }
+        });
+        queue.add(requestNotifications);
+
+
+        //-----------------------------------------------------------//
+
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+
+    private void getWavesChart(String seaWavesURL, final String labelWaves) {
         JsonObjectRequest requestSeaWaves = new JsonObjectRequest(Request.Method.GET, seaWavesURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -839,52 +784,82 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         queue.add(requestSeaWaves);
-
-
-        //-----------------------------------------------------------//
-        notificationScrollView = findViewById(R.id.notificationScrollView);
-        notificationLinearLayout = findViewById(R.id.notificationLinearLayout);
-        populateNotifications(notificationScrollView, notificationLinearLayout, notificationDelegate, MainActivity.this);
-
-
-        //-----------------------------------------------------------//
-
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
-    /**
-     * Method to refresh notifications view
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public static void populateNotifications(ScrollView notificationScrollView, final LinearLayout notificationLinearLayout, final NotificationDelegate notificationDelegate, final Activity activity) {
-        //----------------------Sezione notifiche--------------------//
-
-        String notificationsURL = URL + "/notify?user=" + user;
-        JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.GET, notificationsURL, null, new Response.Listener<JSONObject>() {
-
+    private void getTurbChart(String seaTurbURL, final String labelSeaTurb) {
+        JsonObjectRequest requestSeaTurb = new JsonObjectRequest(Request.Method.GET, seaTurbURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.i("response ", String.valueOf(response));
-                notificationDelegate.createNotification(response, notificationLinearLayout, activity);
-
+                chartDelegate.createChart(response, "turbidity", labelSeaTurb, "Torbidità elevata", 35f, 46.50f, 20f, seaTurbLineChart, blue);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                System.out.print(error);
+                //TODO: stampare l'errore
             }
         });
-        queue.add(requestNotifications);
+        queue.add(requestSeaTurb);
     }
 
-    /**
-     * Getter and Setter
-     */
+    private void getTempSeaChart(String seaTempURL, final String labelSeaTemp) {
+        JsonObjectRequest requestSeaTemp = new JsonObjectRequest(Request.Method.GET, seaTempURL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                chartDelegate.createChart(response, "watertemp", labelSeaTemp, "Mare troppo freddo", 23f, 30f, 21f, seaTempLineChart, blue);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //TODO: stampare l'errore
+            }
+        });
+        queue.add(requestSeaTemp);
+    }
 
-    /*public LineChart getTempLineChart() {
-        return getTempLineChart();
-    }*/
+    private void getUVChart(String uvaURL, final String labelUV) {
+        JsonObjectRequest requestUVA = new JsonObjectRequest(Request.Method.GET, uvaURL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                chartDelegate.createChart(response, "uva", labelUV, "Soglia limite consigliato", 12f, 15f, 5f, UVLineChart, yellow);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //TODO: stampare l'errore
+            }
+        });
+        queue.add(requestUVA);
+    }
+
+    private void getHumChart(String humURL, final String labelHum) {
+        JsonObjectRequest requestHum = new JsonObjectRequest(Request.Method.GET, humURL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                chartDelegate.createChart(response, "humidity", labelHum, "Umidità troppo elevata", 80f, 85f, 70f, humLineChart, yellow);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //TODO: stampare l'errore
+            }
+        });
+        queue.add(requestHum);
+    }
+
+    private void getTempChart(String tempURL, final String labelTemp) {
+        JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                chartDelegate.createChart(response, "temperature", labelTemp, "Temperatura troppo elevata", 35f, 40f, 21f, tempLineChart, yellow);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //TODO: stampare l'errore
+            }
+        });
+        queue.add(requestTemp);
+    }
 
     //-------------------------METODI PER LA RICERCA DEL BEACON------------------------------------//
 
@@ -954,6 +929,78 @@ public class MainActivity extends AppCompatActivity {
 
 
     //---------------------------------------------------------------------------------------------//
+
+    /*public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+        private String[] mDataset;
+
+        // Provide a reference to the views for each data item
+        // Complex data items may need more than one view per item, and
+        // you provide access to all the views for a data item in a view holder
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            // each data item is just a string in this case
+            public TextView mTextView;
+
+            public LineChart tempLineChart;
+            public ImageButton dateTempImageButton;
+            public DatePickerDialog datePickerDialogTemp;
+
+            public LineChart humLineChart;
+            public ImageButton dateHumImageButton;
+            public DatePickerDialog datePickerDialogHum;
+
+            public LineChart UVLineChart;
+            public ImageButton dateUVImageButton;
+            public DatePickerDialog datePickerDialogUV;
+
+
+            public MyViewHolder(View view) {
+                super(view);
+                //super(v);
+                //mTextView = v;
+                tempLineChart = (LineChart) view.findViewById(R.id.tempLineChart);
+                dateTempImageButton = (ImageButton) view.findViewById(R.id.dateTempImageButton);
+                //datePickerDialogTemp = dpTemp;
+                humLineChart = (LineChart) view.findViewById(R.id.humLineChart);
+                dateHumImageButton = (ImageButton) view.findViewById(R.id.dateHumImageButton);
+                //datePickerDialogHum = dpHum;
+                UVLineChart = (LineChart) view.findViewById(R.id.UVLineChart);
+                dateUVImageButton = (ImageButton) view.findViewById(R.id.dateUVImageButton);
+                //datePickerDialogUV = dpUV;
+            }
+        }
+
+        // Provide a suitable constructor (depends on the kind of dataset)
+        public MyAdapter(String[] myDataset) {
+            mDataset = myDataset;
+        }
+
+        // Create new views (invoked by the layout manager)
+        @Override
+        public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                         int viewType) {
+            // create a new view
+            @SuppressLint("ResourceType") View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.id.linearLayoutBeach, parent, false);
+
+            MyViewHolder vh = new MyViewHolder(itemView);
+            return vh;
+        }
+
+        // Replace the contents of a view (invoked by the layout manager)
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            // - get element from your dataset at this position
+            // - replace the contents of the view with that element
+            holder.mTextView.setText(mDataset[position]);
+
+        }
+
+        // Return the size of your dataset (invoked by the layout manager)
+        @Override
+        public int getItemCount() {
+            return mDataset.length;
+        }
+    }*/
 }
 
 

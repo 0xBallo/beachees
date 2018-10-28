@@ -21,4 +21,5 @@
     <color name="lightBlueGray">#E0E0E0</color>
     <color name="white">#FFFFFF</color>
     <color name="darkBlueGray">#607D8B</color>
+    <color name="trasparentBlueGray">#80607D8B</color>
 </resources>

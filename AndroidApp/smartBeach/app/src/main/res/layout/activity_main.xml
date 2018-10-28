@@ -37,6 +37,7 @@
             //Dati relativi alla spiaggia
 
             <android.support.v7.widget.CardView
+                android:id="@+id/my_recycler_view_beach"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_gravity="center"
@@ -52,6 +53,7 @@
                     android:layout_height="wrap_content">
 
                     <LinearLayout
+                        android:id="@+id/linearLayoutBeach"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
@@ -75,7 +77,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="47dp"
                                 android:text="Informazioni attuali relative alla spiaggia"
-                                android:textColor="@color/white"/>
+                                android:textColor="@color/white"
+                                android:textStyle="bold"/>
 
                         </LinearLayout>
 
@@ -202,7 +205,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="50dp"
                                 android:text="Informazioni attuali relative al mare"
-                                android:textColor="@color/white"/>
+                                android:textColor="@color/white"
+                                android:textStyle="bold"/>
 
                         </LinearLayout>
 
@@ -311,7 +315,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="491dp">
 
-                //SEZIONE MY DATA
+                //SEZIONE SPIAGGIA
 
                 <LinearLayout
                     android:id="@+id/tab1"
@@ -331,6 +335,14 @@
                             android:orientation="vertical">
 
                             //Dati relativi alla temperatura
+                            <!--<android.support.v4.widget.SwipeRefreshLayout
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:id="@+id/swiperefresh"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                                <ListView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">-->
 
                             <android.support.v7.widget.CardView
                                 android:layout_width="match_parent"
@@ -382,6 +394,7 @@
                                     </RelativeLayout>
 
                                     <RelativeLayout
+                                        android:id="@+id/rl_temp"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:padding="16dp">
@@ -524,8 +537,8 @@
                                 </RelativeLayout>
                                 </LinearLayout>
                             </android.support.v7.widget.CardView>
-
-                        </LinearLayout>
+                                </LinearLayout>
+                            <!--</android.support.v4.widget.SwipeRefreshLayout>-->
                     </ScrollView>
 
                 </LinearLayout>
@@ -781,6 +794,33 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/navigation">
+
+        <FrameLayout
+            style="?attr/actionButtonStyle"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="40dp"
+            android:clipToPadding="false"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/badgeNot"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="right|end|top"
+                android:layout_marginEnd="-5dp"
+                android:layout_marginRight="-5dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/badge_background"
+                android:gravity="center"
+                android:padding="3dp"
+                android:textColor="@android:color/white"
+                android:text="0"
+                android:textSize="10sp"/>
+
+        </FrameLayout>
 
     </android.support.design.widget.BottomNavigationView>
 

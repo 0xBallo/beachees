@@ -4,12 +4,6 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.YAxis;
@@ -170,8 +164,8 @@ public class ChartDelegate implements OnChartGestureListener, OnChartValueSelect
         // reset all limit lines to avoid overlapping lines
         leftAxis.removeAllLimitLines();
         leftAxis.addLimitLine(limit);
-        leftAxis.setAxisMaxValue(max);
-        leftAxis.setAxisMinValue(min);
+        //leftAxis.setAxisMaxValue(max);
+        //leftAxis.setAxisMinValue(min);
 
         //leftAxis.setYOffset(20f);
         leftAxis.enableGridDashedLine(10f, 10f, 0f);
@@ -183,7 +177,7 @@ public class ChartDelegate implements OnChartGestureListener, OnChartValueSelect
     }
 
     //metodo per creare il grafico
-    void createChart(JSONObject response, String nameX, String label, String limitLabel, float limitVal, float max, float min, LineChart lineChart, Integer color) {
+    LineChart createChart(JSONObject response, String nameX, String label, String limitLabel, float limitVal, float max, float min, LineChart lineChart, Integer color) {
         try {
             ArrayList<Entry> y = new ArrayList<Entry>();
             ArrayList<String> x = new ArrayList<String>();
@@ -199,9 +193,9 @@ public class ChartDelegate implements OnChartGestureListener, OnChartValueSelect
 
             setData(lineChart, x, y, label, color);
             setLimit(limitVal, limitLabel, lineChart, max, min);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return lineChart;
     }
 }
