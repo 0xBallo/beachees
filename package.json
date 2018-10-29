@@ -21,14 +21,14 @@
   "homepage": "https://github.com/mattiaballo/beachees#readme",
   "dependencies": {
     "cors": "^2.8.4",
-    "express": "^4.16.3",
-    "firebase-admin": "^6.0.0",
+    "express": "^4.16.4",
+    "firebase-admin": "^6.1.0",
     "moment": "^2.22.2",
     "nedb": "^1.8.0",
     "serialport": "^6.2.2"
   },
   "devDependencies": {
     "ngrok": "^3.1.0",
-    "nodemon": "^1.18.4"
+    "nodemon": "^1.18.5"
   }
 }

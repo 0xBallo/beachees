@@ -3,15 +3,19 @@ package com.smartbeach.paridemartinelli.smartbeach.services;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+
+import com.smartbeach.paridemartinelli.smartbeach.utils.SmartBroadcastReceiver;
 
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class MyBLEScanService extends JobService {
 
-    //private BroadcastReceiver mReceiver;
+    private SmartBroadcastReceiver mReceiver;
 
     public MyBLEScanService() {
         super();
@@ -26,6 +30,9 @@ public class MyBLEScanService extends JobService {
         /*String data = params.getExtras().getString("RECEIVER");
         Gson g = new Gson();
         this.mReceiver = g.fromJson(data, BroadcastReceiver.class);*/
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_NAME_CHANGED);
+        registerReceiver(this.mReceiver, filter);
         mBluetoothAdapter.startDiscovery();
         // returning false means the work has been done, return true if the job is being run asynchronously
         return true;
@@ -37,13 +44,5 @@ public class MyBLEScanService extends JobService {
         // return true to restart the job
         return true;
     }
-
-   /* protected void proceedDiscovery() {
-       IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothDevice.ACTION_NAME_CHANGED);
-        registerReceiver(this.mReceiver, filter);
-
-        this.mBluetoothAdapter.startDiscovery();
-    }*/
 
 }
