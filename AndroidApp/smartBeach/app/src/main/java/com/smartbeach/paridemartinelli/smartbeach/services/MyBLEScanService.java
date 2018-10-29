@@ -30,9 +30,9 @@ public class MyBLEScanService extends JobService {
         /*String data = params.getExtras().getString("RECEIVER");
         Gson g = new Gson();
         this.mReceiver = g.fromJson(data, BroadcastReceiver.class);*/
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        /*IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothDevice.ACTION_NAME_CHANGED);
-        registerReceiver(this.mReceiver, filter);
+        registerReceiver(this.mReceiver, filter);*/
         mBluetoothAdapter.startDiscovery();
         // returning false means the work has been done, return true if the job is being run asynchronously
         return true;
