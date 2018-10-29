@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://52bf0101.ngrok.io/api";
+    public static final String URL = "http://9a31ab32.ngrok.io/api";
     public static String user = "";
     public static String token;
     public static RequestQueue queue;
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO: commentato per effettuare test con simulatore (scommentare)
 
         //Controllo se il dispositivo supporta il bluethooth
-        /*if (BluetoothAdapter.getDefaultAdapter() == null) {
+        if (BluetoothAdapter.getDefaultAdapter() == null) {
             // Device doesn't support Bluetooth
             Toast.makeText(this, "Bluetooth Non supportato", Toast.LENGTH_SHORT).show();
             //    finish();
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.REQUEST_COARSE_LOCATION);
         } else {
             startBGService();
-        }*/
+        }
 
 
         //-------------------------------------------------------------//
@@ -926,81 +926,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };*/
-
-
-    //---------------------------------------------------------------------------------------------//
-
-    /*public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-        private String[] mDataset;
-
-        // Provide a reference to the views for each data item
-        // Complex data items may need more than one view per item, and
-        // you provide access to all the views for a data item in a view holder
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-            // each data item is just a string in this case
-            public TextView mTextView;
-
-            public LineChart tempLineChart;
-            public ImageButton dateTempImageButton;
-            public DatePickerDialog datePickerDialogTemp;
-
-            public LineChart humLineChart;
-            public ImageButton dateHumImageButton;
-            public DatePickerDialog datePickerDialogHum;
-
-            public LineChart UVLineChart;
-            public ImageButton dateUVImageButton;
-            public DatePickerDialog datePickerDialogUV;
-
-
-            public MyViewHolder(View view) {
-                super(view);
-                //super(v);
-                //mTextView = v;
-                tempLineChart = (LineChart) view.findViewById(R.id.tempLineChart);
-                dateTempImageButton = (ImageButton) view.findViewById(R.id.dateTempImageButton);
-                //datePickerDialogTemp = dpTemp;
-                humLineChart = (LineChart) view.findViewById(R.id.humLineChart);
-                dateHumImageButton = (ImageButton) view.findViewById(R.id.dateHumImageButton);
-                //datePickerDialogHum = dpHum;
-                UVLineChart = (LineChart) view.findViewById(R.id.UVLineChart);
-                dateUVImageButton = (ImageButton) view.findViewById(R.id.dateUVImageButton);
-                //datePickerDialogUV = dpUV;
-            }
-        }
-
-        // Provide a suitable constructor (depends on the kind of dataset)
-        public MyAdapter(String[] myDataset) {
-            mDataset = myDataset;
-        }
-
-        // Create new views (invoked by the layout manager)
-        @Override
-        public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                         int viewType) {
-            // create a new view
-            @SuppressLint("ResourceType") View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.id.linearLayoutBeach, parent, false);
-
-            MyViewHolder vh = new MyViewHolder(itemView);
-            return vh;
-        }
-
-        // Replace the contents of a view (invoked by the layout manager)
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            // - get element from your dataset at this position
-            // - replace the contents of the view with that element
-            holder.mTextView.setText(mDataset[position]);
-
-        }
-
-        // Return the size of your dataset (invoked by the layout manager)
-        @Override
-        public int getItemCount() {
-            return mDataset.length;
-        }
-    }*/
 }
 
 
