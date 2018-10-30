@@ -41,9 +41,13 @@ public class SmartBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        Log.i("Prova", "Prova");
         if (BluetoothDevice.ACTION_FOUND.equals(action)) {
             Log.d("BLE", intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString());
-            if (intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString().equals("E1:A4:B8:01:EA:35")) {
+            //E1:A4:B8:01:EA:35 --> BEACON
+            //78:F8:82:4C:A6:E5 --> PARIX
+            //38:D5:47:9D:AE:62 --> MATTI
+            if (intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE).toString().equals("18:4F:32:46:09:EA")) {
                 Log.d("BLE", "BEACON LIDO BEACH");
                 //TODO:creare oggetto con valori corretti
                 Calendar morningStart = Calendar.getInstance();
@@ -73,8 +77,9 @@ public class SmartBroadcastReceiver extends BroadcastReceiver {
                             sendNotification(intent, "Solo ora Menù completo di pesce a 25€! Cosa aspetti?");
                             this.last = today;
                         }
-                        if (today.after(afternoonStart) && today.after(afternoonEnd)) {
+                        if (today.after(afternoonStart) && today.before(afternoonEnd)) {
                             //afternoon notify
+                            //Questa è l'ora degli amari... questa è l'ora del Campari!! 2€ di coupon sull'aperitivo!
                             sendNotification(intent, "Questa è l'ora degli amari... questa è l'ora del Campari!! 2€ di coupon sull'aperitivo!");
                             this.last = today;
                         }
@@ -90,7 +95,7 @@ public class SmartBroadcastReceiver extends BroadcastReceiver {
                         sendNotification(intent, "Solo ora Menù completo di pesce a 25€! Cosa aspetti?");
                         this.last = today;
                     }
-                    if (today.after(afternoonStart) && today.after(afternoonEnd)) {
+                    if (today.after(afternoonStart) && today.before(afternoonEnd)) {
                         //afternoon notify
                         sendNotification(intent, "Questa è l'ora degli amari... questa è l'ora del Campari!! 2€ di coupon sull'aperitivo!");
                         this.last = today;
