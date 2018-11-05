@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://6a51735e.ngrok.io/api";
+    public static final String URL = "http://858a0a0f.ngrok.io/api";
     public static String user = "";
     public static String token;
     public static RequestQueue queue;
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO: commentato per effettuare test con simulatore (scommentare)
 
         //Controllo se il dispositivo supporta il bluethooth
-        if (BluetoothAdapter.getDefaultAdapter() == null) {
+        /*if (BluetoothAdapter.getDefaultAdapter() == null) {
             // Device doesn't support Bluetooth
             Toast.makeText(this, "Bluetooth Non supportato", Toast.LENGTH_SHORT).show();
             //    finish();
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.REQUEST_COARSE_LOCATION);
         } else {
             startBGService();
-        }
+        }*/
 
 
         //-------------------------------------------------------------//

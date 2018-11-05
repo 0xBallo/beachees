@@ -60,11 +60,12 @@ public class NotificationDelegate {
                 noNotificationsTV.setGravity(Gravity.CENTER);
                 noNotificationsTV.setPadding(15,300,15,15);
                 notificationLinearLayout.addView(noNotificationsTV);
-                badge.setText(Integer.toString(response.getJSONArray("data").length()));
+                //badge.setText(Integer.toString(response.getJSONArray("data").length()));
 
             }else{
                 for (int i = 0; i < response.getJSONArray("data").length(); i++) {
 
+                    badge.setText(Integer.toString(response.getJSONArray("data").length()));
                     String date = response.getJSONArray("data").getJSONObject(i).getString("date");
                     String text = response.getJSONArray("data").getJSONObject(i).getJSONObject("notification").getString("body");
                     String typeNotString = response.getJSONArray("data").getJSONObject(i).getJSONObject("notification").getString("title");
