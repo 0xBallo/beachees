@@ -76,7 +76,7 @@ exports.send_push = (req, res, db, admin) => {
             if (results.length == 0) {
                 res.status(202).send('No device/user found!');
             } else {
-                results.token.forEach(t => {
+                results[0].token.forEach(t => {
                     const message = {
                         android: {
                             ttl: 3600 * 1000, // 1 hour in milliseconds
@@ -90,7 +90,8 @@ exports.send_push = (req, res, db, admin) => {
                         },
                         token: t
                     };
-
+                    console.log(message);
+                    
                     Notifier.send_push(admin, db, data.user, message);
 
                 });
