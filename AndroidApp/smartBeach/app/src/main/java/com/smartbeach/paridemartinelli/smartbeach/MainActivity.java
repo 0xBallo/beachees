@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://429a867f.ngrok.io/api";
+    public static final String URL = "http://76e3f948.ngrok.io/api";
     public static String user = "";
     public static String token;
     public static RequestQueue queue;
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
     int blue = Color.parseColor("#29B6F6");
 
     //Sezione notifiche
-    private TextView bedgeNot;
+    public TextView bedgeNot;
 
 
 
@@ -866,13 +866,13 @@ public class MainActivity extends AppCompatActivity {
     //TODO: ricontrolla perchè forse nel cercare di creare il delegate ho fatto su del casino
     //TODO: creare la classe delegate con tutti queti metodi
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    /*@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     void startBGService() {
         //lancia il servizio bluetooth
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        /*PersistableBundle bundle = new PersistableBundle();
-        Gson g = new Gson();
-        bundle.putString("RECEIVER", g.toJson(getmReceiver()));*/
+        //PersistableBundle bundle = new PersistableBundle();
+        //Gson g = new Gson();
+        //bundle.putString("RECEIVER", g.toJson(getmReceiver()));
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothDevice.ACTION_NAME_CHANGED);
@@ -901,7 +901,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-    }
+    }*/
 
 
     @Override

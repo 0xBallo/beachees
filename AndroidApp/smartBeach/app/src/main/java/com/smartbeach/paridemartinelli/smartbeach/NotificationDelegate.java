@@ -106,7 +106,7 @@ public class NotificationDelegate {
                             icon = R.drawable.ic_lightbulb_outline_black_24dp;
 
                     }
-                    createNotification(activity, notificationLinearLayout, date, text, typeNotString, icon, id, activity, color);
+                    createNotification(activity, notificationLinearLayout, date, text, typeNotString, icon, id, activity, color, badge);
                 }
             }
         } catch (JSONException e) {
@@ -116,7 +116,7 @@ public class NotificationDelegate {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("ResourceAsColor")
-    void createNotification(final Context mContext, final LinearLayout notificationLinearLayout, String date, String text, String type, Integer icon, final String idNotify, final Activity activity, int color) {
+    void createNotification(final Context mContext, final LinearLayout notificationLinearLayout, String date, String text, String type, Integer icon, final String idNotify, final Activity activity, int color, final TextView b) {
         // Initialize a new CardView
         final CardView card = new CardView(mContext);
         // Set the CardView layoutParams
@@ -202,11 +202,11 @@ public class NotificationDelegate {
                                                             JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.DELETE, deleteNotificationsURL, null, new Response.Listener<JSONObject>() {
                                                                 @Override
                                                                 public void onResponse(JSONObject response) {
-                                                                    dialog.cancel();
-                                                                    notificationLinearLayout.removeView(card);
-                                                                    /*notificationLinearLayout.invalidate();
-                                                                    notificationLinearLayout.postInvalidate();*/
-                                                                    activity.recreate();
+                                                                    //dialog.cancel();
+                                                                    //notificationLinearLayout.removeView(card);
+                                                                    //notificationLinearLayout.invalidate();
+                                                                    //notificationLinearLayout.postInvalidate();
+                                                                    //activity.recreate();
                                                                 }
                                                             }, new Response.ErrorListener() {
                                                                 @Override
@@ -222,6 +222,11 @@ public class NotificationDelegate {
                                                                 }
                                                             };
                                                             MainActivity.queue.add(requestNotifications);
+                                                            notificationLinearLayout.removeView(card);
+                                                            String numberString = (String) b.getText();
+                                                            int number = Integer.parseInt(numberString) - 1;
+                                                            b.setText(String.valueOf(number));
+
                                                         }
                                                     })
                                                     .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -229,7 +234,7 @@ public class NotificationDelegate {
                                                             dialog.cancel();
                                                         }
                                                     });
-                                            // Create the AlertDialog object and return it
+                                            //Create the AlertDialog object and return it
                                             AlertDialog dialog = builder.create();
                                             dialog.show();
                                         }
