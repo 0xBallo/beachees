@@ -155,8 +155,6 @@ void loop()
     digitalWrite(UVLED, LOW);
     }*/
 
-  //TODO: Check water turbidity
-  //TODO: Check water rough
 
   //INFO: DHT22 Data OUTPUT
   Serial.print(TYPE_DHT);
