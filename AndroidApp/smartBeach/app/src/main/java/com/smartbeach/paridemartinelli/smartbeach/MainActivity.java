@@ -64,6 +64,7 @@ import com.smartbeach.paridemartinelli.smartbeach.utils.SmartBroadcastReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Console;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://76e3f948.ngrok.io/api";
+    public static final String URL = "http://073cdfae.ngrok.io/api";
     public static String user = "";
     public static String token;
     public static RequestQueue queue;
@@ -513,26 +514,57 @@ public class MainActivity extends AppCompatActivity {
                 int mYear = c.get(Calendar.YEAR); // current year
                 int mMonth = c.get(Calendar.MONTH); // current month
                 int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
+
                 // date picker dialog
                 datePickerDialogTemp = new DatePickerDialog(MainActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
 
-                            @SuppressLint("ResourceType")
+                            //@SuppressLint("ResourceType")
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                //TODO: risolvere bug: la pagina non si ricarica da sola, quindi i valori non vengono modificati automaticamente (Se si cambia il tab si vede il cambiamento)
-                                tempLineChart.clear();
-                                //String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                                 String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                                 String tempURL = URL + "/dht?user=" + user + "&date=" + date;
-                                final String label = "Temperatura " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                                getTempChart(tempURL, label);
+                                String label = "Temperatura " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                //getTempChart(tempURL, label, tempLineChart);
                                 //rl_temp.addView(newLineChart);
+
+                                //TODO: utilizzare questa riga di codice per risolvere problema aggiornamento
+                                //Dopo la rimozione aggiungere di nuovo il metodo per la creazione del grafico
+                                //rl_temp.removeView(tempLineChart);
+                                //LineChart lc_temp_date = new LineChart(MainActivity.this);
+                                tempLineChart.clear();
+                                //getTempChart(tempURL, label, tempLineChart);
+                                //rl_temp.addView(lc_temp_date);
+
+
+
                             }
                         }, mYear, mMonth, mDay);
+                datePickerDialogTemp.setButton(DialogInterface.BUTTON_POSITIVE,
+                        "OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                //if (which == DialogInterface.BUTTON_POSITIVE) {
+                                    DatePicker datePicker = datePickerDialogTemp
+                                            .getDatePicker();
+                                    Log.i("OK Data", "Sono qui");
+                                    int year = datePicker.getYear();
+                                    int month = datePicker.getMonth();
+                                    int day = datePicker.getDayOfMonth();
+                                    String date = year + "-" + (month + 1) + "-" + day;
+                                    String tempURL = URL + "/dht?user=" + user + "&date=" + date;
+                                    String label = "Temperatura " + day + "/" + (month + 1) + "/" + year;
+                                    Log.i("OK Data", tempURL);
+                                    //tempLineChart.clear();
+                                    getTempChart(tempURL, label, tempLineChart);
+
+                                //}
+                            }
+                        });
                 datePickerDialogTemp.show();
+
             }
         });
 
@@ -714,7 +746,7 @@ public class MainActivity extends AppCompatActivity {
         //temperatura
         String tempURL = URL + "/dht?user=" + user;
         final String labelTemp = "Temperatura " + currentDate;
-        getTempChart(tempURL, labelTemp);
+        getTempChart(tempURL, labelTemp, tempLineChart);
 
         //umidità
         String humURL = URL + "/dht?user=" + user;
@@ -846,11 +878,11 @@ public class MainActivity extends AppCompatActivity {
         queue.add(requestHum);
     }
 
-    private void getTempChart(String tempURL, final String labelTemp) {
+    private void getTempChart(String tempURL, final String labelTemp, final LineChart lineChart) {
         JsonObjectRequest requestTemp = new JsonObjectRequest(Request.Method.GET, tempURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                chartDelegate.createChart(response, "temperature", labelTemp, "Temperatura troppo elevata", 35f, 40f, 21f, tempLineChart, yellow);
+                chartDelegate.createChart(response, "temperature", labelTemp, "Temperatura troppo elevata", 35f, 40f, 21f, lineChart, yellow);
             }
         }, new Response.ErrorListener() {
             @Override

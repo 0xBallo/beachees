@@ -202,11 +202,7 @@ public class NotificationDelegate {
                                                             JsonObjectRequest requestNotifications = new JsonObjectRequest(Request.Method.DELETE, deleteNotificationsURL, null, new Response.Listener<JSONObject>() {
                                                                 @Override
                                                                 public void onResponse(JSONObject response) {
-                                                                    //dialog.cancel();
-                                                                    //notificationLinearLayout.removeView(card);
-                                                                    //notificationLinearLayout.invalidate();
-                                                                    //notificationLinearLayout.postInvalidate();
-                                                                    //activity.recreate();
+
                                                                 }
                                                             }, new Response.ErrorListener() {
                                                                 @Override
