@@ -18,7 +18,7 @@ module.exports = function (router, db, admin) {
 
   // Add User Temperature to db
   router.post('/dht', (request, response) => {
-    beachCtrl.add_temp_hum(request, response, db);
+    beachCtrl.add_temp_hum(request, response, db, admin);
   });
 
   // Get last data from dht
@@ -33,7 +33,7 @@ module.exports = function (router, db, admin) {
 
   // Add User UVA levels
   router.post('/uva', (request, response) => {
-    beachCtrl.add_uva(request, response, db);
+    beachCtrl.add_uva(request, response, db, admin);
   });
 
   // Get last data from UVA
@@ -48,7 +48,7 @@ module.exports = function (router, db, admin) {
 
   // Add sea Temp levels
   router.post('/sea/temp', (request, response) => {
-    seaCtrl.add_water_temp(request, response, db);
+    seaCtrl.add_water_temp(request, response, db, admin);
   });
 
   // Get last sea Temps
@@ -63,7 +63,7 @@ module.exports = function (router, db, admin) {
 
   // Add sea turbidity levels
   router.post('/sea/turbidity', (request, response) => {
-    seaCtrl.add_water_turb(request, response, db);
+    seaCtrl.add_water_turb(request, response, db, admin);
   });
 
   // Get last sea Turbidity levels
@@ -78,7 +78,7 @@ module.exports = function (router, db, admin) {
 
   // Add sea waves levels
   router.post('/sea/waves', (request, response) => {
-    seaCtrl.add_waves_acc(request, response, db);
+    seaCtrl.add_waves_acc(request, response, db, admin);
   });
 
   // Get last sea waves levels

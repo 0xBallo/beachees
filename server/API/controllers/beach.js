@@ -91,7 +91,7 @@ exports.get_temp_hum = (req, res, db) => {
  * @param {*} res 
  * @param {*} db 
  */
-exports.add_temp_hum = (req, res, db) => {
+exports.add_temp_hum = (req, res, db, admin) => {
 	let data = req.body;
 
 	if (data.u == undefined || data.h == undefined || data.t == undefined) {
@@ -390,7 +390,7 @@ exports.get_uva = (req, res, db) => {
  * @param {*} res 
  * @param {*} db 
  */
-exports.add_uva = (req, res, db) => {
+exports.add_uva = (req, res, db, admin) => {
 	let data = req.body;
 
 	if (data.u == undefined || data.l == undefined) {

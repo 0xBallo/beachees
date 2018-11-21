@@ -73,7 +73,7 @@ exports.get_water_temp = (req, res, db) => {
  * @param {*} res 
  * @param {*} db 
  */
-exports.add_water_temp = (req, res, db) => {
+exports.add_water_temp = (req, res, db, admin) => {
 	let data = req.body;
 
 	if (data.t == undefined) {
@@ -349,7 +349,7 @@ exports.get_water_turb = (req, res, db) => {
  * @param {*} res 
  * @param {*} db 
  */
-exports.add_water_turb = (req, res, db) => {
+exports.add_water_turb = (req, res, db, admin) => {
 	let data = req.body;
 
 	if (data.t == undefined) {
@@ -605,7 +605,7 @@ function normalize(acc, gyro) {
  * @param {*} res 
  * @param {*} db 
  */
-exports.add_waves_acc = (req, res, db) => {
+exports.add_waves_acc = (req, res, db, admin) => {
 	let data = req.body;
 
 	if (data.a == undefined || data.g == undefined) {
