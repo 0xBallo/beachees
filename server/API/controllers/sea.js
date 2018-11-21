@@ -27,16 +27,16 @@ exports.get_water_temp = (req, res, db) => {
 		queryDate = Moment(date).format('YYYY-MM-DD');
 	}
 	db.sea.find({
-			user: user,
-			watertemp: {
-				$exists: true
-			},
-			date: queryDate,
-			$where: function () {
-				let hour = parseInt(this.hour);
-				return hour >= 8 && hour <= 19;
-			}
-		})
+		user: user,
+		watertemp: {
+			$exists: true
+		},
+		date: queryDate,
+		$where: function () {
+			let hour = parseInt(this.hour);
+			return hour >= 8 && hour <= 19;
+		}
+	})
 		.sort({
 			hour: 1
 		})
@@ -101,15 +101,15 @@ exports.add_water_temp = (req, res, db, admin) => {
 			db.users.update({
 				user: data.u
 			}, {
-				$set: {
-					"smart.sensors.watert": Moment().format()
-				}
-			}, function (err, num, upsert) {
-				if (err) {
-					console.error(err);
-				}
-				//updated notifiers flags
-			})
+					$set: {
+						"smart.sensors.watert": Moment().format()
+					}
+				}, function (err, num, upsert) {
+					if (err) {
+						console.error(err);
+					}
+					//updated notifiers flags
+				})
 		} else if (data.t < CONF.threshold.wtl) {
 			//INFO send water temperature low notify
 			const message = {
@@ -128,15 +128,15 @@ exports.add_water_temp = (req, res, db, admin) => {
 			db.users.update({
 				user: data.u
 			}, {
-				$set: {
-					"smart.sensors.watert": Moment().format()
-				}
-			}, function (err, num, upsert) {
-				if (err) {
-					console.error(err);
-				}
-				//updated notifiers flags
-			})
+					$set: {
+						"smart.sensors.watert": Moment().format()
+					}
+				}, function (err, num, upsert) {
+					if (err) {
+						console.error(err);
+					}
+					//updated notifiers flags
+				})
 		} else {
 			db.users.findOne({
 				user: data.u
@@ -144,7 +144,7 @@ exports.add_water_temp = (req, res, db, admin) => {
 				if (err) {
 					console.error(err);
 				} else {
-					if (Moment(doc.smart.sensors.temp).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
+					if (doc && Moment(doc.smart.sensors.temp).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
 						//INFO: SMART NOTIFY (5)
 						const message = {
 							android: {
@@ -160,7 +160,7 @@ exports.add_water_temp = (req, res, db, admin) => {
 						}
 						Notifier.send_push(admin, db, data.u, message);
 					}
-					if (Moment(doc.smart.sensors.uva).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.temp).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
+					if (doc && Moment(doc.smart.sensors.uva).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.temp).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
 						//INFO: SMART NOTIFY (6)
 						const message = {
 							android: {
@@ -176,7 +176,7 @@ exports.add_water_temp = (req, res, db, admin) => {
 						}
 						Notifier.send_push(admin, db, data.u, message);
 					}
-					if (Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
+					if (doc && Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
 						if (Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes'))) {
 							//INFO: SMART NOTIFY (3)
 							const message = {
@@ -203,7 +203,7 @@ exports.add_water_temp = (req, res, db, admin) => {
 							//updated notifiers flags
 						});
 					} else {
-						if (Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes'))) {
+						if (doc && Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes'))) {
 							//INFO: SMART NOTIFY (4)
 							const message = {
 								android: {
@@ -219,15 +219,18 @@ exports.add_water_temp = (req, res, db, admin) => {
 							}
 							Notifier.send_push(admin, db, data.u, message);
 						}
-						doc.smart.sensors.watert = Moment().format();
-						db.users.update({
-							_id: doc._id
-						}, doc, {}, function (err, numReplaced, upsert) {
-							if (err) {
-								console.error(err);
-							}
-							//updated notifiers flags
-						});
+						if (doc) {
+							doc.smart.sensors.watert = Moment().format();
+							db.users.update({
+								_id: doc._id
+							}, doc, {}, function (err, numReplaced, upsert) {
+								if (err) {
+									console.error(err);
+								}
+								//updated notifiers flags
+							});
+						}
+
 					}
 				}
 			});
@@ -261,11 +264,11 @@ exports.get_water_temp_now = (req, res, db) => {
 	const parameters = urlParts.query;
 	const user = parameters.user;
 	db.sea.find({
-			user: user,
-			watertemp: {
-				$exists: true
-			}
-		})
+		user: user,
+		watertemp: {
+			$exists: true
+		}
+	})
 		.sort({
 			ISO: -1
 		})
@@ -303,16 +306,16 @@ exports.get_water_turb = (req, res, db) => {
 		queryDate = Moment(date).format('YYYY-MM-DD');
 	}
 	db.sea.find({
-			user: user,
-			turbidity: {
-				$exists: true
-			},
-			date: queryDate,
-			$where: function () {
-				let hour = parseInt(this.hour);
-				return hour >= 8 && hour <= 19;
-			}
-		})
+		user: user,
+		turbidity: {
+			$exists: true
+		},
+		date: queryDate,
+		$where: function () {
+			let hour = parseInt(this.hour);
+			return hour >= 8 && hour <= 19;
+		}
+	})
 		.sort({
 			hour: 1
 		})
@@ -377,15 +380,15 @@ exports.add_water_turb = (req, res, db, admin) => {
 			db.users.update({
 				user: data.u
 			}, {
-				$set: {
-					"smart.sensors.turb": Moment().format()
-				}
-			}, function (err, num, upsert) {
-				if (err) {
-					console.error(err);
-				}
-				//updated notifiers flags
-			})
+					$set: {
+						"smart.sensors.turb": Moment().format()
+					}
+				}, function (err, num, upsert) {
+					if (err) {
+						console.error(err);
+					}
+					//updated notifiers flags
+				})
 		} else {
 			db.users.findOne({
 				user: data.u
@@ -393,7 +396,7 @@ exports.add_water_turb = (req, res, db, admin) => {
 				if (err) {
 					console.error(err);
 				} else {
-					if (Moment(doc.smart.sensors.temp).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
+					if (doc && Moment(doc.smart.sensors.temp).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
 						//INFO: SMART NOTIFY (5)
 						const message = {
 							android: {
@@ -409,7 +412,7 @@ exports.add_water_turb = (req, res, db, admin) => {
 						}
 						Notifier.send_push(admin, db, data.u, message);
 					}
-					if (Moment(doc.smart.sensors.uva).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.temp).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
+					if (doc && Moment(doc.smart.sensors.uva).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.temp).isBefore(Moment().subtract(3, 'hours')) && Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
 						//INFO: SMART NOTIFY (6)
 						const message = {
 							android: {
@@ -425,7 +428,7 @@ exports.add_water_turb = (req, res, db, admin) => {
 						}
 						Notifier.send_push(admin, db, data.u, message);
 					}
-					if (Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
+					if (doc && Moment(doc.smart.sensors.waves).isBefore(Moment(doc.smart.sensors.wavesm))) {
 						if (Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes'))) {
 							//INFO: SMART NOTIFY (3)
 							const message = {
@@ -452,7 +455,7 @@ exports.add_water_turb = (req, res, db, admin) => {
 							//updated notifiers flags
 						});
 					} else {
-						if (Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes'))) {
+						if (doc && Moment(doc.smart.sensors.watert).isBefore(Moment().subtract(20, 'minutes')) && Moment(doc.smart.sensors.turb).isBefore(Moment().subtract(20, 'minutes'))) {
 							//INFO: SMART NOTIFY (4)
 							const message = {
 								android: {
@@ -468,15 +471,18 @@ exports.add_water_turb = (req, res, db, admin) => {
 							}
 							Notifier.send_push(admin, db, data.u, message);
 						}
-						doc.smart.sensors.turb = Moment().format();
-						db.users.update({
-							_id: doc._id
-						}, doc, {}, function (err, numReplaced, upsert) {
-							if (err) {
-								console.error(err);
-							}
-							//updated notifiers flags
-						});
+						if (doc) {
+
+							doc.smart.sensors.turb = Moment().format();
+							db.users.update({
+								_id: doc._id
+							}, doc, {}, function (err, numReplaced, upsert) {
+								if (err) {
+									console.error(err);
+								}
+								//updated notifiers flags
+							});
+						}
 					}
 				}
 			});
@@ -509,11 +515,11 @@ exports.get_water_turb_now = (req, res, db) => {
 	const parameters = urlParts.query;
 	const user = parameters.user;
 	db.sea.find({
-			user: user,
-			turbidity: {
-				$exists: true
-			}
-		})
+		user: user,
+		turbidity: {
+			$exists: true
+		}
+	})
 		.sort({
 			ISO: -1
 		})
@@ -551,16 +557,16 @@ exports.get_waves_acc = (req, res, db) => {
 		queryDate = Moment(date).format('YYYY-MM-DD');
 	}
 	db.sea.find({
-			user: user,
-			waves: {
-				$exists: true
-			},
-			date: queryDate,
-			$where: function () {
-				let hour = parseInt(this.hour);
-				return hour >= 8 && hour <= 19;
-			}
-		})
+		user: user,
+		waves: {
+			$exists: true
+		},
+		date: queryDate,
+		$where: function () {
+			let hour = parseInt(this.hour);
+			return hour >= 8 && hour <= 19;
+		}
+	})
 		.sort({
 			hour: 1
 		})
@@ -633,16 +639,16 @@ exports.add_waves_acc = (req, res, db, admin) => {
 			db.users.update({
 				user: data.u
 			}, {
-				$set: {
-					"smart.sensors.waves": Moment().format(),
-					"smart.sensors.wavesm": Moment().format()
-				}
-			}, function (err, num, upsert) {
-				if (err) {
-					console.error(err);
-				}
-				//updated notifiers flags
-			})
+					$set: {
+						"smart.sensors.waves": Moment().format(),
+						"smart.sensors.wavesm": Moment().format()
+					}
+				}, function (err, num, upsert) {
+					if (err) {
+						console.error(err);
+					}
+					//updated notifiers flags
+				})
 		} else {
 			db.users.findOne({
 				user: data.u
@@ -785,11 +791,11 @@ exports.get_waves_now = (req, res, db) => {
 	const user = parameters.user;
 
 	db.sea.find({
-			user: user,
-			waves: {
-				$exists: true
-			}
-		})
+		user: user,
+		waves: {
+			$exists: true
+		}
+	})
 		.sort({
 			ISO: -1
 		})

@@ -47,33 +47,34 @@ serialport.on('readable', function () {
       let dataArray = data.toString().split("_");
 
       if (dataArray.length > 1) {
+            let data = {}
             switch (parseInt(dataArray[0])) {
                   case DHT:
-                        let dht = {
+                        data = {
                               u: dataArray[1],
                               h: dataArray[2],
                               t: dataArray[3]
                         };
 
-                        post_request(dht, '/dht');
+                        post_request(data, '/dht');
                         break;
 
                   case WATER_T:
-                        let data = {
+                        data = {
                               t: dataArray[1]
                         };
 
                         post_request(data, '/sea/temp');
                         break;
                   case TURBIDITY:
-                        let data = {
+                        data = {
                               t: dataArray[1]
                         };
 
                         post_request(data, '/sea/turbidity');
                         break;
                   case ACC_GYRO:
-                        let data = {
+                        data = {
                               a: dataArray[1],
                               g: dataArray[2]
                         };
@@ -81,12 +82,12 @@ serialport.on('readable', function () {
                         post_request(data, '/sea/waves');
                         break;
                   case UVA:
-                        let uva = {
+                        data = {
                               u: dataArray[1],
                               l: dataArray[2]
                         };
 
-                        post_request(uva, '/uva');
+                        post_request(data, '/uva');
                         break;
 
                   default:
