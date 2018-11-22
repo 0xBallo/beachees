@@ -407,7 +407,7 @@ exports.add_uva = (req, res, db, admin) => {
 					priority: 'normal',
 					notification: {
 						title: 'Raggi UV',
-						body: 'Livello critico di raggi UV raggiunto! (' + data.t + ' mW/Cm2)!',
+						body: 'Livello critico di raggi UV raggiunto! (' + data.l + ' mW/Cm2)!',
 						icon: CONF.notify.alert.icon,
 						color: CONF.notify.alert.color
 					}
