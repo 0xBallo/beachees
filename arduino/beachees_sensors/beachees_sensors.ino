@@ -3,23 +3,22 @@
 #include <DallasTemperature.h>
 #include "DHT.h"
 
-
 // define input pins
 #define DHTPIN 2
 #define DS18PIN 3
-#define UVPIN A0
+// #define UVPIN A0
 #define REF_3V3 A1
 #define WTURB A5
-
+// #define GYROPIN A2
 
 // define digital output pins
 #define TEMPLED 13
 #define HUMLED 12
-#define UVLED 11
+// #define UVLED 11
 #define WTEMPHLED 10
 #define WTEMPLLED 9
 #define WTURBLED 8
-#define WROUGHLED 7
+// #define WROUGHLED 7
 #define ALARM 6
 
 #define DHTTYPE DHT22
@@ -27,10 +26,19 @@
 
 // define type of data
 #define TYPE_DHT 0
-#define TYPE_GYRO 4
-#define TYPE_UVA 1
+// #define TYPE_GYRO 4
+// #define TYPE_UVA 1
 #define TYPE_WATER_T 2
 #define TYPE_TURBIDITY 3
+
+// define threshold values
+#define T_HIGH 35.5
+#define H_HIGH 80.0
+// #define GYRO_HIGH 3
+// #define UVA_HIGH 12.0
+#define WT_HIGH 27.0
+#define WT_LOW 23.0
+#define TURB_HIGH 35.0
 
 // Initialize DHT sensor
 DHT dht(DHTPIN, DHTTYPE);
@@ -39,7 +47,6 @@ OneWire oneWire(DS18PIN);
 // Pass our oneWire reference to Dallas Temperature.
 DallasTemperature waterTemp(&oneWire);
 
-
 void setup()
 {
   Serial.begin(9600);
@@ -47,15 +54,16 @@ void setup()
   // Setup Output port
   pinMode(TEMPLED, OUTPUT);
   pinMode(HUMLED, OUTPUT);
-  pinMode(UVLED, OUTPUT);
+  // pinMode(UVLED, OUTPUT);
   pinMode(WTEMPHLED, OUTPUT);
   pinMode(WTEMPLLED, OUTPUT);
   pinMode(WTURBLED, OUTPUT);
-  pinMode(WROUGHLED, OUTPUT);
+  // pinMode(WROUGHLED, OUTPUT);
   pinMode(ALARM, OUTPUT);
 
   // Setup Input port
-  pinMode(UVPIN, INPUT);
+  // pinMode(UVPIN, INPUT);
+  // pinMode(GYROPIN, INPUT);
   pinMode(REF_3V3, INPUT);
   pinMode(WTURB, INPUT);
 
@@ -79,16 +87,15 @@ void loop()
   float t = dht.readTemperature();
 
   // UV Sensors Reading
-  int levelUV = averageAnalogRead(UVPIN, 8);
-  int refLevelUV = averageAnalogRead(REF_3V3, 8);
+  // int levelUV = averageAnalogRead(UVPIN, 8);
+  // int refLevelUV = averageAnalogRead(REF_3V3, 8);
 
   // Water Turbidity reading
   int w_turb = averageAnalogRead(WTURB, 8);
 
   //Use the 3.3V power pin as a reference to get a very accurate output value from sensor
-  float outputVoltageUV = 3.3 / refLevelUV * levelUV;
-  float intensityUV = mapfloat(outputVoltageUV, 0.99, 2.9, 0.0, 15.0); //Convert the voltage to a UV intensity level
-
+  // float outputVoltageUV = 3.3 / refLevelUV * levelUV;
+  // float intensityUV = mapfloat(outputVoltageUV, 0.99, 2.9, 0.0, 15.0); //Convert the voltage to a UV intensity level
 
   // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t))
@@ -101,9 +108,9 @@ void loop()
     Serial.println("Failed to read from DS18B20 water sensor!");
     return;
   }
-
-  // Check if wear temperature is greater than 35°C
-  if (t > 35.0)
+  
+  // Check if wear temperature is greater than 31°C
+  if (t >= T_HIGH)
   {
     digitalWrite(TEMPLED, HIGH);
     freq++;
@@ -114,7 +121,7 @@ void loop()
   }
 
   //Check if humidity is greater than 80%
-  if (h > 80.0)
+  if (h >= H_HIGH)
   {
     digitalWrite(HUMLED, HIGH);
     freq++;
@@ -125,7 +132,7 @@ void loop()
   }
 
   //Check water temperature value
-  if (w_t > 25.0)
+  if (w_t >= WT_HIGH)
   {
     digitalWrite(WTEMPHLED, HIGH);
     freq++;
@@ -134,7 +141,7 @@ void loop()
   {
     digitalWrite(WTEMPHLED, LOW);
   }
-  if (w_t < 23.0)
+  if (w_t <= WT_LOW)
   {
     digitalWrite(WTEMPLLED, HIGH);
     freq++;
@@ -145,16 +152,15 @@ void loop()
   }
 
   //Check if UV is more than 12 mW/cm2
-  if (intensityUV > 12.0)
-    {
-    digitalWrite(UVLED, HIGH);
-    freq++;
-    }
-    else
-    {
-    digitalWrite(UVLED, LOW);
-    }
-
+  // if (intensityUV > UVA_HIGH)
+  // {
+  //   digitalWrite(UVLED, HIGH);
+  //   freq++;
+  // }
+  // else
+  // {
+  //   digitalWrite(UVLED, LOW);
+  // }
 
   //INFO: DHT22 Data OUTPUT
   Serial.print(TYPE_DHT);
@@ -168,13 +174,13 @@ void loop()
   delay(100);
 
   //INFO: GY-ML8511 data OUTPUT
-  Serial.print(TYPE_UVA);
-  Serial.print("_");
-  Serial.print("PM12");
-  Serial.print("_");
-  Serial.print(intensityUV);
-  Serial.println();
-  delay(100);
+  // Serial.print(TYPE_UVA);
+  // Serial.print("_");
+  // Serial.print("PM12");
+  // Serial.print("_");
+  // Serial.print(intensityUV);
+  // Serial.println();
+  // delay(100);
 
   //INFO: DS18B20 water data OUTPUT
   Serial.print(TYPE_WATER_T);
@@ -194,8 +200,10 @@ void loop()
   Serial.println();
   delay(100);
 
-  for (j = 0; j < ALARM_COUNTER; j++) {
-    if (freq > 0) {
+  for (j = 0; j < ALARM_COUNTER; j++)
+  {
+    if (freq > 0)
+    {
       // Alarm Ring if Critical levels are reached
       for (i = 0; i < 240; i++)
       {
@@ -207,7 +215,6 @@ void loop()
     }
     delay(900);
   }
-
 }
 
 //Takes an average of readings on a given pin
@@ -216,7 +223,7 @@ int averageAnalogRead(int pinToRead, byte numberOfReadings)
 {
   unsigned int runningValue = 0;
 
-  for (int x = 0 ; x < numberOfReadings ; x++)
+  for (int x = 0; x < numberOfReadings; x++)
     runningValue += analogRead(pinToRead);
   runningValue /= numberOfReadings;
 

@@ -25,16 +25,25 @@ exports.send_push = (admin, db, user, message) => {
             }
       });
 
-      //INFO send push notification
-      admin.messaging().send(payload)
-            .then((response) => {
-                  // Response is a message ID string.
-                  console.log('Successfully sent message:', response);
-            })
-            .catch((error) => {
-                  console.log('Error sending message:', error);
-            });
+      db.users.findOne({ user: user }, { token: 1 }, (err, doc) => {
+            if (err) {
+                  console.error(err)
+            } else {
+                  doc.token.forEach(t => {
 
+                        //INFO send push notification
+                        admin.messaging().send({
+                              ...payload,
+                              token: t
+                        }).then((response) => {
+                              // Response is a message ID string.
+                              console.log('Successfully sent message:', response);
+                        }).catch((error) => {
+                              console.log('Error sending message:', error);
+                        });
+                  });
+            }
+      })
 }
 
 /**
