@@ -102,8 +102,8 @@ void loop()
     return;
   }
 
-  // Check if wear temperature is greater than 31°C
-  if (t > 30.0)
+  // Check if wear temperature is greater than 35°C
+  if (t > 35.0)
   {
     digitalWrite(TEMPLED, HIGH);
     freq++;
@@ -134,7 +134,7 @@ void loop()
   {
     digitalWrite(WTEMPHLED, LOW);
   }
-  if (w_t < 15.0)
+  if (w_t < 23.0)
   {
     digitalWrite(WTEMPLLED, HIGH);
     freq++;
@@ -145,7 +145,7 @@ void loop()
   }
 
   //Check if UV is more than 12 mW/cm2
-  /*if (intensityUV > 12.0)
+  if (intensityUV > 12.0)
     {
     digitalWrite(UVLED, HIGH);
     freq++;
@@ -153,7 +153,7 @@ void loop()
     else
     {
     digitalWrite(UVLED, LOW);
-    }*/
+    }
 
 
   //INFO: DHT22 Data OUTPUT

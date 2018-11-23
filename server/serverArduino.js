@@ -1,7 +1,7 @@
 const Http = require('http');
 const SerialPort = require('serialport');
-// const serialport = new SerialPort("/dev/cu.wchusbserial14530");
-const serialport = new SerialPort("/dev/ttyUSB0");
+const serialport = new SerialPort("/dev/cu.wchusbserial14530");
+//const serialport = new SerialPort("/dev/ttyUSB0");
 
 // Connection parameters
 const HOST_URI = 'localhost';
@@ -59,26 +59,26 @@ serialport.on('readable', function () {
                         break;
 
                   case WATER_T:
-                        let data = {
+                        let dataW = {
                               t: dataArray[1]
                         };
 
-                        post_request(data, '/sea/temp');
+                        post_request(dataW, '/sea/temp');
                         break;
                   case TURBIDITY:
-                        let data = {
+                        let dataTurb = {
                               t: dataArray[1]
                         };
 
-                        post_request(data, '/sea/turbidity');
+                        post_request(dataTurb, '/sea/turbidity');
                         break;
                   case ACC_GYRO:
-                        let data = {
+                        let dataACC = {
                               a: dataArray[1],
                               g: dataArray[2]
                         };
 
-                        post_request(data, '/sea/waves');
+                        post_request(dataACC, '/sea/waves');
                         break;
                   case UVA:
                         let uva = {

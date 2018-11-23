@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private final NotificationDelegate notificationDelegate = new NotificationDelegate();
     private final ChartDelegate chartDelegate = new ChartDelegate(this);
     public static Context mContext;
-    public static final String URL = "http://073cdfae.ngrok.io/api";
+    public static final String URL = "http://4f748d43.ngrok.io";
     public static String user = "";
     public static String token;
     public static RequestQueue queue;
